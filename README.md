@@ -1,3 +1,39 @@
+# FINBROS LETS GO
+
+## Guidelines:
+- write all components and views in .tsx
+- write any reusable functions in .js
+- use Pascal casing HelloWorld.tsx
+- 
+
+## Start app:
+- npm i
+- npm run dev
+
+## SPA
+- App.tsx is main app file
+- main.tsx is the single page HTML file
+
+
+## Where to find stuff:
+- ASSets:
+   - css
+   -  img (any image/svg files)
+- components (any reusable components, make sure it's placed in a generic folder):
+   - buttons
+   - cards
+   - forms
+- constants (any reusable Constants)
+- functions (any reusable functions)
+- routes (all routing stuff)
+- views (actual screen, also ensure it's placed in generic folder):
+   - Login
+      - Login.tsx
+- stores (state management stuff)
+
+
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
