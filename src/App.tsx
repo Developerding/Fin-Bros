@@ -1,11 +1,9 @@
-import { FC } from "react";
-import Rapie from "./components/sample/Rapie";
-import Routes from "./routes/Screens";
+import Screens from "./routes/Screens";
 
 function App() {
   return (
     <>
-      <Routes />
+      <Screens />
     </>
   );
 }

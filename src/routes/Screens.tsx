@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import * as LINKS from "./links.ts";
 import Rapie from "../components/sample/Rapie";
-import Home from "../components/homepage/Home.tsx";
+import Home from "../views/Home.tsx";
 
 const Screens = () => {
   return (
