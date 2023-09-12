@@ -1,10 +1,10 @@
-package g1t1.oop;
+package g1t1.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OopApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {
