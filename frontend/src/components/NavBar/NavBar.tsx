@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -7,20 +7,25 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+// import AdbIcon from "@mui/icons-material/Adb";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Drawer from "@mui/material/Drawer";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function ResponsiveAppBar() {
+const NavBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+
+  const [anchorElMenu, setAnchorElMenu] = React.useState<null | HTMLElement>(
     null
   );
 
@@ -31,6 +36,14 @@ function ResponsiveAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleOpenMenuDropDown = (
+    event: React.MouseEvent<HTMLElement>,
+    menuType: string
+  ) => {
+    setMenuDropdown(menuType);
+    setAnchorElMenu(event.currentTarget);
+  };
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
@@ -39,11 +52,36 @@ function ResponsiveAppBar() {
     setAnchorElUser(null);
   };
 
+  const handleCloseMenuDropDown = () => {
+    setAnchorElMenu(null);
+  };
+
+  const [menuDropdown, setMenuDropdown] = React.useState("");
+
+  const renderMenuType = (menuType: string) => {
+    if (menuType === "portfolio") {
+      return (
+        <div>
+          <MenuItem>Option 1</MenuItem>
+          <MenuItem>Option 2</MenuItem>
+        </div>
+      );
+    } else if (menuType === "stock") {
+      return;
+      <div>
+        <MenuItem>Option 3</MenuItem>
+        <MenuItem>Option 4</MenuItem>
+      </div>;
+    }
+  };
+
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{ width: "100%" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* for hamburger menu */}
+
+          {/* <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
           <Typography
             variant="h6"
             noWrap
@@ -60,7 +98,7 @@ function ResponsiveAppBar() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -73,18 +111,8 @@ function ResponsiveAppBar() {
             >
               <MenuIcon />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
+            <Drawer
+              anchor="left"
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
@@ -96,9 +124,24 @@ function ResponsiveAppBar() {
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
-            </Menu>
+            </Drawer>
+
+            <Box
+              sx={{
+                display: { xs: "flex", md: "none" },
+                ml: 3,
+              }}
+            >
+              <img
+                src="src/assets/img/finbros.jpg"
+                style={{ width: "150px", height: "64px" }}
+              />
+            </Box>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+
+          {/* Below is for fullwidth navbar */}
+
+          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -116,23 +159,43 @@ function ResponsiveAppBar() {
             }}
           >
             LOGO
-          </Typography>
+          </Typography> */}
+          {/* logo */}
+          <Box sx={{ display: { xs: "none", md: "flex" }, mr: 4 }}>
+            <img
+              src="src/assets/img/finbros.jpg"
+              style={{ width: "140px", height: "64px" }}
+            />
+          </Box>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={(e) => handleOpenMenuDropDown(e, "portfolio")}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
               </Button>
             ))}
+
+            <Menu
+              anchorEl={anchorElMenu}
+              keepMounted
+              open={Boolean(anchorElMenu)}
+              onClose={handleCloseMenuDropDown}
+            >
+              {renderMenuType(menuDropdown)}
+            </Menu>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <AccountCircleIcon
+                  style={{ height: "40px", width: "40px", color: "white" }}
+                />
+                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
               </IconButton>
             </Tooltip>
             <Menu
@@ -162,5 +225,5 @@ function ResponsiveAppBar() {
       </Container>
     </AppBar>
   );
-}
-export default ResponsiveAppBar;
+};
+export default NavBar;
