@@ -106,7 +106,8 @@ const NavBar = () => {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleOpenNavMenu}
+              onMouseEnter={handleOpenNavMenu}
+              onMouseLeave={handleCloseNavMenu}
               color="inherit"
             >
               <MenuIcon />
@@ -170,13 +171,20 @@ const NavBar = () => {
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
+              // <div
+              //   onMouseEnter={(e) => handleOpenMenuDropDown(e, "portfolio")}
+
+              //   onMouseLeave={() => handleCloseMenuDropDown()}
+              // >
               <Button
                 key={page}
-                onClick={(e) => handleOpenMenuDropDown(e, "portfolio")}
+                onMouseEnter={(e) => handleOpenMenuDropDown(e, "portfolio")}
+                // onMouseLeave={handleCloseMenuDropDown}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
               </Button>
+              // </div>
             ))}
 
             <Menu
@@ -184,6 +192,10 @@ const NavBar = () => {
               keepMounted
               open={Boolean(anchorElMenu)}
               onClose={handleCloseMenuDropDown}
+              // onMouseLeave={handleCloseMenuDropDown}
+              MenuListProps={{
+                onMouseLeave: handleCloseMenuDropDown,
+              }}
             >
               {renderMenuType(menuDropdown)}
             </Menu>
@@ -191,7 +203,12 @@ const NavBar = () => {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton
+                onMouseEnter={handleOpenUserMenu}
+                // onClick={handleOpenUserMenu}
+                // onMouseLeave={handleCloseUserMenu}
+                sx={{ p: 0 }}
+              >
                 <AccountCircleIcon
                   style={{ height: "40px", width: "40px", color: "white" }}
                 />
@@ -213,6 +230,10 @@ const NavBar = () => {
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
+              MenuListProps={{
+                onMouseLeave: handleCloseUserMenu,
+              }}
+              // onMouseLeave={handleCloseUserMenu}
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
