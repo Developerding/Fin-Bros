@@ -76,7 +76,7 @@ public class UserService {
                 String link = FirebaseAuth.getInstance().generateEmailVerificationLink(
                     email);
 
-                emailService.sendSingleEmail(email, userRecord.getUid(), link);
+                emailService.sendEmailForNewUser(email, userRecord.getUid(), link);
 
                 System.out.println("Email verification link sent!");
 
@@ -95,32 +95,53 @@ public class UserService {
 
 
     /**
-     * Description of the method: edit user details using user details to update
+     * Description of the method: edit user's email using user uid to change user's email
      *
      * @param uid uid of user to edit
      * @param email email of user to edit
-     * @param password password of user to edit
      * @return return userRecord which is all the updated user data as an object
      * @throws FirebaseAuthException Generic exception related to Firebase Authentication. Check the error code and message for more details.
      */
-    public UserRecord editUser(@RequestParam String uid, @RequestParam String email, @RequestParam String password) {
+    public UserRecord editUserEmail(@RequestParam String uid, @RequestParam String email) {
 
         try {
             UpdateRequest request = new UpdateRequest(uid)
-                .setEmail(email)
-                .setPassword(password);
+                .setEmail(email);
 
             UserRecord userRecord = FirebaseAuth.getInstance().updateUser(request);
-            System.out.println("Successfully updated user: " + userRecord.getUid());
+            System.out.println("Successfully updated user's email: " + userRecord.getUid());
 
             return userRecord;
 
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
-            System.out.println("Failed to update user.");
+            System.out.println("Failed to update user's email.");
         }
         return null;
     } 
+
+
+    /**
+     * Description of the method: send user a reset password email link using user uid to change user's password
+     *
+     * @param uid uid of user to edit
+     * @throws FirebaseAuthException Generic exception related to Firebase Authentication. Check the error code and message for more details.
+     */
+    public void editUserChangePassword(@RequestParam String uid) {
+
+        // get user's email using user uid first
+        UserRecord userRecord = getUser(uid);
+        String email = userRecord.getEmail();
+        String displayName = userRecord.getUid();
+
+        try {
+            String link = FirebaseAuth.getInstance().generatePasswordResetLink(email);
+            // Construct email verification template, embed the link and send
+            emailService.sendEmailForChangePassword(email, displayName, link);
+        } catch (FirebaseAuthException e) {
+            System.out.println("Error generating email link: " + e.getMessage());
+        }
+    }
 
 
     /**

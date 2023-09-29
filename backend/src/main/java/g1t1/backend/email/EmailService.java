@@ -52,17 +52,36 @@ public class EmailService {
         }
     }
 
-    // methods to send single and bulk emails...
-    public void sendSingleEmail(String toEmail, String displayName, String link) {
+    // send email when a new user is created
+    public void sendEmailForNewUser(String toEmail, String displayName, String link) {
         // specify the email details
         // String fromEmail = "clovischowjh@gmail.com";
 
-        System.out.println("Sending email from sendSingleEmail!");
+        System.out.println("Sending email from sendEmailForNewUser!");
         Email from = new Email(fromEmail);
         // Email from = new Email(this.fromEmail);
         String subject = "Verify your email for FinBros";
         Email to = new Email(toEmail);
         Content content = new Content("text/plain", String.format("Hello %s,%n%nFollow this link to verify your email address.%n%n%s%n%nThanks,%nYour FinBros Team", displayName, link));
+        
+        // initialize the Mail helper class
+        Mail mail = new Mail(from, subject, to, content);
+
+        // send the single email
+        sendEmail(mail);
+    }
+
+    // send email when user requests for password change
+    public void sendEmailForChangePassword(String toEmail, String displayName, String link) {
+        // specify the email details
+        // String fromEmail = "clovischowjh@gmail.com";
+
+        System.out.println("Sending email from sendEmailForChangePassword!");
+        Email from = new Email(fromEmail);
+        // Email from = new Email(this.fromEmail);
+        String subject = "Reset password for FinBros";
+        Email to = new Email(toEmail);
+        Content content = new Content("text/plain", String.format("Hello %s,%n%nFollow this link to reset your passsword for FinBros.%n%n%s%n%nThanks,%nYour FinBros Team", displayName, link));
         
         // initialize the Mail helper class
         Mail mail = new Mail(from, subject, to, content);
