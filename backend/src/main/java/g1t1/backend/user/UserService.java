@@ -1,5 +1,6 @@
 package g1t1.backend.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -9,9 +10,19 @@ import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.google.firebase.auth.UserRecord.UpdateRequest;
 
+import g1t1.backend.email.EmailService;
+
 @Service
 public class UserService {
-    
+
+    // initialise a emailService to use the service to send emails
+    @Autowired
+    private EmailService emailService;
+
+    public UserService(EmailService emailService) {
+        this.emailService = emailService;
+    } 
+
     /**
      * Description of the method: retrieve all user data using uid
      *
@@ -58,11 +69,26 @@ public class UserService {
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
             System.out.println("Successfully created new user: " + userRecord.getUid());
 
+            System.out.println("Email not verified");
+
+            // generate email verification link
+            try {
+                String link = FirebaseAuth.getInstance().generateEmailVerificationLink(
+                    email);
+
+                emailService.sendSingleEmail(email, userRecord.getUid(), link);
+
+                System.out.println("Email verification link sent!");
+
+                } catch (FirebaseAuthException e) {
+                    System.out.println("Error generating email link: " + e.getMessage());
+            }
+
             return userRecord;
 
         } catch (FirebaseAuthException e) {
             e.printStackTrace();
-            System.out.println("Failed to new user.");
+            System.out.println("Failed to create new user.");
         }
         return null;
     }
