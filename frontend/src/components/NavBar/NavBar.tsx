@@ -76,7 +76,10 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static" style={{ width: "100%" }}>
+    <AppBar
+      position="static"
+      style={{ width: "100%", backgroundColor: "#054be3" }}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* for hamburger menu */}
