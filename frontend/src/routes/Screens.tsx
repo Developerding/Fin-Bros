@@ -4,6 +4,7 @@ import Rapie from "../components/sample/Rapie";
 import Home from "../views/Home.tsx";
 import CreatePortfolio from '../views/CreatePortfolio.tsx'
 import Testing from "../views/Testing.tsx";
+import ViewPortfolios from "../views/ViewPortfolios.tsx"
 
 const Screens = () => {
   return (
@@ -12,6 +13,7 @@ const Screens = () => {
       <Route path={LINKS.RAPIE_PAGE} element={<Rapie />} />
       <Route path={LINKS.CREATE_PORTFOLIO} element={<CreatePortfolio />}></Route>
       <Route path={LINKS.TESTING} element={<Testing />} />
+      <Route path={LINKS.VIEWPORTFOLIOS} element={<ViewPortfolios />} />
     </Routes>
   );
 };
