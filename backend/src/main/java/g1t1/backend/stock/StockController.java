@@ -11,19 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
-@Service
 @RestController
 @RequestMapping("/api/stock")
 public class StockController {
-    private final StockRepository stockRepository;
+    private final StockService stockService;
 
     @Autowired
-    public StockService(StockRepository stockRepository){
-        this.stockRepository = stockRepository;
+    public StockController(StockService stockService){
+        this.stockService = stockService;
     }
 
     @GetMapping
     public List<Stock> findAllStocks(){
-        return stockRepository.findAll();
+        return stockService.findAllStocks();
     }
 }

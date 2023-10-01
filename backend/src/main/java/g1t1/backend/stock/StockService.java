@@ -5,8 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import g1t1.backend.portfolio.Portfolio;
-
 @Service
 public class StockService {
     private final StockRepository stockRepository;
