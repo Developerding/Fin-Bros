@@ -1,7 +1,15 @@
 import { Person } from "@mui/icons-material";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import { Box, InputAdornment, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  InputAdornment,
+  TextField,
+  ThemeProvider,
+  Typography,
+  createTheme,
+} from "@mui/material";
 import React, { FC, useState } from "react";
+import validator from "validator";
 
 interface Props {
   label: string;
@@ -46,16 +54,8 @@ const LoginInput: FC<Props> = ({
         }}
         label={label}
         placeholder={placeholder}
-        error={
-          error &&
-          (formValue == "" || formValue == undefined || formValue == null)
-        }
-        helperText={
-          error &&
-          (formValue == "" || formValue == undefined || formValue == null)
-            ? errorText
-            : ""
-        }
+        error={error && !validator.isEmail(formValue)}
+        helperText={error && !validator.isEmail(formValue) ? errorText : ""}
         value={formValue}
         onChange={handleChange}
         style={{
