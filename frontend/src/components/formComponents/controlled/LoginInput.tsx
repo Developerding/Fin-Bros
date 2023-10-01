@@ -1,4 +1,6 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Person } from "@mui/icons-material";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { Box, InputAdornment, TextField, Typography } from "@mui/material";
 import React, { FC, useState } from "react";
 
 interface Props {
@@ -13,7 +15,7 @@ interface Props {
   className?: string;
 }
 
-const ControlledTextInput: FC<Props> = ({
+const LoginInput: FC<Props> = ({
   label,
   placeholder,
   formControlId,
@@ -35,7 +37,13 @@ const ControlledTextInput: FC<Props> = ({
       {/* {label && <Typography variant="body1">{label}:</Typography>} */}
 
       <TextField
-        multiline
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PersonOutlineOutlinedIcon />
+            </InputAdornment>
+          ),
+        }}
         label={label}
         placeholder={placeholder}
         error={
@@ -59,4 +67,4 @@ const ControlledTextInput: FC<Props> = ({
   );
 };
 
-export default ControlledTextInput;
+export default LoginInput;

@@ -15,7 +15,7 @@ interface Props {
   className?: string;
 }
 
-const ControlledTextInput: FC<Props> = ({
+const UncontrolledTextInput: FC<Props> = ({
   label,
   placeholder,
   formControlId,
@@ -58,4 +58,4 @@ const ControlledTextInput: FC<Props> = ({
   );
 };
 
-export default ControlledTextInput;
+export default UncontrolledTextInput;

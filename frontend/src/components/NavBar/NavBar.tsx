@@ -103,18 +103,33 @@ const NavBar = () => {
             LOGO
           </Typography> */}
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onMouseEnter={handleOpenNavMenu}
-              onMouseLeave={handleCloseNavMenu}
-              color="inherit"
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "flex", md: "none" },
+              justifyContent: "space-between",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexGrow: 1,
+                width: "calc(100%/3)",
+              }}
             >
-              <MenuIcon />
-            </IconButton>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                // onMouseEnter={handleOpenNavMenu}
+                // onMouseLeave={handleCloseNavMenu}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
             <Drawer
               anchor="left"
               open={Boolean(anchorElNav)}
@@ -132,8 +147,10 @@ const NavBar = () => {
 
             <Box
               sx={{
-                display: { xs: "flex", md: "none" },
-                ml: 3,
+                // display: { xs: "flex", md: "none" },
+                // ml: 3,
+                alignItems: "center",
+                display: "flex",
               }}
             >
               <img
@@ -141,6 +158,15 @@ const NavBar = () => {
                 style={{ width: "150px", height: "64px" }}
               />
             </Box>
+
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "calc(100%/3)",
+              }}
+            ></Box>
           </Box>
 
           {/* Below is for fullwidth navbar */}

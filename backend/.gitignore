@@ -6,6 +6,7 @@ target/
 
 ### Firebase credentials ###
 serviceAccountKey.json
+.env
 
 ### STS ###
 .apt_generated

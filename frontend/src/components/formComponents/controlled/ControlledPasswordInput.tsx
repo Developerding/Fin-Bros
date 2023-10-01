@@ -1,4 +1,4 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Input, TextField, Typography } from "@mui/material";
 import React, { FC, useState } from "react";
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
   className?: string;
 }
 
-const ControlledTextInput: FC<Props> = ({
+const ControlledPasswordInput: FC<Props> = ({
   label,
   placeholder,
   formControlId,
@@ -32,9 +32,10 @@ const ControlledTextInput: FC<Props> = ({
 
   return (
     <Box sx={{ width: "calc(100%-32px)", margin: "16px 16px 0px 16px" }}>
-      {/* {label && <Typography variant="body1">{label}:</Typography>} */}
+      {/* <Typography variant="body1">{label}:</Typography> */}
 
       <TextField
+        type="password"
         multiline
         label={label}
         placeholder={placeholder}
@@ -59,4 +60,4 @@ const ControlledTextInput: FC<Props> = ({
   );
 };
 
-export default ControlledTextInput;
+export default ControlledPasswordInput;

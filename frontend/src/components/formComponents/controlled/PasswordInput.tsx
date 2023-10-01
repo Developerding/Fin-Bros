@@ -1,4 +1,12 @@
-import { Box, TextField, Typography } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import KeyOutlinedIcon from "@mui/icons-material/KeyOutlined";
+import {
+  Box,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React, { FC, useState } from "react";
 
 interface Props {
@@ -13,7 +21,7 @@ interface Props {
   className?: string;
 }
 
-const ControlledTextInput: FC<Props> = ({
+const PasswordInput: FC<Props> = ({
   label,
   placeholder,
   formControlId,
@@ -28,14 +36,37 @@ const ControlledTextInput: FC<Props> = ({
     setFormControlState({ ...FormData, [formControlId]: event.target.value });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   //   const submitEvent
 
   return (
     <Box sx={{ width: "calc(100%-32px)", margin: "16px 16px 0px 16px" }}>
-      {/* {label && <Typography variant="body1">{label}:</Typography>} */}
-
       <TextField
-        multiline
+        type={showPassword ? "text" : "password"}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <KeyOutlinedIcon />
+            </InputAdornment>
+          ),
+
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={() => setShowPassword(!showPassword)}
+                // onMouseDown={(event) => {
+                //   event.preventDefault();
+                //   setShowPassword(!showPassword);
+                // }}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
         label={label}
         placeholder={placeholder}
         error={
@@ -59,4 +90,4 @@ const ControlledTextInput: FC<Props> = ({
   );
 };
 
-export default ControlledTextInput;
+export default PasswordInput;
