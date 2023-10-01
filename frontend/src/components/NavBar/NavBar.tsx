@@ -154,8 +154,8 @@ const NavBar = () => {
               }}
             >
               <img
-                src="src/assets/img/finbros.jpg"
-                style={{ width: "150px", height: "64px" }}
+                src="src/assets/img/finbros.png"
+                style={{ width: "200px", height: "64px" }}
               />
             </Box>
 
@@ -193,8 +193,8 @@ const NavBar = () => {
           {/* logo */}
           <Box sx={{ display: { xs: "none", md: "flex" }, mr: 4 }}>
             <img
-              src="src/assets/img/finbros.jpg"
-              style={{ width: "140px", height: "64px" }}
+              src="src/assets/img/finbros.png"
+              style={{ width: "170px", height: "64px" }}
             />
           </Box>
 

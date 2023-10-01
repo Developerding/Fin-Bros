@@ -32,8 +32,8 @@ const NoUserNavBar = () => {
               }}
             >
               <img
-                src="src/assets/img/finbros.jpg"
-                style={{ width: "150px", height: "64px" }}
+                src="src/assets/img/finbros.png"
+                style={{ width: "200px", height: "64px" }}
               />
             </Box>
 
@@ -73,9 +73,9 @@ const NoUserNavBar = () => {
               }}
             >
               <img
-                src="src/assets/img/finbros.jpg"
+                src="src/assets/img/finbros.png"
                 style={{
-                  width: "150px",
+                  width: "170px",
                   height: "64px",
                 }}
               />
