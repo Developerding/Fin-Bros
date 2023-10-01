@@ -10,6 +10,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 import axios from 'axios';
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ViewPortfolio = () => {
 
@@ -22,6 +23,11 @@ const ViewPortfolio = () => {
     textAlign: 'center',
     borderRadius: '20px',
   }));
+
+  const PopOutGrid = styled(Grid)(() => ({
+    transition: "transform 0.15s ease-in-out",
+    "&:hover": { transform: "scale3d(1.05, 1.05, 1)" },
+  }))
 
 
   // specify datatypes for portfolio in portfolios
@@ -50,11 +56,18 @@ const ViewPortfolio = () => {
     getPortfoliosFromBackend();
   }, []);
 
+  // when clicking into the portfolio
+  const navigate = useNavigate(); 
+
+  const handleClick = () => {
+    navigate('/');
+  };
+
   // function to render all portfolios via a loop
   const renderPortfolios = () => {
-    return portfolios.map(portfolio => {
+    return portfolios.map((portfolio, index) => {
       return (
-        <Grid item xs={4}>
+        <PopOutGrid item xs={4} key={index} onClick={handleClick} sx={{cursor: 'pointer'}}>
             <Stack direction="row" justifyContent="center" spacing={2}>
               <PortfolioPaper elevation={3} square={false}>
                 <Stack direction="column" justifyContent="center" alignItems="center" spacing={2}>
@@ -87,7 +100,7 @@ const ViewPortfolio = () => {
                 </Stack>
               </PortfolioPaper>
             </Stack>
-          </Grid>
+          </PopOutGrid>
       )
     })
   }
@@ -95,8 +108,8 @@ const ViewPortfolio = () => {
   return (
     <>
       <NavBar />
-      <Container maxWidth="md" sx={{ marginTop: 3 }}>
-        <Grid container spacing={2}>
+      <Container maxWidth={false} sx={{ marginTop: 3, maxWidth: '60%' }}>
+        <Grid container spacing={3}>
           {renderPortfolios()}
         </Grid>
       </Container>
