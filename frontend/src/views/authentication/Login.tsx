@@ -14,6 +14,7 @@ import PasswordInput from "../../components/formComponents/controlled/PasswordIn
 import Link from "../../components/link/Link";
 import * as LINKS from "./../../routes/links";
 import validator from "validator";
+import { useStores } from "../../stores";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -21,6 +22,7 @@ const Login = () => {
     password: "",
   });
 
+  const AppStore = useStores();
   const [error, setError] = useState(false);
   const theme = createTheme({
     palette: {
@@ -52,6 +54,10 @@ const Login = () => {
   useEffect(() => {
     console.log(error);
   }, [error]);
+
+  // useEffect(() => {
+  //   console.log(AppStore.getEmail());
+  // }, []);
 
   return (
     <>
