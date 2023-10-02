@@ -16,6 +16,7 @@ interface Props {
   placeholder?: string;
   formControlId: string;
   formValue: string;
+  formData: any;
   setFormControlState: React.Dispatch<React.SetStateAction<any>>;
   error?: boolean;
   errorText?: string;
@@ -31,11 +32,12 @@ const LoginInput: FC<Props> = ({
   setFormControlState,
   error = false,
   errorText,
+  formData,
   style,
   className,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormControlState({ ...FormData, [formControlId]: event.target.value });
+    setFormControlState({ ...formData, [formControlId]: event.target.value });
   };
 
   //   const submitEvent
@@ -56,7 +58,7 @@ const LoginInput: FC<Props> = ({
         placeholder={placeholder}
         error={error && !validator.isEmail(formValue)}
         helperText={error && !validator.isEmail(formValue) ? errorText : ""}
-        value={formValue}
+        value={formValue || ""}
         onChange={handleChange}
         style={{
           marginTop: "10px",

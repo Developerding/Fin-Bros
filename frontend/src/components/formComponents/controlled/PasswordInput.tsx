@@ -14,6 +14,7 @@ interface Props {
   placeholder?: string;
   formControlId: string;
   formValue: string;
+  formData: any;
   setFormControlState: React.Dispatch<React.SetStateAction<any>>;
   error?: boolean;
   errorText?: string;
@@ -29,11 +30,12 @@ const PasswordInput: FC<Props> = ({
   setFormControlState,
   error = false,
   errorText,
+  formData,
   style,
   className,
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormControlState({ ...FormData, [formControlId]: event.target.value });
+    setFormControlState({ ...formData, [formControlId]: event.target.value });
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -79,7 +81,7 @@ const PasswordInput: FC<Props> = ({
             ? errorText
             : ""
         }
-        value={formValue}
+        value={formValue || ""}
         onChange={handleChange}
         style={{
           marginTop: "10px",

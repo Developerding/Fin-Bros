@@ -27,37 +27,33 @@ const Login = () => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: "#1976d2", // This is MUI's default primary color
-        // You can add light, dark, contrastText, etc. if required.
+        main: "#1976d2",
       },
     },
-    // components: {
-    //   MuiTypography: {
-    //     defaultProps: {
-    //       variantMapping: {
-    //         h1: "h2",
-    //         h2: "h3",
-
-    //       },
-    //     },
-    //   },
-    // },
   });
 
   const submitFunction = () => {
-    console.log("clicked");
-    if (validator.isEmail(form.email) || form.password === "") {
+    // console.log("clicked");
+    if (!validator.isEmail(form.email) || form.password === "") {
       setError(true);
+      return;
     }
+
+    AppStore.setEmail(form.email);
+    console.log("submit clicked");
   };
+
+  useEffect(() => {
+    console.log(form);
+  }, [form]);
 
   useEffect(() => {
     console.log(error);
   }, [error]);
 
-  // useEffect(() => {
-  //   console.log(AppStore.getEmail());
-  // }, []);
+  useEffect(() => {
+    console.log(AppStore.getEmail());
+  }, [AppStore.email]);
 
   return (
     <>
@@ -90,7 +86,8 @@ const Login = () => {
                   label="Email"
                   placeholder="Enter your email address"
                   formControlId="email"
-                  formValue={form.email || ""}
+                  formValue={form.email}
+                  formData={form}
                   setFormControlState={setForm}
                   error={error}
                   errorText="Email is required"
@@ -104,7 +101,8 @@ const Login = () => {
                   label="Password"
                   placeholder="Enter your password"
                   formControlId="password"
-                  formValue={form.password || ""}
+                  formValue={form.password}
+                  formData={form}
                   setFormControlState={setForm}
                   error={error}
                   errorText="Password is required"
