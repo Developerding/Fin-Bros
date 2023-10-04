@@ -2,58 +2,66 @@ package g1t1.backend.portfolio;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
 
-    @Autowired
     public PortfolioService(PortfolioRepository portfolioRepository){
         this.portfolioRepository = portfolioRepository;
     }
 
-    public Portfolio createPortfolio(Portfolio portfolio){
-        return portfolioRepository.save(portfolio);
-    }
-
-    public List<Portfolio> findAllPortfolios(){
-        return portfolioRepository.findAll();
-    }
-
-    public Portfolio findPortfolioByName(String name){
-        List<Portfolio> portfolios = portfolioRepository.findAll();
-        for(Portfolio portfolio : portfolios){
-            if(portfolio.getName().equals(name)){
-                return portfolio;
-            }
+    public ResponseEntity<String> createPortfolio(Portfolio portfolio){
+        // Check if a portfolio with the same name already exists for the given user
+        Portfolio retrievedPortfolio = portfolioRepository.findByUserIdAndName(portfolio.getUserId(), portfolio.getName());
+        if (retrievedPortfolio != null) {
+            String responseMessage = "A portfolio with this name already exists for this user.";
+            return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
+        } else {
+            // Portfolio name is unique, so we can proceed to create it
+            portfolioRepository.save(portfolio);
+            String responseMessage = "Portfolio created successfully";
+            return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
         }
-        return null;
+    }
+    
+
+    public List<Portfolio> findAllPortfoliosByUserId(String userIdCookie){
+        return portfolioRepository.findByUserId(userIdCookie);
     }
 
-    public Portfolio findAndEditPortfolioByName(String name, Portfolio updatedPortfolio){
-        List<Portfolio> portfolios = portfolioRepository.findAll();
-        for (Portfolio portfolio : portfolios) {
-            if (portfolio.getName().equals(name)) {
-                portfolio.setCapital(updatedPortfolio.getCapital());
-                portfolio.setDateTime(updatedPortfolio.getDateTime());
-                portfolio.setDescription(updatedPortfolio.getDescription());
-                portfolioRepository.save(portfolio);
-                return portfolio;
-            }
-        }
-        return null;
+    public Portfolio findPortfolioByNameAndUserId(String name, String userIdCookie){
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+        return portfolio;
     }
 
-    public String findAndDeletePortfolioByName(String name) {
-        List<Portfolio> portfolios = portfolioRepository.findAll();
-        for (Portfolio portfolio : portfolios) {
-            if (portfolio.getName().equals(name)) {
-                portfolioRepository.delete(portfolio);
-                return "Portfolio deleted successfully";
-            }
+    public ResponseEntity<String> findAndEditPortfolioByName(String name, String userIdCookie, Portfolio updatedPortfolio){
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+        if (portfolio == null){
+            String responseMessage = "Portfolio does not exist";
+            return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
+        } else {
+            portfolio.setCapital(updatedPortfolio.getCapital());
+            portfolio.setDateTime(updatedPortfolio.getDateTime());
+            portfolio.setDescription(updatedPortfolio.getDescription());
+            portfolioRepository.save(portfolio);
+            String responseMessage = "Portfolio updated successfully";
+            return new ResponseEntity<>(responseMessage, HttpStatus.ACCEPTED);
         }
-        return null;
+    }
+
+    public ResponseEntity<String> findAndDeletePortfolioByName(String name, String userIdCookie) {
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+        if (portfolio == null){
+            String responseMessage = "Portfolio does not exist";
+            return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
+        } else {
+            portfolioRepository.delete(portfolio);
+            String responseMessage = "Portfolio deleted successfully";
+            return new ResponseEntity<String>(responseMessage, HttpStatus.ACCEPTED);
+        }
     }
 }
