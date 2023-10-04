@@ -1,11 +1,9 @@
-package com.example.allocationtest;
+package g1t1.backend.allocation;
 
-import java.util.*;
+import java.util.ArrayList;
 
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,39 +14,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/allocation")
+@RequestMapping("/api/allocation")
 public class AllocationController {
-    @Autowired
     private AllocationService allocationService;
 
-    // Get all allocations of a single portfolio
-    @GetMapping("/{portfolioId}")
-    public ResponseEntity<List<Allocation>> getAllAllocationById(@PathVariable int portfolioId) {
-        return new ResponseEntity<List<Allocation>>(allocationService.getAllAllocationById(portfolioId),HttpStatus.OK);
+    public AllocationController(AllocationService allocationService){
+        this.allocationService = allocationService;
     }
 
-    // Get a single allocation of a single portfolio
-    @GetMapping("/{portfolioId}/{stock}")
-    public ResponseEntity<List<Allocation>> getSingleAllocation(@PathVariable int portfolioId,@PathVariable String stock) {
-        return new ResponseEntity<List<Allocation>>(allocationService.getSingleAllocation(portfolioId, stock),HttpStatus.OK);
+    // Get all allocations of a single portfolio
+    @GetMapping("/{portfolioName}")
+    public ArrayList<Allocation> getAllocationsOfPortfolio(@CookieValue("USERID") String userIdCookie, @PathVariable String portfolioName){
+        return this.allocationService.getAllocationsOfPortfolio(portfolioName, userIdCookie);
     }
+
+    // // Get a single allocation of a single portfolio
+    // @GetMapping("/{portfolioId}/{stock}")
+    // public ResponseEntity<List<Allocation>> getSingleAllocation(@PathVariable int portfolioId,@PathVariable String stock) {
+    //     return new ResponseEntity<List<Allocation>>(allocationService.getSingleAllocation(portfolioId, stock),HttpStatus.OK);
+    // }
 
     // Create a new allocation for specific portfolio 
-    @PostMapping("/create")
-    public ResponseEntity<Allocation> createAllocation(@RequestBody Allocation payload) {
-        return new ResponseEntity<Allocation>(allocationService.createAllocation(payload), HttpStatus.OK);
+    @PostMapping("/create/{portfolioName}")
+    public ResponseEntity<String> createAllocation(@CookieValue("USERID") String userIdCookie, @PathVariable String portfolioName, @RequestBody Allocation allocation) {
+        return this.allocationService.createAllocation(portfolioName, userIdCookie, allocation);
     }
 
     // Edit an exiting allocation
-    @PutMapping("/edit")
-    public ResponseEntity<Allocation> editAllocation(@RequestBody Allocation payload){
-        return new ResponseEntity<Allocation>(allocationService.editAllocation(payload), HttpStatus.OK);
+    @PutMapping("/edit/{portfolioName}")
+    public ResponseEntity<String> editAllocation(@CookieValue("USERID") String userIdCookie, @PathVariable String portfolioName, @RequestBody Allocation allocation){
+        return this.allocationService.findPortfolioAndEditAllocation(portfolioName, userIdCookie, allocation);
     }
 
     // Delete an existing allocation
-    @DeleteMapping("/{portfolioId}/{stock}")
-    public ResponseEntity<Allocation> deleteAllocation(@PathVariable int portfolioId,@PathVariable String stock){
-        return new ResponseEntity<Allocation>(allocationService.deleteAllocation(portfolioId, stock), HttpStatus.OK);
+    @DeleteMapping("/{portfolioName}/{allocationName}")
+    public ResponseEntity<String> deleteAllocation(@CookieValue("USERID") String userIdCookie, @PathVariable String portfolioName, @PathVariable String allocationName){
+        return this.allocationService.findPortfolioAndDeleteAllocation(portfolioName, userIdCookie, allocationName);
     }
 
     // @PutMapping("delete/{portfoilioId}/{stock}")
