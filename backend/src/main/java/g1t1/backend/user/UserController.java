@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 import com.google.firebase.auth.UserRecord;
 
@@ -76,8 +77,8 @@ public class UserController {
      * @return do not return anything
      */
     @DeleteMapping("/user/delete")
-    public void deleteUser(@RequestParam String uid) {
-        userService.deleteUser(uid);
+    public ResponseEntity<String> deleteUser(@RequestParam String uid) {
+        return userService.deleteUser(uid);
     }
 
 }

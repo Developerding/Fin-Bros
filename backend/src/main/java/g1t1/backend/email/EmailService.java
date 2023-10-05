@@ -14,6 +14,8 @@ import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
 
+import g1t1.backend.email.EmailException.SendGridEmailException;
+
 @Service
 public class EmailService {
 
@@ -28,11 +30,8 @@ public class EmailService {
         this.fromEmail = fromEmail;
     }
 
-    private void sendEmail(Mail mail) {
+    private void sendEmail(Mail mail) throws SendGridEmailException {
         try {
-
-            System.out.println("Sending email from sendEmail");
-
             Request request = new Request();
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
@@ -43,23 +42,18 @@ public class EmailService {
             int statusCode = response.getStatusCode();
             // if the status code is not 2xx
             if (statusCode < 200 || statusCode >= 300) {
-                throw new RuntimeException(response.getBody());
+                String responseMessage = "Error sending a request to SendGrid API";
+                throw new SendGridEmailException(responseMessage);
             }
         } catch (IOException e) {
-            // log the error message in case of network failures
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            String responseMessage = "Error sending a request to SendGrid API";
+            throw new SendGridEmailException(responseMessage);
         }
     }
 
     // send email when a new user is created
     public void sendEmailForNewUser(String toEmail, String displayName, String link) {
-        // specify the email details
-        // String fromEmail = "clovischowjh@gmail.com";
-
-        System.out.println("Sending email from sendEmailForNewUser!");
         Email from = new Email(fromEmail);
-        // Email from = new Email(this.fromEmail);
         String subject = "Verify your email for FinBros";
         Email to = new Email(toEmail);
         Content content = new Content("text/plain", String.format("Hello %s,%n%nFollow this link to verify your email address.%n%n%s%n%nThanks,%nYour FinBros Team", displayName, link));
@@ -67,18 +61,13 @@ public class EmailService {
         // initialize the Mail helper class
         Mail mail = new Mail(from, subject, to, content);
 
-        // send the single email
+        // send the email
         sendEmail(mail);
     }
 
     // send email when user requests for password change
     public void sendEmailForChangePassword(String toEmail, String displayName, String link) {
-        // specify the email details
-        // String fromEmail = "clovischowjh@gmail.com";
-
-        System.out.println("Sending email from sendEmailForChangePassword!");
         Email from = new Email(fromEmail);
-        // Email from = new Email(this.fromEmail);
         String subject = "Reset password for FinBros";
         Email to = new Email(toEmail);
         Content content = new Content("text/plain", String.format("Hello %s,%n%nFollow this link to reset your passsword for FinBros.%n%n%s%n%nThanks,%nYour FinBros Team", displayName, link));
@@ -86,7 +75,7 @@ public class EmailService {
         // initialize the Mail helper class
         Mail mail = new Mail(from, subject, to, content);
 
-        // send the single email
+        // send the email
         sendEmail(mail);
     }
 
