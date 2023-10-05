@@ -25,3 +25,9 @@ dist-ssr
 
 # For virtual environment
 myenv
+
+# For environment files so that API keys not pushed
+application.properties
+
+# For Firebase API key
+serviceAccountKey.json
