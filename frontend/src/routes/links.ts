@@ -6,3 +6,4 @@ export const REGISTER = "/register";
 export const VIEWPORTFOLIOS = "/viewportfolios";
 export const CREATE_PORTFOLIO = "/new"
 export const EDIT_PORTFOLIO = "/edit"
+export const VIEW_PORTFOLIO_DETAILS = "/viewportfoliodetails"

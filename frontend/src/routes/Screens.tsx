@@ -8,6 +8,7 @@ import Login from "../views/authentication/Login.tsx";
 import Register from "../views/authentication/Register.tsx";
 import ViewPortfolios from "../views/ViewPortfolios.tsx";
 import EditPortfolio from "../views/EditPortfolio.tsx";
+import ViewPortfolioDetails from "../views/ViewPortfolioDetails.tsx";
 
 const Screens = () => {
   return (
@@ -23,6 +24,7 @@ const Screens = () => {
       <Route path={LINKS.REGISTER} element={<Register />} />
       <Route path={LINKS.VIEWPORTFOLIOS} element={<ViewPortfolios />} />
       <Route path={LINKS.EDIT_PORTFOLIO} element={<EditPortfolio />} />
+      <Route path={LINKS.VIEW_PORTFOLIO_DETAILS} element={<ViewPortfolioDetails />} />
     </Routes>
   );
 };
