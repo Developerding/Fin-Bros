@@ -50,6 +50,29 @@ public class UserService {
 
 
     /**
+     * Description of the method: retrieve all user data using user's email
+     *
+     * @param email email of user to retrieve
+     * @return return userRecord which is all the user data as an object
+     * @throws CannotFetchUserDataException exception to indicate an error while fetching the user's data
+     */
+    public UserRecord getUserByEmail(@RequestParam String email) throws CannotFetchUserDataException {
+
+        UserRecord userRecord;
+
+        try {
+            userRecord = FirebaseAuth.getInstance().getUserByEmail(email);   
+            return userRecord;
+
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+            String responseMessage = String.format("Failed to fetch user data with the email: %s", email);
+            throw new CannotFetchUserDataException(responseMessage);
+        }
+    }
+
+
+    /**
      * Description of the method: create user using email and password
      *
      * @param email email of user to create

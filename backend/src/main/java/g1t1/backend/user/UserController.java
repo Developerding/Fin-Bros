@@ -34,6 +34,18 @@ public class UserController {
 
 
     /**
+     * Description of the method: invoke userService getUserByEmail() method to retrieve all user data using the user's email
+     *
+     * @param email email of user to retrieve
+     * @return return userRecord which is all the user data as an object
+     */
+    @GetMapping("/userbyemail")
+    public UserRecord getUserByEmail(@RequestParam String email) {
+        return userService.getUserByEmail(email);
+    }
+
+
+    /**
      * Description of the method: invoke userService createUser() method to create user using email and password
      *
      * @param email email of user to create
