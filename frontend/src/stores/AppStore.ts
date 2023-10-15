@@ -1,5 +1,6 @@
 import { action, makeAutoObservable } from "mobx";
 import { create, persist } from "mobx-persist";
+import axios from "axios";
 
 class AppStore {
   @persist email: string = "test";
@@ -27,6 +28,38 @@ class AppStore {
 
   getUserId = () => {
     return this.userId;
+  };
+
+  loginController = (email: string, password: string) => {
+    axios
+      .post("http://localhost:8080/api/v2/userbyemail", {
+        email: email,
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  };
+
+  registerController = async (email: string, password: string) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v2/user/create?email=" +
+          email +
+          "&password=" +
+          password
+      );
+      console.log("User created ", response.data);
+    } catch (err) {
+      console.log(err);
+    }
+    //    axios
+    //       .post("http://localhost:8080/api/v2/user/create", {
+    //         username: username,
+    //         password: password,
+    //       })
+    //       .then((res) => {
+    //         console.log(res);
+    //       });
   };
 }
 

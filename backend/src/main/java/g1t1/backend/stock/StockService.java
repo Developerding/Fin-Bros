@@ -1,30 +1,30 @@
-package g1t1.backend.stock;
+// package g1t1.backend.stock;
 
-import java.util.List;
+// import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.stereotype.Service;
 
-@Service
-public class StockService {
-    private final StockRepository stockRepository;
+// @Service
+// public class StockService {
+//     private final StockRepository stockRepository;
 
-    @Autowired
-    public StockService(StockRepository stockRepository){
-        this.stockRepository = stockRepository;
-    }
+//     @Autowired
+//     public StockService(StockRepository stockRepository){
+//         this.stockRepository = stockRepository;
+//     }
 
-    public List<Stock> findAllStocks(){
-        return stockRepository.findAll();
-    }
+//     public List<Stock> findAllStocks(){
+//         return stockRepository.findAll();
+//     }
 
-    public Stock findStockByName(String name){
-        List<Stock> stocks = stockRepository.findAll();
-        for(Stock stock : stocks){
-            if(stock.getName().equals(name)){
-                return stock;
-            }
-        }
-        return null;
-    }
-}
+//     public Stock findStockByName(String name){
+//         List<Stock> stocks = stockRepository.findAll();
+//         for(Stock stock : stocks){
+//             if(stock.getName().equals(name)){
+//                 return stock;
+//             }
+//         }
+//         return null;
+//     }
+// }
