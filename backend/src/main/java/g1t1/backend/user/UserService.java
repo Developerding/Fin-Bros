@@ -94,6 +94,7 @@ public class UserService {
 
             // generate email verification link
             try {
+                
                 String link = FirebaseAuth.getInstance().generateEmailVerificationLink(
                     email);
 

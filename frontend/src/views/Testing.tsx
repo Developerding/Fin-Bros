@@ -6,6 +6,7 @@ import ControlledSelectInput from "../components/formComponents/controlled/Contr
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import NoUserNavBar from "../components/NavBar/NoUserNavBar";
+import axios from "axios";
 
 const Testing = () => {
   const [form, setForm] = useState({
@@ -14,9 +15,9 @@ const Testing = () => {
 
   const [error, setError] = useState(false);
   const submitEvent = () => {
-    if (form.name == "") {
-      setError(true);
-    }
+    axios.post(
+      "http://localhost:8080/api/v2/user/changepassword?uid=hvYRa9yvmvht9YoxeZnQEPX3CAV2"
+    );
   };
   return (
     <>
@@ -44,7 +45,10 @@ const Testing = () => {
       /> */}
 
       <Stack gap={1} direction="row">
-        <PrimaryButton buttonText="Submit" onClick={() => submitEvent()} />
+        <PrimaryButton
+          buttonText="Reset password"
+          onClick={() => submitEvent()}
+        />
         <OutlinedButton buttonText="Cancel" />
         <OutlinedButton buttonText="Login/Register" />
       </Stack>

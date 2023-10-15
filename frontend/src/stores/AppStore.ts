@@ -30,15 +30,21 @@ class AppStore {
     return this.userId;
   };
 
-  loginController = (email: string, password: string) => {
-    axios
-      .post("http://localhost:8080/api/v2/userbyemail", {
-        email: email,
-      })
-      .then((res) => {
-        console.log(res);
-      });
-  };
+  //   loginController = (email: string, password: string) => {
+  //     try{
+  //         const response = await axios.post(
+  //             "http://localhost:8080/api/v2/userbyemail?email="+email
+  //         )
+
+  //     }
+  //     // axios
+  //     //   .post("http://localhost:8080/api/v2/userbyemail", {
+  //     //     email: email,
+  //     //   })
+  //     //   .then((res) => {
+  //     //     console.log(res);
+  //     //   });
+  //   };
 
   registerController = async (email: string, password: string) => {
     try {
@@ -52,14 +58,6 @@ class AppStore {
     } catch (err) {
       console.log(err);
     }
-    //    axios
-    //       .post("http://localhost:8080/api/v2/user/create", {
-    //         username: username,
-    //         password: password,
-    //       })
-    //       .then((res) => {
-    //         console.log(res);
-    //       });
   };
 }
 

@@ -28,8 +28,10 @@ const Register = () => {
   const [error, setError] = useState(false);
   const [createError, setCreateError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitFunction = () => {
+    setIsLoading(true);
     console.log("clicked");
     if (
       form.email === "" ||
@@ -37,17 +39,20 @@ const Register = () => {
       form.confirmPassword === ""
     ) {
       setError(true);
+      setIsLoading(false);
       return;
     }
 
     if (form.password !== form.confirmPassword) {
       setCreateError(true);
       setErrorMessage("Passwords do not match. Please re enter password");
+      setIsLoading(false);
       return;
     }
     AppStore.registerController(form.email, form.password)
       .then((res) => {
         console.log(res);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -55,6 +60,7 @@ const Register = () => {
         setErrorMessage(
           "Error creating new user. Please try again or use a different email!"
         );
+        setIsLoading(false);
       });
   };
 
@@ -167,7 +173,11 @@ const Register = () => {
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton buttonText="Register" onClick={submitFunction} />
+                <PrimaryButton
+                  buttonText="Register"
+                  onClick={submitFunction}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
 

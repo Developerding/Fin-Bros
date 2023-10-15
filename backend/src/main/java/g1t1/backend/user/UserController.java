@@ -50,7 +50,7 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @PostMapping("/user/create")
-    @CrossOrigin(origins = "http://localhost:5173") 
+    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> createUser(@RequestParam String email, @RequestParam String password) {
         try{
             UserRecord userRecord = userService.createUser(email, password);
@@ -85,6 +85,7 @@ public class UserController {
      * @param uid uid of user to edit
      */
     @PostMapping("/user/changepassword")
+    @CrossOrigin(origins = "http://localhost:5173")
     public void changePassword(@RequestParam String uid) {
         userService.editUserChangePassword(uid);
     }

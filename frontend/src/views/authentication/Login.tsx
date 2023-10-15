@@ -21,6 +21,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const AppStore = useStores();
   const [error, setError] = useState(false);
@@ -34,8 +35,10 @@ const Login = () => {
 
   const submitFunction = () => {
     // console.log("clicked");
+    setIsLoading(true);
     if (!validator.isEmail(form.email) || form.password === "") {
       setError(true);
+      setIsLoading(false);
       return;
     }
 
@@ -138,7 +141,11 @@ const Login = () => {
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton buttonText="Login" onClick={submitFunction} />
+                <PrimaryButton
+                  buttonText="Login"
+                  onClick={submitFunction}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
 
