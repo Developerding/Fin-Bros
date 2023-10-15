@@ -35,12 +35,12 @@ const Register = () => {
   };
 
   const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#1976d2", // This is MUI's default primary color
-        // You can add light, dark, contrastText, etc. if required.
-      },
-    },
+    // palette: {
+    //   primary: {
+    //     main: "#1976d2", // This is MUI's default primary color
+    //     // You can add light, dark, contrastText, etc. if required.
+    //   },
+    // },
     // components: {
     //   MuiTypography: {
     //     defaultProps: {
@@ -60,23 +60,23 @@ const Register = () => {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
         <NoUserNavBar />
         <Container maxWidth="xl" sx={{ width: "100%" }}>
           <Paper
             sx={{
               margin: "auto",
-              marginTop: "100px",
+              marginTop: "70px",
               width: { sm: "100%", md: "40%" },
-              borderRadius: "10px",
+              borderRadius: "45px",
             }}
             elevation={4}
           >
             <Grid container alignItems="center" justifyContent="center">
-              <Grid item xl={12}>
+              <Grid item>
                 <Typography
-                  variant="h3"
-                  sx={{ color: "#054be3", marginTop: "24px", fontSize: "30px" }}
+                  variant="h2"
+                  sx={{ marginTop: "24px", fontWeight:"500" }}
                 >
                   Register
                 </Typography>
@@ -141,10 +141,10 @@ const Register = () => {
             <Grid
               container
               sx={{
-                marginTop: "56px",
+                marginTop: "40px",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "10px",
+                marginBottom: "40px",
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -162,7 +162,7 @@ const Register = () => {
             <Grid container />
           </Paper>
         </Container>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   );
 };

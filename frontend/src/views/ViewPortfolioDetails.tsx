@@ -7,53 +7,68 @@ function ViewPortfolioDetails() {
     <>
       <NavBar />
 
-      <Container maxWidth="xl">
+      <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <Typography variant="h2">Portfolio</Typography>
-          </Grid>
+            <Typography variant="h2" sx={{ fontWeight: "500" }}>
+              Portfolio
+            </Typography>
 
-          <Grid item xs={12}>
-          <Typography variant="subtitle1">Portfolio Name</Typography>
-          </Grid>
+            <Typography variant="subtitle1">Description</Typography>
 
-          <Grid item xs={12}>
-          <Typography variant="subtitle1">Capital</Typography>
+            <Typography variant="subtitle1">Capital</Typography>
           </Grid>
         </Grid>
 
-        <Grid container spacing={1}>
+        <Grid container spacing={4} sx={{ marginTop: "1%" }}>
           <Grid item xs={4}>
-            <Typography variant="h3">Analytics</Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: "500",
+                textAlign: "center",
+                marginBottom: "3%",
+              }}
+            >
+              Analytics
+            </Typography>
             <Card>
-                <CardContent>
-                    something
-                </CardContent>
+              <CardContent>something</CardContent>
             </Card>
           </Grid>
 
           <Grid item xs={4}>
-            <Typography variant="h3">Overall Returns</Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: "500",
+                textAlign: "center",
+                marginBottom: "3%",
+              }}
+            >
+              Overall Returns
+            </Typography>
             <Card>
-                <CardContent>
-                    something
-                </CardContent>
+              <CardContent>something</CardContent>
             </Card>
           </Grid>
-
 
           <Grid item xs={4}>
-            <Typography variant="h3">Allocation</Typography>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: "500",
+                textAlign: "center",
+                marginBottom: "3%",
+              }}
+            >
+              Allocation
+            </Typography>
             <Card>
-                <CardContent>
-                    something
-                </CardContent>
+              <CardContent>something</CardContent>
             </Card>
           </Grid>
-
         </Grid>
-
-
       </Container>
     </>
   );

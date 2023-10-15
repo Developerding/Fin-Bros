@@ -6,6 +6,7 @@ import ControlledSelectInput from "../components/formComponents/controlled/Contr
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import NoUserNavBar from "../components/NavBar/NoUserNavBar";
+import PortfolioStock from "../components/PortfolioStock";
 
 const Testing = () => {
   const [form, setForm] = useState({
@@ -48,6 +49,11 @@ const Testing = () => {
         <OutlinedButton buttonText="Cancel" />
         <OutlinedButton buttonText="Login/Register" />
       </Stack>
+
+      <PortfolioStock
+        currentPercentage={2}
+        stockName="testing"
+      />
     </>
   );
 };

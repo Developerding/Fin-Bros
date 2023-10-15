@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#f5f5f5",
+      main: "#000000",
     },
     background: {
       default: "#dcdcdc",
@@ -22,6 +22,9 @@ const theme = createTheme({
     h6: {
       fontSize: 12,
     },
+    fontFamily: [
+      'Inter'
+    ].join(','),
   },
   components: {
     MuiTypography: {
@@ -35,8 +38,8 @@ const theme = createTheme({
           h6: "h6",
           subtitle1: "h6",
           subtitle2: "h6",
-          body1: "span",
-          body2: "span",
+          // body1: "span",
+          // body2: "span",
         },
       },
     },
