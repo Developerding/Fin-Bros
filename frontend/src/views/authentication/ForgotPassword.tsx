@@ -6,20 +6,16 @@ import {
   Typography,
   createTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NoUserNavBar from "../../components/NavBar/NoUserNavBar";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import LoginInput from "../../components/formComponents/controlled/LoginInput";
-import PasswordInput from "../../components/formComponents/controlled/PasswordInput";
-import Link from "../../components/link/Link";
-import * as LINKS from "./../../routes/links";
 import validator from "validator";
 import { useStores } from "../../stores";
 
-const Login = () => {
+const ForgotPassword = () => {
   const [form, setForm] = useState({
     email: "",
-    password: "",
   });
 
   const AppStore = useStores();
@@ -33,14 +29,12 @@ const Login = () => {
   });
 
   const submitFunction = () => {
-    // console.log("clicked");
-    if (!validator.isEmail(form.email) || form.password === "") {
+    if (!validator.isEmail(form.email)) {
       setError(true);
       return;
     }
 
     AppStore.setEmail(form.email);
-    console.log("submit clicked");
   };
 
   useEffect(() => {
@@ -75,7 +69,7 @@ const Login = () => {
                   variant="h3"
                   sx={{ marginTop: "24px", fontSize: "30px" }}
                 >
-                  Login
+                  Forgot your password?
                 </Typography>
               </Grid>
             </Grid>
@@ -95,40 +89,6 @@ const Login = () => {
               </Grid>
             </Grid>
 
-            <Grid container sx={{ marginTop: "16px" }}>
-              <Grid item xs={12}>
-                <PasswordInput
-                  label="Password"
-                  placeholder="Enter your password"
-                  formControlId="password"
-                  formValue={form.password}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Password is required"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container>
-              <Grid item xs={12}>
-                <Link
-                  to={LINKS.FORGOT_PASSWORD}
-                  style={{ textDecoration: "none", color: "#054be3" }}
-                >
-                  <Typography
-                    sx={{
-                      textAlign: "right",
-                      marginTop: "10px",
-                      marginRight: "16px",
-                    }}
-                  >
-                    Forgot Password?
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
-
             <Grid
               container
               sx={{
@@ -138,32 +98,9 @@ const Login = () => {
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton buttonText="Login" onClick={submitFunction} />
+                <PrimaryButton buttonText="Reset Password" onClick={submitFunction} />
               </Grid>
             </Grid>
-
-            <Grid
-              container
-              sx={{
-                marginTop: "56px",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "10px",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Link
-                  to={LINKS.REGISTER}
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  <Typography>
-                    Don't have an account? Click here to{" "}
-                    <span style={{ color: "#054be3" }}>register</span>
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
-            <Grid container />
           </Paper>
         </Container>
       </ThemeProvider>
@@ -171,4 +108,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

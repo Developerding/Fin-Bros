@@ -9,6 +9,8 @@ import Register from "../views/authentication/Register.tsx";
 import ViewPortfolios from "../views/ViewPortfolios.tsx";
 import EditPortfolio from "../views/EditPortfolio.tsx";
 import ViewPortfolioDetails from "../views/ViewPortfolioDetails.tsx";
+import ForgotPassword from "../views/authentication/ForgotPassword.tsx";
+import ResetPassword from "../views/authentication/ResetPassword.tsx";
 
 const Screens = () => {
   return (
@@ -22,6 +24,8 @@ const Screens = () => {
       <Route path={LINKS.TESTING} element={<Testing />} />
       <Route path={LINKS.LOGIN} element={<Login />} />
       <Route path={LINKS.REGISTER} element={<Register />} />
+      <Route path={LINKS.FORGOT_PASSWORD} element={<ForgotPassword />} />
+      <Route path={LINKS.RESET_PASSWORD} element={<ResetPassword />} />
       <Route path={LINKS.VIEWPORTFOLIOS} element={<ViewPortfolios />} />
       <Route path={LINKS.EDIT_PORTFOLIO} element={<EditPortfolio />} />
       <Route path={LINKS.VIEW_PORTFOLIO_DETAILS} element={<ViewPortfolioDetails />} />
