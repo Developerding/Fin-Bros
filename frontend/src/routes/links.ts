@@ -7,3 +7,5 @@ export const VIEWPORTFOLIOS = "/viewportfolios";
 export const CREATE_PORTFOLIO = "/new"
 export const EDIT_PORTFOLIO = "/edit"
 export const VIEW_PORTFOLIO_DETAILS = "/viewportfoliodetails"
+export const FORGOT_PASSWORD = "/forgotpassword"
+export const RESET_PASSWORD = "/resetpassword"
