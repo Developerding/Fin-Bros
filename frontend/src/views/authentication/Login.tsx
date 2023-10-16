@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Container,
   Grid,
   Paper,
@@ -25,6 +27,8 @@ const Login = () => {
 
   const AppStore = useStores();
   const [error, setError] = useState(false);
+  const [loginError, setLoginError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const theme = createTheme({
     palette: {
       primary: {
@@ -42,8 +46,37 @@ const Login = () => {
       return;
     }
 
-    AppStore.setEmail(form.email);
-    console.log("submit clicked");
+    AppStore.loginController(form.email, form.password)
+      .then((res: any) => {
+        console.log(res);
+        setIsLoading(false);
+        // Email does not exist
+        if (res.response.status == 500) {
+          setLoginError(true);
+          setErrorMessage("Email " + form.email + " does not exist");
+        }
+
+        // Wrong password
+        else if (res.response.status == 409) {
+          setLoginError(true);
+          setErrorMessage(res.response.data);
+        }
+
+        // Email not verified yet
+        else if (res.response.status == 400) {
+          setLoginError(true);
+          setErrorMessage(res.response.data);
+        }
+
+        // Login successful:
+        else {
+          return;
+        }
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -63,6 +96,12 @@ const Login = () => {
       <ThemeProvider theme={theme}>
         <NoUserNavBar />
         <Container maxWidth="xl" sx={{ width: "100%" }}>
+          {loginError && (
+            <Alert severity="error" sx={{ marginTop: "20px" }}>
+              <AlertTitle>Error</AlertTitle>
+              {errorMessage}
+            </Alert>
+          )}
           <Paper
             sx={{
               margin: "auto",

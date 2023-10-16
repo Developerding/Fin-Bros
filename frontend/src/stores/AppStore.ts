@@ -57,8 +57,8 @@ class AppStore {
         return {
           response: {
             data: "Email is not verified. Please check your inbox and verify your account",
+            status: 400,
           },
-          status: 400,
         };
       }
     } catch (err) {
@@ -79,6 +79,7 @@ class AppStore {
       console.log(response.data);
     } catch (err) {
       console.log(err);
+      return err;
     }
   };
 
