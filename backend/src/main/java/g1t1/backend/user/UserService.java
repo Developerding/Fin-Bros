@@ -1,11 +1,18 @@
 package g1t1.backend.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
@@ -15,6 +22,7 @@ import com.google.firebase.auth.UserRecord.UpdateRequest;
 import g1t1.backend.email.EmailService;
 import g1t1.backend.user.UserException.*;
 
+
 @Service
 public class UserService {
 
@@ -22,9 +30,66 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
+    @Value("${env.FIREBASE_KEY}")
+    private String firebaseKey;
+
     public UserService(EmailService emailService) {
         this.emailService = emailService;
     } 
+
+    /**
+     * Description of the method: retrieve all user data using uid
+     *
+     *  Takes in a FirebaseLogin class
+     * @return return ResponseEntity class which contains status code, message and basic user profile details
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
+     * @throws CannotFetchUserDataException exception to indicate an error while fetching the user's data
+     */
+    public ResponseEntity<?> loginUser(FirebaseLogin firebaseLogin) throws JsonMappingException, JsonProcessingException, CannotLoginException{
+        
+        
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            // System.out.println(firebaseLogin.getEmail());
+            // System.out.println(firebaseLogin.getPassword());
+            // System.out.println(firebaseLogin.getReturnSecureToken());
+            // System.out.println(firebaseKey);
+            HttpEntity <FirebaseLogin> request = new HttpEntity<>(firebaseLogin);
+            String response = restTemplate.postForObject(firebaseKey, request, String.class);
+            System.out.println(response);
+            return ResponseEntity.ok(response);
+
+        }
+        catch(HttpClientErrorException e){
+            // e.printStackTrace();
+            // System.out.println(e);
+            throw new CannotLoginException("Invalid password. Please try again");
+            // String responseBody = e.getResponseBodyAsString();
+            // ObjectMapper mapper = new ObjectMapper();
+            // FirebaseError firebaseError = mapper.readValue(responseBody, FirebaseError.class);
+            // System.out.println(firebaseError.getMessages());
+            // switch(firebaseError.getMessage()){
+            //     case "EMAIL_NOT_FOUND":{
+            //         throw new CannotLoginException("Email not found");
+
+            //     }
+            //     case"TOO_MANY_ATTEMPTS_TRY_LATER : Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.":{
+            //         throw new CannotLoginException("Too many attempts, account has been disabled. Please reset your password");
+
+            //     }
+            //     case"INVALID_PASSWORD":{
+            //         throw new CannotLoginException("Invalid password. Please try again");
+
+            //     }
+            // }
+
+            // System.out.println(e);
+            // // System.out.println(e.getMessage());
+            // throw new CannotLoginException("Cannot login");
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while authenticating with Firebase.");
+        }
+    }
 
     /**
      * Description of the method: retrieve all user data using uid
@@ -71,6 +136,21 @@ public class UserService {
         }
     }
 
+     public UserRecord getUserByEmailNoParams(String email) throws CannotFetchUserDataException {
+
+        UserRecord userRecord;
+
+        try {
+            userRecord = FirebaseAuth.getInstance().getUserByEmail(email);   
+            return userRecord;
+
+        } catch (FirebaseAuthException e) {
+            e.printStackTrace();
+            String responseMessage = String.format("Failed to fetch user data with the email: %s", email);
+            throw new CannotFetchUserDataException(responseMessage);
+        }
+    }
+
 
     /**
      * Description of the method: create user using email and password
@@ -94,7 +174,7 @@ public class UserService {
 
             // generate email verification link
             try {
-                
+
                 String link = FirebaseAuth.getInstance().generateEmailVerificationLink(
                     email);
 

@@ -7,6 +7,7 @@ import PrimaryButton from "../components/buttons/PrimaryButton";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import NoUserNavBar from "../components/NavBar/NoUserNavBar";
 import axios from "axios";
+import { useStores } from "../stores";
 
 const Testing = () => {
   const [form, setForm] = useState({
@@ -14,10 +15,15 @@ const Testing = () => {
   });
 
   const [error, setError] = useState(false);
+  const AppStore = useStores();
   const submitEvent = () => {
-    axios.post(
-      "http://localhost:8080/api/v2/user/changepassword?uid=hvYRa9yvmvht9YoxeZnQEPX3CAV2"
-    );
+    AppStore.loginController("ryan.poy.2021@scis.smu.edu.sg", "password123")
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
   };
   return (
     <>

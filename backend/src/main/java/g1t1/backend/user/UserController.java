@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.google.firebase.auth.UserRecord;
 
 import g1t1.backend.user.UserException.CannotCreateUserException;
+import g1t1.backend.user.UserException.CannotLoginException;
 
 @RestController
 @RequestMapping(path="api/v2")
@@ -29,6 +30,26 @@ public class UserController {
         return userService.getUser(uid);
     }
 
+    @PostMapping("/user/login")
+    @CrossOrigin(origins = "http://localhost:5173")
+    public ResponseEntity<?> loginUser(@RequestBody FirebaseLogin firebaseLogin ){
+        
+        try{
+            return userService.loginUser(firebaseLogin);
+        }
+
+        catch(CannotLoginException e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error has occurred");
+        }
+    }
+
+
 
     /**
      * Description of the method: invoke userService getUserByEmail() method to retrieve all user data using the user's email
@@ -37,6 +58,7 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @GetMapping("/userbyemail")
+    @CrossOrigin(origins = "http://localhost:5173")
     public UserRecord getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email);
     }

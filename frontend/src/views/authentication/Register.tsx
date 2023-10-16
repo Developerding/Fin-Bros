@@ -49,19 +49,29 @@ const Register = () => {
       setIsLoading(false);
       return;
     }
-    AppStore.registerController(form.email, form.password)
-      .then((res) => {
-        console.log(res);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
+    if (form.password.length < 5) {
+      setCreateError(true);
+      setErrorMessage("Password must be at least 5 characters long");
+      setIsLoading(false);
+      return;
+    }
+    if (!(/[a-zA-Z]/.test(form.password) && /\d/.test(form.password))) {
+      setCreateError(true);
+      setErrorMessage("Password must contain at least 1 letter and 1 number");
+      setIsLoading(false);
+      return;
+    }
+    AppStore.registerController(form.email, form.password).then((res: any) => {
+      console.log(res);
+      setIsLoading(false);
+      // email already exist
+      if (res?.response?.status == 500) {
         setCreateError(true);
         setErrorMessage(
-          "Error creating new user. Please try again or use a different email!"
+          "Error creating new user. Please try again or use a different email"
         );
-        setIsLoading(false);
-      });
+      }
+    });
   };
 
   const theme = createTheme({

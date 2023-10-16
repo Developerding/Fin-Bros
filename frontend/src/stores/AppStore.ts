@@ -45,6 +45,42 @@ class AppStore {
   //     //     console.log(res);
   //     //   });
   //   };
+  loginController = async (email: string, password: string) => {
+    // checks whether email is valid:
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v2/userbyemail?email=" + email
+      );
+      console.log(response.data);
+      // checking if user is verified:
+      if (!(response.data as any).emailVerified) {
+        return {
+          response: {
+            data: "Email is not verified. Please check your inbox and verify your account",
+          },
+          status: 400,
+        };
+      }
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+
+    // here checks whether password is valid
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v2/user/login",
+        {
+          email: email,
+          password: password,
+          returnSecureToken: true,
+        }
+      );
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   registerController = async (email: string, password: string) => {
     try {
@@ -57,6 +93,7 @@ class AppStore {
       console.log("User created ", response.data);
     } catch (err) {
       console.log(err);
+      return err;
     }
   };
 }
