@@ -70,7 +70,9 @@ const Login = () => {
 
         // Login successful:
         else {
-          return;
+          setLoginError(false);
+          setErrorMessage("");
+          console.log(res);
         }
       })
 

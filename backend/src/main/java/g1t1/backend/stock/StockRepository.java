@@ -1,7 +1,7 @@
-// package g1t1.backend.stock;
+package g1t1.backend.stock;
 
-// import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-// public interface StockRepository extends MongoRepository<Stock, String> {
+public interface StockRepository extends MongoRepository<Stock, String> {
     
-// }
+}
