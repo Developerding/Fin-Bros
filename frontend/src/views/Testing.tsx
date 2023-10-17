@@ -9,6 +9,8 @@ import NoUserNavBar from "../components/NavBar/NoUserNavBar";
 import axios from "axios";
 import { useStores } from "../stores";
 
+import PortfolioStock from "../components/PortfolioStock";
+
 const Testing = () => {
   const [form, setForm] = useState({
     name: "",
@@ -58,6 +60,11 @@ const Testing = () => {
         <OutlinedButton buttonText="Cancel" />
         <OutlinedButton buttonText="Login/Register" />
       </Stack>
+
+      <PortfolioStock
+        currentPercentage={2}
+        stockName="testing"
+      />
     </>
   );
 };

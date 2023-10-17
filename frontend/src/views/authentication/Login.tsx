@@ -27,15 +27,19 @@ const Login = () => {
 
   const AppStore = useStores();
   const [error, setError] = useState(false);
+
   const [loginError, setLoginError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const theme = createTheme({
-    palette: {
-      primary: {
-        main: "#1976d2",
-      },
-    },
-  });
+
+
+  // const theme = createTheme({
+  //   palette: {
+  //     primary: {
+  //       main: "#1976d2",
+  //     },
+  //   },
+  // });
+
 
   const submitFunction = () => {
     // console.log("clicked");
@@ -95,7 +99,7 @@ const Login = () => {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
         <NoUserNavBar />
         <Container maxWidth="xl" sx={{ width: "100%" }}>
           {loginError && (
@@ -109,15 +113,15 @@ const Login = () => {
               margin: "auto",
               marginTop: "100px",
               width: { sm: "100%", md: "40%" },
-              borderRadius: "10px",
+              borderRadius: "45px",
             }}
             elevation={4}
           >
             <Grid container alignItems="center" justifyContent="center">
-              <Grid item xl={12}>
+              <Grid item>
                 <Typography
-                  variant="h3"
-                  sx={{ marginTop: "24px", fontSize: "30px" }}
+                  variant="h2"
+                  sx={{ marginTop: "24px", fontWeight:"500" }}
                 >
                   Login
                 </Typography>
@@ -154,6 +158,19 @@ const Login = () => {
               </Grid>
             </Grid>
 
+            <Grid
+              container
+              sx={{
+                marginTop: "6px",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Grid item xs={12} sx={{ textAlign: "center"}}>
+                <PrimaryButton buttonText="Login" onClick={submitFunction} />
+              </Grid>
+            </Grid>
+
             <Grid container>
               <Grid item xs={12}>
                 <Link
@@ -162,9 +179,9 @@ const Login = () => {
                 >
                   <Typography
                     sx={{
-                      textAlign: "right",
-                      marginTop: "10px",
-                      marginRight: "16px",
+                      textAlign: "center",
+                      marginTop: "30px",
+                      // marginRight: "16px",
                     }}
                   >
                     Forgot Password?
@@ -176,6 +193,7 @@ const Login = () => {
             <Grid
               container
               sx={{
+
                 marginTop: "6px",
                 alignItems: "center",
                 justifyContent: "center",
@@ -193,10 +211,13 @@ const Login = () => {
             <Grid
               container
               sx={{
-                marginTop: "56px",
+
+
+                marginTop: "10px",
+
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: "10px",
+                marginBottom: "40px",
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
@@ -214,7 +235,7 @@ const Login = () => {
             <Grid container />
           </Paper>
         </Container>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </>
   );
 };

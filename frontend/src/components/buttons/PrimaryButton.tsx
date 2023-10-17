@@ -27,6 +27,7 @@ const PrimaryButton: FC<Props> = ({
     height: "42px",
     width: "158px",
     borderRadius: "10px",
+    color:"white",
   };
   const buttonStyle = { ...defaultStyle, ...style };
   return (

@@ -9,6 +9,9 @@ import Register from "../views/authentication/Register.tsx";
 import ViewPortfolios from "../views/ViewPortfolios.tsx";
 import EditPortfolio from "../views/EditPortfolio.tsx";
 import ViewPortfolioDetails from "../views/ViewPortfolioDetails.tsx";
+import EmailVerification from "../views/authentication/EmailVerification.tsx";
+import PasswordReset from "../views/authentication/PasswordReset.tsx";
+import PasswordEmail from "../views/authentication/PasswordEmail.tsx";
 
 const Screens = () => {
   return (
@@ -25,6 +28,9 @@ const Screens = () => {
       <Route path={LINKS.VIEWPORTFOLIOS} element={<ViewPortfolios />} />
       <Route path={LINKS.EDIT_PORTFOLIO} element={<EditPortfolio />} />
       <Route path={LINKS.VIEW_PORTFOLIO_DETAILS} element={<ViewPortfolioDetails />} />
+      <Route path={LINKS.EMAILVERIFICATION} element={<EmailVerification />} />
+      <Route path={LINKS.PASSWORDRESET} element={<PasswordReset />} />
+      <Route path={LINKS.PASSWORDEMAIL} element={<PasswordEmail />} />
     </Routes>
   );
 };

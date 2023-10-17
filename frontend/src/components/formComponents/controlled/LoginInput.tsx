@@ -63,6 +63,7 @@ const LoginInput: FC<Props> = ({
         style={{
           marginTop: "10px",
           width: "100%",
+          
         }}
       />
     </Box>
