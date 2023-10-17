@@ -5,3 +5,7 @@ body {
   background-color: #dcdcdc;
   font-family: "Poppins", sans-serif !important;
 }
+
+.MuiLoadingButton-loadingIndicator {
+  color: white !important;
+}

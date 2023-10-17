@@ -1,15 +1,13 @@
 package g1t1.backend.user;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.google.firebase.auth.UserRecord;
+
+import g1t1.backend.user.UserException.CannotCreateUserException;
+import g1t1.backend.user.UserException.CannotLoginException;
 
 @RestController
 @RequestMapping(path="api/v2")
@@ -32,6 +30,26 @@ public class UserController {
         return userService.getUser(uid);
     }
 
+    @PostMapping("/user/login")
+    @CrossOrigin(origins = "http://localhost:5173")
+    public ResponseEntity<?> loginUser(@RequestBody FirebaseLogin firebaseLogin ){
+        
+        try{
+            return userService.loginUser(firebaseLogin);
+        }
+
+        catch(CannotLoginException e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+
+        }
+        catch(Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error has occurred");
+        }
+    }
+
+
 
     /**
      * Description of the method: invoke userService getUserByEmail() method to retrieve all user data using the user's email
@@ -40,6 +58,7 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @GetMapping("/userbyemail")
+    @CrossOrigin(origins = "http://localhost:5173")
     public UserRecord getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email);
     }
@@ -53,8 +72,19 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @PostMapping("/user/create")
-    public UserRecord createUser(@RequestParam String email, @RequestParam String password) {
-        return userService.createUser(email, password);
+    @CrossOrigin(origins = "http://localhost:5173")
+    public ResponseEntity<?> createUser(@RequestParam String email, @RequestParam String password) {
+        try{
+            UserRecord userRecord = userService.createUser(email, password);
+            return new ResponseEntity<UserRecord> (userRecord,HttpStatus.OK);
+        }
+        catch(CannotCreateUserException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error has occurred");
+        }
+        
     }
 
 
@@ -77,6 +107,7 @@ public class UserController {
      * @param uid uid of user to edit
      */
     @PostMapping("/user/changepassword")
+    @CrossOrigin(origins = "http://localhost:5173")
     public void changePassword(@RequestParam String uid) {
         userService.editUserChangePassword(uid);
     }

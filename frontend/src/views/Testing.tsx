@@ -6,6 +6,9 @@ import ControlledSelectInput from "../components/formComponents/controlled/Contr
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import NoUserNavBar from "../components/NavBar/NoUserNavBar";
+import axios from "axios";
+import { useStores } from "../stores";
+
 import PortfolioStock from "../components/PortfolioStock";
 
 const Testing = () => {
@@ -14,10 +17,15 @@ const Testing = () => {
   });
 
   const [error, setError] = useState(false);
+  const AppStore = useStores();
   const submitEvent = () => {
-    if (form.name == "") {
-      setError(true);
-    }
+    AppStore.loginController("ryan.poy.2021@scis.smu.edu.sg", "password123")
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
   };
   return (
     <>
@@ -45,7 +53,10 @@ const Testing = () => {
       /> */}
 
       <Stack gap={1} direction="row">
-        <PrimaryButton buttonText="Submit" onClick={() => submitEvent()} />
+        <PrimaryButton
+          buttonText="Reset password"
+          onClick={() => submitEvent()}
+        />
         <OutlinedButton buttonText="Cancel" />
         <OutlinedButton buttonText="Login/Register" />
       </Stack>

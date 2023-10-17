@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Container,
   Grid,
   Paper,
@@ -13,6 +15,7 @@ import LoginInput from "../../components/formComponents/controlled/LoginInput";
 import PasswordInput from "../../components/formComponents/controlled/PasswordInput";
 import Link from "../../components/link/Link";
 import * as LINKS from "./../../routes/links";
+import { useStores } from "../../stores";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -21,9 +24,14 @@ const Register = () => {
     confirmPassword: "",
   });
 
+  const AppStore = useStores();
   const [error, setError] = useState(false);
+  const [createError, setCreateError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitFunction = () => {
+    setIsLoading(true);
     console.log("clicked");
     if (
       form.email === "" ||
@@ -31,7 +39,39 @@ const Register = () => {
       form.confirmPassword === ""
     ) {
       setError(true);
+      setIsLoading(false);
+      return;
     }
+
+    if (form.password !== form.confirmPassword) {
+      setCreateError(true);
+      setErrorMessage("Passwords do not match. Please re enter password");
+      setIsLoading(false);
+      return;
+    }
+    if (form.password.length < 5) {
+      setCreateError(true);
+      setErrorMessage("Password must be at least 5 characters long");
+      setIsLoading(false);
+      return;
+    }
+    if (!(/[a-zA-Z]/.test(form.password) && /\d/.test(form.password))) {
+      setCreateError(true);
+      setErrorMessage("Password must contain at least 1 letter and 1 number");
+      setIsLoading(false);
+      return;
+    }
+    AppStore.registerController(form.email, form.password).then((res: any) => {
+      console.log(res);
+      setIsLoading(false);
+      // email already exist
+      if (res?.response?.status == 500) {
+        setCreateError(true);
+        setErrorMessage(
+          "Error creating new user. Please try again or use a different email"
+        );
+      }
+    });
   };
 
   const theme = createTheme({
@@ -63,6 +103,12 @@ const Register = () => {
       {/* <ThemeProvider theme={theme}> */}
         <NoUserNavBar />
         <Container maxWidth="xl" sx={{ width: "100%" }}>
+          {createError && (
+            <Alert severity="error" sx={{ marginTop: "20px" }}>
+              <AlertTitle>Error</AlertTitle>
+              {errorMessage}
+            </Alert>
+          )}
           <Paper
             sx={{
               margin: "auto",
@@ -90,6 +136,7 @@ const Register = () => {
                   placeholder="Enter your email address"
                   formControlId="email"
                   formValue={form.email || ""}
+                  formData={form}
                   setFormControlState={setForm}
                   error={error}
                   errorText="Email is required"
@@ -104,6 +151,7 @@ const Register = () => {
                   placeholder="Enter your password"
                   formControlId="password"
                   formValue={form.password || ""}
+                  formData={form}
                   setFormControlState={setForm}
                   error={error}
                   errorText="Password is required"
@@ -118,6 +166,7 @@ const Register = () => {
                   placeholder="Enter your password again"
                   formControlId="confirmPassword"
                   formValue={form.confirmPassword || ""}
+                  formData={form}
                   setFormControlState={setForm}
                   error={error}
                   errorText="Password is required"
@@ -134,7 +183,11 @@ const Register = () => {
               }}
             >
               <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton buttonText="Register" onClick={submitFunction} />
+                <PrimaryButton
+                  buttonText="Register"
+                  onClick={submitFunction}
+                  isLoading={isLoading}
+                />
               </Grid>
             </Grid>
 

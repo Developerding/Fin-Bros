@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertTitle,
   Container,
   Grid,
   Paper,
@@ -21,9 +23,15 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const AppStore = useStores();
   const [error, setError] = useState(false);
+
+  const [loginError, setLoginError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+
   // const theme = createTheme({
   //   palette: {
   //     primary: {
@@ -32,15 +40,49 @@ const Login = () => {
   //   },
   // });
 
+
   const submitFunction = () => {
     // console.log("clicked");
+    setIsLoading(true);
     if (!validator.isEmail(form.email) || form.password === "") {
       setError(true);
+      setIsLoading(false);
       return;
     }
 
-    AppStore.setEmail(form.email);
-    console.log("submit clicked");
+    AppStore.loginController(form.email, form.password)
+      .then((res: any) => {
+        console.log(res);
+        setIsLoading(false);
+        // Email does not exist
+        if (res.response.status == 500) {
+          setLoginError(true);
+          setErrorMessage("Email " + form.email + " does not exist");
+        }
+
+        // Wrong password
+        else if (res.response.status == 409) {
+          setLoginError(true);
+          setErrorMessage(res.response.data);
+        }
+
+        // Email not verified yet
+        else if (res.response.status == 400) {
+          setLoginError(true);
+          setErrorMessage(res.response.data);
+        }
+
+        // Login successful:
+        else {
+          setLoginError(false);
+          setErrorMessage("");
+          console.log(res);
+        }
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -60,6 +102,12 @@ const Login = () => {
       {/* <ThemeProvider theme={theme}> */}
         <NoUserNavBar />
         <Container maxWidth="xl" sx={{ width: "100%" }}>
+          {loginError && (
+            <Alert severity="error" sx={{ marginTop: "20px" }}>
+              <AlertTitle>Error</AlertTitle>
+              {errorMessage}
+            </Alert>
+          )}
           <Paper
             sx={{
               margin: "auto",
@@ -145,7 +193,28 @@ const Login = () => {
             <Grid
               container
               sx={{
+
+                marginTop: "6px",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Grid item xs={12} sx={{ textAlign: "center" }}>
+                <PrimaryButton
+                  buttonText="Login"
+                  onClick={submitFunction}
+                  isLoading={isLoading}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid
+              container
+              sx={{
+
+
                 marginTop: "10px",
+
                 alignItems: "center",
                 justifyContent: "center",
                 marginBottom: "40px",

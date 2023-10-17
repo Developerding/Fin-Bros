@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import React, { FC } from "react";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 interface Props {
   style?: {};
@@ -8,6 +9,7 @@ interface Props {
   onClick?: () => void;
   divStyle?: {};
   divClassName?: string;
+  isLoading?: boolean;
 }
 
 const PrimaryButton: FC<Props> = ({
@@ -17,6 +19,7 @@ const PrimaryButton: FC<Props> = ({
   onClick,
   divStyle,
   divClassName,
+  isLoading = false,
 }) => {
   const defaultStyle: React.CSSProperties = {
     margin: "16px",
@@ -29,14 +32,23 @@ const PrimaryButton: FC<Props> = ({
   const buttonStyle = { ...defaultStyle, ...style };
   return (
     <div style={divStyle} className={divClassName}>
-      <Button
-        variant="contained"
-        style={buttonStyle}
-        className={className}
-        onClick={onClick}
-      >
-        {buttonText}
-      </Button>
+      {!isLoading ? (
+        <Button
+          variant="contained"
+          style={buttonStyle}
+          className={className}
+          onClick={onClick}
+        >
+          {buttonText}
+        </Button>
+      ) : (
+        <LoadingButton
+          style={buttonStyle}
+          className={className}
+          loading
+          variant="outlined"
+        />
+      )}
     </div>
   );
 };
