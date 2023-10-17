@@ -6,6 +6,9 @@ import * as LINKS from "../../routes/links";
 
 const NoUserNavBar = () => {
   const navigate = useNavigate();
+  const handleNavigation = () => {
+    navigate(LINKS.HOME_PAGE);
+  };
   return (
     <AppBar
       position="static"
@@ -34,10 +37,12 @@ const NoUserNavBar = () => {
                 display: "flex",
               }}
             >
-              <img
-                src="src/assets/img/finbros.png"
-                style={{ width: "200px", height: "64px" }}
-              />
+              <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
+                <img
+                  src="src/assets/img/finbros.png"
+                  style={{ width: "200px", height: "64px" }}
+                />
+              </div>
             </Box>
 
             <Box
@@ -58,6 +63,7 @@ const NoUserNavBar = () => {
                   color: "white",
                   borderColor: "white",
                 }}
+                onClick={() => navigate(LINKS.LOGIN)}
               />
             </Box>
           </Box>
@@ -75,13 +81,15 @@ const NoUserNavBar = () => {
                 alignItems: "center",
               }}
             >
-              <img
-                src="src/assets/img/finbros.png"
-                style={{
-                  width: "170px",
-                  height: "64px",
-                }}
-              />
+              <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
+                <img
+                  src="src/assets/img/finbros.png"
+                  style={{
+                    width: "170px",
+                    height: "64px",
+                  }}
+                />
+              </div>
             </Box>
             <OutlinedButton
               buttonText="Login"

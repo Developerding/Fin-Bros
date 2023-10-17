@@ -17,12 +17,15 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import OutlinedButton from "../buttons/OutlinedButton";
 import { Stack } from "@mui/material";
 import { useStores } from "../../stores";
+import * as LINKS from "../../routes/links";
+import { useNavigate } from "react-router";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavBar = () => {
   const AppStore = useStores();
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -62,6 +65,10 @@ const NavBar = () => {
   };
 
   const [menuDropdown, setMenuDropdown] = React.useState("");
+
+  const handleNavigation = () => {
+    navigate(LINKS.HOME_PAGE);
+  };
 
   const handleLogOut = () => {
     AppStore.logout();
@@ -163,10 +170,12 @@ const NavBar = () => {
                 display: "flex",
               }}
             >
-              <img
-                src="src/assets/img/finbros.png"
-                style={{ width: "200px", height: "64px" }}
-              />
+              <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
+                <img
+                  src="src/assets/img/finbros.png"
+                  style={{ width: "200px", height: "64px" }}
+                />
+              </div>
             </Box>
 
             <Box
@@ -201,11 +210,16 @@ const NavBar = () => {
             LOGO
           </Typography> */}
           {/* logo */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, mr: 4 }}>
-            <img
-              src="src/assets/img/finbros.png"
-              style={{ width: "170px", height: "64px" }}
-            />
+          <Box
+            sx={{ display: { xs: "none", md: "flex" }, mr: 4 }}
+            onClick={handleNavigation}
+          >
+            <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
+              <img
+                src="src/assets/img/finbros.png"
+                style={{ width: "170px", height: "64px" }}
+              />
+            </div>
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
@@ -243,7 +257,7 @@ const NavBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton
-                onMouseEnter={handleOpenUserMenu}
+                onClick={handleOpenUserMenu}
                 // onClick={handleOpenUserMenu}
                 // onMouseLeave={handleCloseUserMenu}
                 sx={{ p: 0 }}
@@ -276,7 +290,10 @@ const NavBar = () => {
             >
               <MenuItem
                 key={"view_profile"}
-                onClick={handleCloseUserMenu}
+                onClick={() => {
+                  handleCloseUserMenu();
+                  navigate(LINKS.VIEWPROFILE);
+                }}
                 sx={{ width: "250px" }}
               >
                 <Box display="flex" alignItems="center">

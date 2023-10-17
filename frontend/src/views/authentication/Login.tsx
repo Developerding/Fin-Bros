@@ -51,23 +51,25 @@ const Login = () => {
     AppStore.loginController(form.email, form.password)
       .then((res: any) => {
         console.log(res);
-        setIsLoading(false);
         // Email does not exist
         if (res?.response?.status == 500) {
           setLoginError(true);
           setErrorMessage("Email " + form.email + " does not exist");
+          setIsLoading(false);
         }
 
         // Wrong password
         else if (res?.response?.status == 409) {
           setLoginError(true);
           setErrorMessage(res.response.data);
+          setIsLoading(false);
         }
 
         // Email not verified yet
         else if (res?.response?.status == 400) {
           setLoginError(true);
           setErrorMessage(res.response.data);
+          setIsLoading(false);
         }
 
         // Login successful:
@@ -78,6 +80,9 @@ const Login = () => {
           AppStore.setEmail(res.email);
           AppStore.setUserId(res.localId);
           AppStore.setIsLoggedIn(true);
+
+          setIsLoading(false);
+
           window.location.href = LINKS.HOME_PAGE;
         }
       })
@@ -169,7 +174,11 @@ const Login = () => {
             }}
           >
             <Grid item xs={12} sx={{ textAlign: "center" }}>
-              <PrimaryButton buttonText="Login" onClick={submitFunction} />
+              <PrimaryButton
+                buttonText="Login"
+                onClick={submitFunction}
+                isLoading={isLoading}
+              />
             </Grid>
           </Grid>
 

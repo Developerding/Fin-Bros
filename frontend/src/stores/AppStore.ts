@@ -3,8 +3,8 @@ import { create, persist } from "mobx-persist";
 import axios from "axios";
 
 class AppStore {
-  @persist email: string = "test";
-  @persist userId: string = "123";
+  @persist email: string = "";
+  @persist userId: string = "";
   isLoading: boolean = false;
   @persist isLoggedIn: boolean = false;
 
