@@ -1,9 +1,6 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-
 body {
   margin: 0px;
   background-color: #dcdcdc;
-  font-family: "Poppins", sans-serif !important;
 }
 
 .MuiLoadingButton-loadingIndicator {

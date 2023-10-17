@@ -87,7 +87,6 @@ const Register = () => {
     //       variantMapping: {
     //         h1: "h2",
     //         h2: "h3",
-
     //       },
     //     },
     //   },
@@ -101,120 +100,123 @@ const Register = () => {
   return (
     <>
       {/* <ThemeProvider theme={theme}> */}
-        <NoUserNavBar />
-        <Container maxWidth="xl" sx={{ width: "100%" }}>
-          {createError && (
-            <Alert severity="error" sx={{ marginTop: "20px" }}>
-              <AlertTitle>Error</AlertTitle>
-              {errorMessage}
-            </Alert>
-          )}
-          <Paper
+      <NoUserNavBar />
+      <Container maxWidth="xl" sx={{ width: "100%" }}>
+        {createError && (
+          <Alert severity="error" sx={{ marginTop: "20px" }}>
+            <AlertTitle>Error</AlertTitle>
+            {errorMessage}
+          </Alert>
+        )}
+        <Paper
+          sx={{
+            margin: "auto",
+            marginTop: "70px",
+            width: { sm: "100%", md: "40%" },
+            borderRadius: "45px",
+          }}
+          elevation={4}
+        >
+          <Grid container alignItems="center" justifyContent="center">
+            <Grid item>
+              <Typography
+                variant="h2"
+                sx={{
+                  marginTop: "24px",
+                  fontWeight: "500",
+                }}
+              >
+                Register
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container sx={{ marginTop: "40px" }}>
+            <Grid item xs={12}>
+              <LoginInput
+                label="Email"
+                placeholder="Enter your email address"
+                formControlId="email"
+                formValue={form.email || ""}
+                formData={form}
+                setFormControlState={setForm}
+                error={error}
+                errorText="Email is required"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container sx={{ marginTop: "16px" }}>
+            <Grid item xs={12}>
+              <PasswordInput
+                label="Password"
+                placeholder="Enter your password"
+                formControlId="password"
+                formValue={form.password || ""}
+                formData={form}
+                setFormControlState={setForm}
+                error={error}
+                errorText="Password is required"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container sx={{ marginTop: "16px" }}>
+            <Grid item xs={12}>
+              <PasswordInput
+                label="Confirm Password"
+                placeholder="Enter your password again"
+                formControlId="confirmPassword"
+                formValue={form.confirmPassword || ""}
+                formData={form}
+                setFormControlState={setForm}
+                error={error}
+                errorText="Password is required"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
             sx={{
-              margin: "auto",
-              marginTop: "70px",
-              width: { sm: "100%", md: "40%" },
-              borderRadius: "45px",
+              marginTop: "6px",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            elevation={4}
           >
-            <Grid container alignItems="center" justifyContent="center">
-              <Grid item>
-                <Typography
-                  variant="h2"
-                  sx={{ marginTop: "24px", fontWeight:"500" }}
-                >
-                  Register
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <PrimaryButton
+                buttonText="Register"
+                onClick={submitFunction}
+                isLoading={isLoading}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
+            sx={{
+              marginTop: "40px",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "40px",
+            }}
+          >
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Link
+                to={LINKS.LOGIN}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <Typography>
+                  Don't have an account? Click here to{" "}
+                  <span style={{ color: "#054be3" }}>login</span>
                 </Typography>
-              </Grid>
+              </Link>
             </Grid>
-
-            <Grid container sx={{ marginTop: "40px" }}>
-              <Grid item xs={12}>
-                <LoginInput
-                  label="Email"
-                  placeholder="Enter your email address"
-                  formControlId="email"
-                  formValue={form.email || ""}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Email is required"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container sx={{ marginTop: "16px" }}>
-              <Grid item xs={12}>
-                <PasswordInput
-                  label="Password"
-                  placeholder="Enter your password"
-                  formControlId="password"
-                  formValue={form.password || ""}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Password is required"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container sx={{ marginTop: "16px" }}>
-              <Grid item xs={12}>
-                <PasswordInput
-                  label="Confirm Password"
-                  placeholder="Enter your password again"
-                  formControlId="confirmPassword"
-                  formValue={form.confirmPassword || ""}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Password is required"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              sx={{
-                marginTop: "6px",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton
-                  buttonText="Register"
-                  onClick={submitFunction}
-                  isLoading={isLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              sx={{
-                marginTop: "40px",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "40px",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Link
-                  to={LINKS.LOGIN}
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  <Typography>
-                    Don't have an account? Click here to{" "}
-                    <span style={{ color: "#054be3" }}>login</span>
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
-            <Grid container />
-          </Paper>
-        </Container>
+          </Grid>
+          <Grid container />
+        </Paper>
+      </Container>
       {/* </ThemeProvider> */}
     </>
   );

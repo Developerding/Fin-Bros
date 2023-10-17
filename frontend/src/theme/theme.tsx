@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import "@fontsource/inter"; // Regular weight
 
 const theme = createTheme({
   palette: {
@@ -22,9 +23,7 @@ const theme = createTheme({
     h6: {
       fontSize: 12,
     },
-    fontFamily: [
-      'Inter'
-    ].join(','),
+    fontFamily: ["Inter"].join(","),
   },
   components: {
     MuiTypography: {
