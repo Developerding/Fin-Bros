@@ -9,14 +9,17 @@ import {
 import NoUserNavBar from "../../components/NavBar/NoUserNavBar";
 import { Email } from "@mui/icons-material";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import * as LINKS from "../../routes/links";
 
 export const PasswordReset = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location?.state?.email || "";
 
   return (
     <>
-      <NoUserNavBar />
+      {/* <NoUserNavBar /> */}
       <Container maxWidth="xl" sx={{ marginTop: "4%" }}>
         <Grid container justifyContent="center" alignItems="center">
           <Grid item>
@@ -29,7 +32,7 @@ export const PasswordReset = () => {
                   useFlexGap
                 >
                   <Email sx={{ fontSize: 250 }} />
-{/* 
+                  {/* 
                   <Typography
                     variant="h3"
                     sx={{ color: "#054be3", fontWeight: "600" }}
@@ -37,16 +40,20 @@ export const PasswordReset = () => {
                     
                   </Typography> */}
                   <Typography>We sent password reset email to </Typography>
-                  <Typography variant="h4" sx={{ color: "#054be3",fontWeight:"600" }}>
-                    ryanpoysucks@gmail.com
+                  <Typography
+                    variant="h4"
+                    sx={{ color: "#054be3", fontWeight: "600" }}
+                  >
+                    {email}
                   </Typography>
                   <Typography>
-                    Simply follow the steps within the email to reset your password.
+                    Simply follow the steps within the email to reset your
+                    password.
                   </Typography>
 
                   <PrimaryButton
                     buttonText="Back to Login"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate(LINKS.LOGIN)}
                   />
                 </Stack>
               </CardContent>

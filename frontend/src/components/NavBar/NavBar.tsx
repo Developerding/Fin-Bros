@@ -13,11 +13,16 @@ import MenuItem from "@mui/material/MenuItem";
 // import AdbIcon from "@mui/icons-material/Adb";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Drawer from "@mui/material/Drawer";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import OutlinedButton from "../buttons/OutlinedButton";
+import { Stack } from "@mui/material";
+import { useStores } from "../../stores";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavBar = () => {
+  const AppStore = useStores();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -57,6 +62,11 @@ const NavBar = () => {
   };
 
   const [menuDropdown, setMenuDropdown] = React.useState("");
+
+  const handleLogOut = () => {
+    AppStore.logout();
+    window.location.reload();
+  };
 
   const renderMenuType = (menuType: string) => {
     if (menuType === "portfolio") {
@@ -245,7 +255,7 @@ const NavBar = () => {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: "45px" }}
+              sx={{ mt: "45px", width: "1000px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
@@ -264,11 +274,42 @@ const NavBar = () => {
               }}
               // onMouseLeave={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              <MenuItem
+                key={"view_profile"}
+                onClick={handleCloseUserMenu}
+                sx={{ width: "250px" }}
+              >
+                <Box display="flex" alignItems="center">
+                  <AccountCircleOutlinedIcon
+                    sx={{ display: "inline", width: "35px", height: "35px" }}
+                  />
+                  <Typography
+                    sx={{ display: "inline", ml: 3, fontSize: "16px" }}
+                  >
+                    View Profile
+                  </Typography>
+                </Box>
+              </MenuItem>
+              <Stack alignItems="center">
+                <OutlinedButton buttonText="Logout" onClick={handleLogOut} />
+              </Stack>
+              {/* <Box
+                sx={{
+                  marginTop: "20px",
+
+                  justifyContent: "center",
+                }}
+              >
+                <OutlinedButton
+                  buttonText="Logout"
+                  onClick={() => handleLogOut}
+                />
+              </Box> */}
+              {/* {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
             </Menu>
           </Box>
         </Toolbar>

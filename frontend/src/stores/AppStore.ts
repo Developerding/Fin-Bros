@@ -22,12 +22,27 @@ class AppStore {
     this.userId = value;
   };
 
+  @action
+  setIsLoggedIn = (value: boolean) => {
+    this.isLoggedIn = value;
+  };
+
   getEmail = () => {
     return this.email;
   };
 
   getUserId = () => {
     return this.userId;
+  };
+
+  getIsLoggedIn = () => {
+    return this.isLoggedIn;
+  };
+
+  logout = () => {
+    this.setIsLoggedIn(false);
+    this.setEmail("");
+    this.setUserId("");
   };
 
   //   loginController = (email: string, password: string) => {
@@ -77,6 +92,7 @@ class AppStore {
         }
       );
       console.log(response.data);
+      return response.data;
     } catch (err) {
       console.log(err);
       return err;
@@ -92,6 +108,19 @@ class AppStore {
           password
       );
       console.log("User created ", response.data);
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  };
+
+  resetPasswordController = async (email: string) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v2/user/changepassword?email=" + email
+      );
+      console.log(response);
+      return response;
     } catch (err) {
       console.log(err);
       return err;

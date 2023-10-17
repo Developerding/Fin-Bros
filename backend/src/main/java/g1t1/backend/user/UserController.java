@@ -4,10 +4,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 
 import g1t1.backend.user.UserException.CannotCreateUserException;
 import g1t1.backend.user.UserException.CannotLoginException;
+import g1t1.backend.user.UserException.CannotUpdateUserDetailsException;
 
 @RestController
 @RequestMapping(path="api/v2")
@@ -91,14 +93,23 @@ public class UserController {
     /**
      * Description of the method: edit user's email using user uid to change user's email
      *
-     * @param uid uid of user to edit
-     * @param email email of user to edit
-     * @return return userRecord which is all the updated user data as an object
-     */
-    @PutMapping("/user/changeemail")
-    public UserRecord editUser(@RequestParam String uid, @RequestParam String email) {
-        return userService.editUserEmail(uid, email);
-    }
+    //  * @param uid uid of user to edit
+    //  * @param email email of user to edit
+    //  * @return return userRecord which is all the updated user data as an object
+    //  */
+    // @PutMapping("/user/changeemail")
+    // public ResponseEntity<?> editUser(@RequestParam String uid, @RequestParam String email) {
+    //     try{
+    //         UserRecord userRecord = userService.editUserEmail(uid, email);
+    //         return new ResponseEntity<UserRecord> (userRecord,HttpStatus.OK);
+
+
+    //     }
+    //     catch(CannotUpdateUserDetailsException e){
+    //         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    //     }
+// 
+    // }
 
 
     /**
@@ -108,8 +119,17 @@ public class UserController {
      */
     @PostMapping("/user/changepassword")
     @CrossOrigin(origins = "http://localhost:5173")
-    public void changePassword(@RequestParam String uid) {
-        userService.editUserChangePassword(uid);
+    public ResponseEntity<?> changePassword(@RequestParam String email) {
+        try{
+            UserRecord userRecord = userService.editUserChangePassword(email);
+            return new ResponseEntity<UserRecord> (userRecord,HttpStatus.OK);
+        }
+        catch(CannotUpdateUserDetailsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+        catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error has occurred");
+        }
     }
 
 

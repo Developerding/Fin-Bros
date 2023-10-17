@@ -31,7 +31,6 @@ const Login = () => {
   const [loginError, setLoginError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-
   // const theme = createTheme({
   //   palette: {
   //     primary: {
@@ -39,7 +38,6 @@ const Login = () => {
   //     },
   //   },
   // });
-
 
   const submitFunction = () => {
     // console.log("clicked");
@@ -55,19 +53,19 @@ const Login = () => {
         console.log(res);
         setIsLoading(false);
         // Email does not exist
-        if (res.response.status == 500) {
+        if (res?.response?.status == 500) {
           setLoginError(true);
           setErrorMessage("Email " + form.email + " does not exist");
         }
 
         // Wrong password
-        else if (res.response.status == 409) {
+        else if (res?.response?.status == 409) {
           setLoginError(true);
           setErrorMessage(res.response.data);
         }
 
         // Email not verified yet
-        else if (res.response.status == 400) {
+        else if (res?.response?.status == 400) {
           setLoginError(true);
           setErrorMessage(res.response.data);
         }
@@ -77,6 +75,10 @@ const Login = () => {
           setLoginError(false);
           setErrorMessage("");
           console.log(res);
+          AppStore.setEmail(res.email);
+          AppStore.setUserId(res.localId);
+          AppStore.setIsLoggedIn(true);
+          window.location.href = LINKS.HOME_PAGE;
         }
       })
 
@@ -100,141 +102,130 @@ const Login = () => {
   return (
     <>
       {/* <ThemeProvider theme={theme}> */}
-        <NoUserNavBar />
-        <Container maxWidth="xl" sx={{ width: "100%" }}>
-          {loginError && (
-            <Alert severity="error" sx={{ marginTop: "20px" }}>
-              <AlertTitle>Error</AlertTitle>
-              {errorMessage}
-            </Alert>
-          )}
-          <Paper
+      {/* <NoUserNavBar /> */}
+      <Container maxWidth="xl" sx={{ width: "100%" }}>
+        {loginError && (
+          <Alert severity="error" sx={{ marginTop: "20px" }}>
+            <AlertTitle>Error</AlertTitle>
+            {errorMessage}
+          </Alert>
+        )}
+        <Paper
+          sx={{
+            margin: "auto",
+            marginTop: "100px",
+            width: { sm: "100%", md: "40%" },
+            borderRadius: "45px",
+          }}
+          elevation={4}
+        >
+          <Grid container alignItems="center" justifyContent="center">
+            <Grid item>
+              <Typography
+                variant="h2"
+                sx={{ marginTop: "24px", fontWeight: "500" }}
+              >
+                Login
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container sx={{ marginTop: "40px" }}>
+            <Grid item xs={12}>
+              <LoginInput
+                label="Email"
+                placeholder="Enter your email address"
+                formControlId="email"
+                formValue={form.email}
+                formData={form}
+                setFormControlState={setForm}
+                error={error}
+                errorText="Email is required"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container sx={{ marginTop: "16px" }}>
+            <Grid item xs={12}>
+              <PasswordInput
+                label="Password"
+                placeholder="Enter your password"
+                formControlId="password"
+                formValue={form.password}
+                formData={form}
+                setFormControlState={setForm}
+                error={error}
+                errorText="Password is required"
+              />
+            </Grid>
+          </Grid>
+
+          <Grid
+            container
             sx={{
-              margin: "auto",
-              marginTop: "100px",
-              width: { sm: "100%", md: "40%" },
-              borderRadius: "45px",
+              marginTop: "6px",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-            elevation={4}
           >
-            <Grid container alignItems="center" justifyContent="center">
-              <Grid item>
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <PrimaryButton buttonText="Login" onClick={submitFunction} />
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12}>
+              <Link
+                to={LINKS.PASSWORDEMAIL}
+                style={{ textDecoration: "none", color: "#054be3" }}
+              >
                 <Typography
-                  variant="h2"
-                  sx={{ marginTop: "24px", fontWeight:"500" }}
+                  sx={{
+                    textAlign: "center",
+                    marginTop: "30px",
+                    // marginRight: "16px",
+                  }}
                 >
-                  Login
+                  Forgot Password?
                 </Typography>
-              </Grid>
+              </Link>
             </Grid>
+          </Grid>
 
-            <Grid container sx={{ marginTop: "40px" }}>
-              <Grid item xs={12}>
-                <LoginInput
-                  label="Email"
-                  placeholder="Enter your email address"
-                  formControlId="email"
-                  formValue={form.email}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Email is required"
-                />
-              </Grid>
+          <Grid
+            container
+            sx={{
+              marginTop: "6px",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          ></Grid>
+
+          <Grid
+            container
+            sx={{
+              marginTop: "10px",
+
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "40px",
+            }}
+          >
+            <Grid item xs={12} sx={{ textAlign: "center" }}>
+              <Link
+                to={LINKS.REGISTER}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <Typography>
+                  Don't have an account? Click here to{" "}
+                  <span style={{ color: "#054be3" }}>register</span>
+                </Typography>
+              </Link>
             </Grid>
-
-            <Grid container sx={{ marginTop: "16px" }}>
-              <Grid item xs={12}>
-                <PasswordInput
-                  label="Password"
-                  placeholder="Enter your password"
-                  formControlId="password"
-                  formValue={form.password}
-                  formData={form}
-                  setFormControlState={setForm}
-                  error={error}
-                  errorText="Password is required"
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              sx={{
-                marginTop: "6px",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center"}}>
-                <PrimaryButton buttonText="Login" onClick={submitFunction} />
-              </Grid>
-            </Grid>
-
-            <Grid container>
-              <Grid item xs={12}>
-                <Link
-                  to={LINKS.HOME_PAGE}
-                  style={{ textDecoration: "none", color: "#054be3" }}
-                >
-                  <Typography
-                    sx={{
-                      textAlign: "center",
-                      marginTop: "30px",
-                      // marginRight: "16px",
-                    }}
-                  >
-                    Forgot Password?
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              sx={{
-
-                marginTop: "6px",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <PrimaryButton
-                  buttonText="Login"
-                  onClick={submitFunction}
-                  isLoading={isLoading}
-                />
-              </Grid>
-            </Grid>
-
-            <Grid
-              container
-              sx={{
-
-
-                marginTop: "10px",
-
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: "40px",
-              }}
-            >
-              <Grid item xs={12} sx={{ textAlign: "center" }}>
-                <Link
-                  to={LINKS.REGISTER}
-                  style={{ textDecoration: "none", color: "black" }}
-                >
-                  <Typography>
-                    Don't have an account? Click here to{" "}
-                    <span style={{ color: "#054be3" }}>register</span>
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
-            <Grid container />
-          </Paper>
-        </Container>
+          </Grid>
+          <Grid container />
+        </Paper>
+      </Container>
       {/* </ThemeProvider> */}
     </>
   );

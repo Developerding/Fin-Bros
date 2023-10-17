@@ -1,8 +1,11 @@
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import React from "react";
 import OutlinedButton from "../buttons/OutlinedButton";
+import { useNavigate } from "react-router";
+import * as LINKS from "../../routes/links";
 
 const NoUserNavBar = () => {
+  const navigate = useNavigate();
   return (
     <AppBar
       position="static"
@@ -83,6 +86,7 @@ const NoUserNavBar = () => {
             <OutlinedButton
               buttonText="Login"
               style={{ borderColor: "white", color: "white" }}
+              onClick={() => navigate(LINKS.LOGIN)}
             />
           </Box>
         </Toolbar>

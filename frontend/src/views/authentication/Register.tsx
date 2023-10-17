@@ -16,6 +16,7 @@ import PasswordInput from "../../components/formComponents/controlled/PasswordIn
 import Link from "../../components/link/Link";
 import * as LINKS from "./../../routes/links";
 import { useStores } from "../../stores";
+import { useNavigate } from "react-router";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -29,6 +30,7 @@ const Register = () => {
   const [createError, setCreateError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const submitFunction = () => {
     setIsLoading(true);
@@ -65,12 +67,19 @@ const Register = () => {
       console.log(res);
       setIsLoading(false);
       // email already exist
-      if (res?.response?.status == 500) {
+      if (res?.response?.status) {
         setCreateError(true);
         setErrorMessage(
           "Error creating new user. Please try again or use a different email"
         );
+        return;
       }
+
+      // success case:
+      setCreateError(false);
+      setErrorMessage("");
+      console.log(res);
+      navigate(LINKS.EMAILVERIFICATION, { state: { email: form.email } });
     });
   };
 
@@ -100,7 +109,7 @@ const Register = () => {
   return (
     <>
       {/* <ThemeProvider theme={theme}> */}
-      <NoUserNavBar />
+      {/* <NoUserNavBar /> */}
       <Container maxWidth="xl" sx={{ width: "100%" }}>
         {createError && (
           <Alert severity="error" sx={{ marginTop: "20px" }}>

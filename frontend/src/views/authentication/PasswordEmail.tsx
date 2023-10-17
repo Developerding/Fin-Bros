@@ -5,6 +5,8 @@ import {
   Stack,
   Card,
   CardContent,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import NoUserNavBar from "../../components/NavBar/NoUserNavBar";
 import { Email } from "@mui/icons-material";
@@ -12,55 +14,67 @@ import PrimaryButton from "../../components/buttons/PrimaryButton";
 import { useNavigate } from "react-router";
 import LoginInput from "../../components/formComponents/controlled/LoginInput";
 import validator from "validator";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useStores } from "../../stores";
+import * as LINKS from "../../routes/links";
 
 export const PasswordEmail = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
-    password: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const AppStore = useStores();
   const [error, setError] = useState(false);
-  // const theme = createTheme({
-  //   palette: {
-  //     primary: {
-  //       main: "#1976d2",
-  //     },
-  //   },
-  // });
 
   const submitFunction = () => {
-    // console.log("clicked");
-    if (!validator.isEmail(form.email) || form.password === "") {
+    setIsLoading(true);
+    if (!validator.isEmail(form.email)) {
       setError(true);
+      setIsLoading(false);
       return;
     }
+    AppStore.resetPasswordController(form.email).then((res: any) => {
+      console.log(res);
+      setIsLoading(false);
 
-    AppStore.setEmail(form.email);
-    console.log("submit clicked");
+      // error handling:
+      if (res?.message) {
+        setSubmitError(true);
+        setErrorMessage("Error generating email link to change password");
+        return;
+      }
+
+      // success case:
+      const email = form.email;
+      navigate(LINKS.PASSWORDRESET, { state: { email: email } });
+    });
   };
 
   useEffect(() => {
     console.log(form);
   }, [form]);
 
-  useEffect(() => {
-    console.log(error);
-  }, [error]);
-
-  useEffect(() => {
-    console.log(AppStore.getEmail());
-  }, [AppStore.email]);
-
   return (
     <>
-      <NoUserNavBar />
+      {/* <NoUserNavBar /> */}
       <Container maxWidth="xl" sx={{ marginTop: "4%" }}>
-        <Grid container justifyContent="center" alignItems="center">
+        {submitError && (
+          <Alert severity="error" sx={{ marginTop: "20px" }}>
+            <AlertTitle>Error</AlertTitle>
+            {errorMessage}
+          </Alert>
+        )}
+        <Grid
+          container
+          justifyContent="center"
+          alignItems="center"
+          sx={{ marginTop: 3 }}
+        >
           <Grid item>
             <Card sx={{ borderRadius: "5%", padding: 3 }}>
               <CardContent>
@@ -87,6 +101,7 @@ export const PasswordEmail = () => {
                   />
 
                   <PrimaryButton
+                    isLoading={isLoading}
                     buttonText="Submit"
                     onClick={submitFunction}
                   />

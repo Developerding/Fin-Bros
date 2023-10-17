@@ -51,10 +51,6 @@ public class UserService {
         
         try{
             RestTemplate restTemplate = new RestTemplate();
-            // System.out.println(firebaseLogin.getEmail());
-            // System.out.println(firebaseLogin.getPassword());
-            // System.out.println(firebaseLogin.getReturnSecureToken());
-            // System.out.println(firebaseKey);
             HttpEntity <FirebaseLogin> request = new HttpEntity<>(firebaseLogin);
             String response = restTemplate.postForObject(firebaseKey, request, String.class);
             System.out.println(response);
@@ -162,8 +158,8 @@ public class UserService {
      * @throws CannotSendEmailException exception to indicate an error while sending a verification email to the new user
      */
     public UserRecord createUser(@RequestParam String email, @RequestParam String password) throws CannotCreateUserException, CannotSendEmailException {
-
-        try {            
+        try {
+                        
             CreateRequest request = new CreateRequest()
                 .setEmail(email)
                 .setEmailVerified(false)
@@ -223,21 +219,23 @@ public class UserService {
      * @param uid uid of user to edit
      * @throws CannotUpdateUserDetailsException exception to indicate an error while trying to update the user's details, more specifically user's password in this method
      */
-    public void editUserChangePassword(@RequestParam String uid) throws CannotUpdateUserDetailsException {
+    public UserRecord editUserChangePassword(@RequestParam String email) throws CannotUpdateUserDetailsException {
 
         // get user's email using user uid first
-        UserRecord userRecord = getUser(uid);
-        String email = userRecord.getEmail();
-        String displayName = userRecord.getUid();
+        UserRecord userRecord = getUserByEmail(email);
+        String uid = userRecord.getUid();
 
         try {
             String link = FirebaseAuth.getInstance().generatePasswordResetLink(email);
             // Construct email verification template, embed the link and send
-            emailService.sendEmailForChangePassword(email, displayName, link);
-        } catch (FirebaseAuthException e) {
+            emailService.sendEmailForChangePassword(email, uid, link);
+            return userRecord;
+        } 
+        catch (Exception e) {
             String responseMessage = "Error generating email link to change password";
             throw new CannotUpdateUserDetailsException(responseMessage);
         }
+  
     }
 
 
