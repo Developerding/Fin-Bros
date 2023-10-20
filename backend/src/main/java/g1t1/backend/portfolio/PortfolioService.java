@@ -2,7 +2,9 @@ package g1t1.backend.portfolio;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
+import org.checkerframework.checker.units.qual.t;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,17 +25,6 @@ public class PortfolioService {
     }
 
     public ResponseEntity<String> createPortfolio(Portfolio portfolio){
-        // Check if a portfolio with the same name already exists for the given user
-        // Portfolio retrievedPortfolio = portfolioRepository.findByUserIdAndName(portfolio.getUserId(), portfolio.getName());
-        // if (retrievedPortfolio != null) {
-        //     String responseMessage = "A portfolio with this name already exists for this user.";
-        //     return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
-        // } else {
-        //     // Portfolio name is unique, so we can proceed to create it
-        //     portfolioRepository.save(portfolio);
-        //     String responseMessage = "Portfolio created successfully";
-        //     return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
-        // }
         List<Allocation> allocations = portfolio.getAllocations();
         LocalDateTime inceptionDate = portfolio.getDateTime();
         int month = inceptionDate.getMonthValue();
@@ -53,7 +44,7 @@ public class PortfolioService {
             }
         }
         portfolioRepository.save(portfolio);
-        return new ResponseEntity<String>("Testing", HttpStatus.CREATED);
+        return new ResponseEntity<String>("Portfolio Created Successfully", HttpStatus.CREATED);
     }
     
 
@@ -75,6 +66,26 @@ public class PortfolioService {
             portfolio.setCapital(updatedPortfolio.getCapital());
             portfolio.setDateTime(updatedPortfolio.getDateTime());
             portfolio.setDescription(updatedPortfolio.getDescription());
+            List<Allocation> allocations = updatedPortfolio.getAllocations();
+            LocalDateTime inceptionDate = updatedPortfolio.getDateTime();
+            int month = inceptionDate.getMonthValue();
+            int year = inceptionDate.getYear();
+            for (Allocation allocation : allocations){
+                String allocationName = allocation.getStockName();
+                Stock stock = stockService.findStockByName(allocationName);
+                List<StockInstance> stockData = stock.getStockData();
+                for (StockInstance stockInstance : stockData){
+                    String dateTime = stockInstance.getDate();
+                    String[] parts = dateTime.split("-");
+                        Integer instanceYear = Integer.parseInt(parts[0]);
+                        Integer instanceMonth = Integer.parseInt(parts[1]);
+                        if (instanceYear.equals(year) && instanceMonth.equals(month)){
+                            allocation.setAveragePrice(stockInstance.getClose());
+                        }
+                }
+            }
+            ArrayList<Allocation> arrayList = new ArrayList<>(allocations);
+            portfolio.setAllocations(arrayList);
             portfolioRepository.save(portfolio);
             String responseMessage = "Portfolio updated successfully";
             return new ResponseEntity<>(responseMessage, HttpStatus.ACCEPTED);
