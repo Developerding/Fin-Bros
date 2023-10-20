@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../components/NavBar/NavBar";
 import { Container, Grid, Typography, Card, CardContent, MenuList, MenuItem } from "@mui/material";
 import DoughnutChart from "../components/chart/Chart";
-// import { useStores } from "../stores";
+import { useStores } from "../stores";
 
 const stockPortfolioData = {
     "_id": {
@@ -35,10 +35,21 @@ const stockPortfolioData = {
 };
 // const AppStore = useStores();
 
-// const stockPortfolioData = () => {
-//     AppStore.viewPortfolioController("test1");
-//   }
+// const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
 
+// const ViewPortfolioDetails = ()=> {
+//   useEffect(() => {
+//     AppStore.viewPortfolioController("test1")
+//       .then((res) => {
+//         console.log("Response data:", res);
+//         setStockPortfolioData(res);
+//       })
+//       .catch((error) => {
+//         console.error("Error:", error);
+//       });
+//   }, []);
+
+// NOTE: just comment line 53 and uncomment the stuff  on top
 function ViewPortfolioDetails() {
   return (
     <>
@@ -127,7 +138,7 @@ function ViewPortfolioDetails() {
             <Card>
               <CardContent>
                 <MenuList>
-                {stockPortfolioData.allocations.map((allocation) => (
+                {stockPortfolioData.allocations.map((allocation:any) => (
                     <MenuItem key={allocation.stockName}>
                       <Typography>{allocation.stockName} - {allocation.percentage}% , Capital is ${allocation.capitalAllocated} for {allocation.quantity} shares </Typography>
                     </MenuItem>

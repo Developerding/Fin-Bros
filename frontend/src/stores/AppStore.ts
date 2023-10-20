@@ -129,22 +129,22 @@ class AppStore {
     }
   };
 
-  // // View Portfolio Details- from backend PortfolioController
-  // viewPortfolioController = async (portfolioName : string) => {
-  //   const headers = {
-  //     Cookie: 'USERID=1',
-  //   };
-  //   try {
-  //     const response = await axios.get(
-  //       `http://localhost:8080/api/portfolio/${portfolioName}`, {headers}
-  //       );      
-  //     console.log(response.data);
-  //     return response.data;
-  //   } catch (err) {
-  //     console.log(err);
-  //     return err;
-  //   }
-  // };
+  // View Portfolio Details- from backend PortfolioController
+  viewPortfolioController = async (portfolioName : string) => {
+    const headers = {
+      Cookie: 'USERID=1',
+    };
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/portfolio/${portfolioName}`, {headers}
+        );      
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  };
 
 }
 
