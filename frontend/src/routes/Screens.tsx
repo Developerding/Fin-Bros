@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import * as LINKS from "./links.ts";
 import Rapie from "../components/sample/Rapie";
-import Home from "../views/Home.tsx";
+import Home from "../views/Home.jsx";
 import CreatePortfolio from "../views/CreatePortfolio.tsx";
 import Testing from "../views/Testing.tsx";
 import Login from "../views/authentication/Login.tsx";
