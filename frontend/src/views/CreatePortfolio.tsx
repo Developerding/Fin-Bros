@@ -1,4 +1,4 @@
-import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, ListItem } from "@mui/material";
+import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
 import NavBar from "../components/NavBar/NavBar";
 import { ChangeEvent, useRef, useState } from "react";
 
@@ -11,7 +11,8 @@ export const CreatePortfolio = () => {
     const [portfolioCapitalError, setPortfolioCapitalError] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
-    const [portflio, setPortfolio] = useState<{}>({});
+    const [portfolio, setPortfolio] = useState<{ [key: string]: string }>({});
+    const [errorText, setErrorText] = useState('');
     const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
     const stocks = [
         {"name": "Apple Inc.", "ticker": "AAPL"},
@@ -65,7 +66,7 @@ export const CreatePortfolio = () => {
 
     const addStockToPortfolio = (stockName: string) => {
         if (!selectedStocks.includes(stockName)){
-            setSelectedStocks([stockName, ...selectedStocks]);
+            setSelectedStocks([...selectedStocks, stockName]);
         }
         setSearchValue('');
         if (stockSearchInputRef.current) {
@@ -78,7 +79,6 @@ export const CreatePortfolio = () => {
             ...prevPortfolio,
             [stockName]: e.target.value
         }));
-        console.log(portflio)
     }
 
     const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -97,10 +97,26 @@ export const CreatePortfolio = () => {
         await portfolioName == '' ? setPortfolioNameError(true) : setPortfolioNameError(false)
         await portfolioDescription == '' ? setPortfolioDescriptionError(true) : setPortfolioDescriptionError(false)
         await portfolioCapital == '' ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
-        if (!(portfolioName == '' && portfolioDescription == '' && portfolioCapital == '')){
-            console.log("Submitting portfolio")
+        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == '' || selectedStocks.length == 0){
+            setErrorText("Please fill up missing information below")
         } else {
-            console.log("Error")
+            setErrorText("")
+            let sum = 0;
+            for (const key in portfolio) {
+                if (portfolio.hasOwnProperty(key)) {
+                  sum += Number.parseInt(portfolio[key]);
+                }
+            }
+            if (sum > 100){
+                setErrorText("Portfolio allocation exceeds 100%")
+            } else {
+                console.log({
+                    portfolioName: portfolioName,
+                    portfolioDescription: portfolioDescription,
+                    portfolioCapital: portfolioCapital,
+                    portfolio: portfolio
+                })
+            }
         }
     }
 
@@ -115,6 +131,9 @@ export const CreatePortfolio = () => {
                     </Grid>
                     <Grid item xs={2}></Grid>
                 </Grid>
+                {errorText.length > 0 && (
+                    <Alert severity="error">{errorText}</Alert>
+                )}
                 <Grid container spacing={2}>
                     <Grid item xs={5}>
                         <Grid container>
@@ -136,7 +155,7 @@ export const CreatePortfolio = () => {
                                     id="portfolioDescription"
                                     label="Portfolio Description"
                                     multiline
-                                    rows={4}
+                                    rows={8}
                                     type="text"
                                     sx={{ width: '100%', marginTop: '20px' }}
                                     onChange={handlePortfolioDescriptionChange}
@@ -185,7 +204,7 @@ export const CreatePortfolio = () => {
                                 </Paper>
                             )}
                         </Box>
-                        <Card sx={{marginTop: '20px', height: '200px', overflow: 'auto'}}>
+                        <Card sx={{marginTop: '20px', height: '290px', overflow: 'auto'}}>
                             <CardContent>
                                 {selectedStocks.map((stock, idx) => (
                                     <MenuItem key={idx}>
@@ -199,6 +218,11 @@ export const CreatePortfolio = () => {
                                         />
                                     </MenuItem>
                                 ))}
+                                {selectedStocks.length === 0 && (
+                                    <Typography variant="body2" color="error">
+                                        No stocks have been added to the portfolio.
+                                    </Typography>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>
