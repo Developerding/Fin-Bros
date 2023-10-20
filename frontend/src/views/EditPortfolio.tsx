@@ -18,7 +18,7 @@ import PortfolioStock from "../components/PortfolioStock";
 export const EditPortfolio = () => {
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
 
       <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
         <Grid container spacing={1}>

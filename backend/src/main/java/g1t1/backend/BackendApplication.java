@@ -23,6 +23,7 @@ public class BackendApplication {
 		File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
 
 		FileInputStream serviceAccount = new FileInputStream(file.getAbsoluteFile());
+		
 
 		FirebaseOptions.Builder builder = FirebaseOptions.builder();
 
@@ -31,7 +32,11 @@ public class BackendApplication {
 			)
 			.build();
 
-		FirebaseApp.initializeApp(options);
+		if (FirebaseApp.getApps().isEmpty()) {
+			FirebaseApp.initializeApp(options);
+		}
+
+
 
 		System.out.println("Connected to Firebase!");
 

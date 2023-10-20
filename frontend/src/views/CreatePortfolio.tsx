@@ -87,6 +87,14 @@ export const CreatePortfolio = () => {
         }));
     }
 
+    const removeStock = (stockName: string) => {
+        setSelectedStocks(prevPortfolio => prevPortfolio.filter(stock => stock != stockName)),
+        setPortfolio(prevPortfolio => {
+            const {[stockName]: omittedKey, ...newPortfolio} = prevPortfolio
+            return newPortfolio;
+        })
+    }
+
     const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
         setPortfolioCapital(e.target.value)
     }
@@ -240,6 +248,9 @@ export const CreatePortfolio = () => {
                                             sx={{ width: '100%', marginLeft: '20px' }}
                                             onChange={(e) => updatePortfolio(stock, e)}
                                         />
+                                        <Button onClick={() => removeStock(stock)}>
+                                            -
+                                        </Button>
                                     </MenuItem>
                                 ))}
                                 {selectedStocks.length === 0 && (
