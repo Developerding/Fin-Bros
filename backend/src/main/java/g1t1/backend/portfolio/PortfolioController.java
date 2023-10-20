@@ -1,6 +1,7 @@
 package g1t1.backend.portfolio;
 
 import java.util.List;
+import java.util.HashMap;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -32,23 +33,23 @@ public class PortfolioController {
 
     // get all portfolios
     @GetMapping
-    public List<Portfolio> findAllPortfolios(@CookieValue("USERID") String userIdCookie){
+    public List<Portfolio> findAllPortfolios(@RequestBody HashMap<String,String> userIdCookie){
         return portfolioService.findAllPortfoliosByUserId(userIdCookie);
     }
 
     // get portfolio by name
     @GetMapping("/{name}")
-    public Portfolio findPortfolioByName(@PathVariable String name, @CookieValue("USERID") String userIdCookie){
+    public Portfolio findPortfolioByName(@PathVariable String name, @RequestBody HashMap<String,String> userIdCookie){
         return portfolioService.findPortfolioByNameAndUserId(name, userIdCookie);
     }
 
     @PutMapping("/edit/{name}")
-    public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String name, @CookieValue("USERID") String userIdCookie, @RequestBody Portfolio portfolio){
-        return portfolioService.findAndEditPortfolioByName(name, userIdCookie, portfolio);
+    public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String name, @RequestBody Portfolio portfolio){
+        return portfolioService.findAndEditPortfolioByName(name, portfolio);
     }
 
     @DeleteMapping("/{name}")
-    public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name, @CookieValue("USERID") String userIdCookie){
+    public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name, @RequestBody HashMap<String,String> userIdCookie){
         return portfolioService.findAndDeletePortfolioByName(name, userIdCookie);
     }
 }

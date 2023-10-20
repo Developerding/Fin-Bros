@@ -145,7 +145,6 @@ class AppStore {
       return err;
     }
   };
-
 }
 
 const hydrate = create({

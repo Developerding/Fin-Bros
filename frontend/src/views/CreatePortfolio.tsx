@@ -1,5 +1,6 @@
 import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useStores } from "../stores"
 
 export const CreatePortfolio = () => {
     const [portfolioName, setPortfolioName] = useState('');
@@ -13,6 +14,11 @@ export const CreatePortfolio = () => {
     const [portfolio, setPortfolio] = useState<{ [key: string]: string }>({});
     const [errorText, setErrorText] = useState('');
     const [portfolioDate, setPortfolioDate] = useState('');
+    const AppStore = useStores();
+    AppStore.loadStockController()
+    .then(res => {
+        console.log(res)
+    })
     const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
     const stocks = [
         {"name": "Apple Inc.", "ticker": "AAPL"},

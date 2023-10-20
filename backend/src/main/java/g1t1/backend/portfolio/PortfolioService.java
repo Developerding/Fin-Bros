@@ -3,8 +3,8 @@ package g1t1.backend.portfolio;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import org.checkerframework.checker.units.qual.t;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -48,17 +48,18 @@ public class PortfolioService {
     }
     
 
-    public List<Portfolio> findAllPortfoliosByUserId(String userIdCookie){
-        return portfolioRepository.findByUserId(userIdCookie);
+    public List<Portfolio> findAllPortfoliosByUserId(HashMap<String,String> userHash){
+        return portfolioRepository.findByUserId(userHash.get("userId"));
     }
 
-    public Portfolio findPortfolioByNameAndUserId(String name, String userIdCookie){
-        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+    public Portfolio findPortfolioByNameAndUserId(String name, HashMap<String,String> userHash){
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userHash.get("userId"), name);
         return portfolio;
     }
 
-    public ResponseEntity<String> findAndEditPortfolioByName(String name, String userIdCookie, Portfolio updatedPortfolio){
-        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+    public ResponseEntity<String> findAndEditPortfolioByName(String name, Portfolio updatedPortfolio){
+        String userId = updatedPortfolio.getUserId();
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userId, name);
         if (portfolio == null){
             String responseMessage = "Portfolio does not exist";
             return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
@@ -66,6 +67,7 @@ public class PortfolioService {
             portfolio.setCapital(updatedPortfolio.getCapital());
             portfolio.setDateTime(updatedPortfolio.getDateTime());
             portfolio.setDescription(updatedPortfolio.getDescription());
+            portfolio.setName(updatedPortfolio.getName());
             List<Allocation> allocations = updatedPortfolio.getAllocations();
             LocalDateTime inceptionDate = updatedPortfolio.getDateTime();
             int month = inceptionDate.getMonthValue();
@@ -92,8 +94,9 @@ public class PortfolioService {
         }
     }
 
-    public ResponseEntity<String> findAndDeletePortfolioByName(String name, String userIdCookie) {
-        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userIdCookie, name);
+    public ResponseEntity<String> findAndDeletePortfolioByName(String name, HashMap<String,String> userHash) {
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userHash.get("userId"), name);
+        System.out.println(portfolio);
         if (portfolio == null){
             String responseMessage = "Portfolio does not exist";
             return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
