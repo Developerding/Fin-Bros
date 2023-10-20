@@ -1,5 +1,4 @@
 import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
-import NavBar from "../components/NavBar/NavBar";
 import { ChangeEvent, useRef, useState } from "react";
 
 export const CreatePortfolio = () => {
@@ -13,6 +12,7 @@ export const CreatePortfolio = () => {
     const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
     const [portfolio, setPortfolio] = useState<{ [key: string]: string }>({});
     const [errorText, setErrorText] = useState('');
+    const [portfolioDate, setPortfolioDate] = useState('');
     const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
     const stocks = [
         {"name": "Apple Inc.", "ticker": "AAPL"},
@@ -93,12 +93,19 @@ export const CreatePortfolio = () => {
         setPortfolioDescription(e.target.value)
     }
 
+    const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPortfolioDate(e.target.value)
+    }
+
     const handleSubmit = async () => {
         await portfolioName == '' ? setPortfolioNameError(true) : setPortfolioNameError(false)
         await portfolioDescription == '' ? setPortfolioDescriptionError(true) : setPortfolioDescriptionError(false)
         await portfolioCapital == '' ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
-        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == '' || selectedStocks.length == 0){
+        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == '' || selectedStocks.length == 0 || portfolioDate.length == 0){
             setErrorText("Please fill up missing information below")
+            setTimeout(() => {
+                setErrorText("")
+            }, 3000);
         } else {
             setErrorText("")
             let sum = 0;
@@ -112,7 +119,10 @@ export const CreatePortfolio = () => {
             } else if (sum != 100){
                 setErrorText("Portfolio allocation does not add up to 100%")
             } else {
+                let currentDate = new Date();
+                console.log(portfolioDate)
                 console.log({
+                    currentDate: currentDate,
                     portfolioName: portfolioName,
                     portfolioDescription: portfolioDescription,
                     portfolioCapital: portfolioCapital,
@@ -124,17 +134,23 @@ export const CreatePortfolio = () => {
 
     return (
         <>
-            <NavBar />
             <Box sx={{ marginLeft: '30px', marginRight: '30px' }}>
                 <Grid container>
                     <Grid item xs={2}></Grid>
                     <Grid item xs={8} style={{ display: 'flex', justifyContent: 'center' }}>
                         <Typography variant="h2" style={{ marginTop: '20px' }}>Create a new portfolio</Typography>
                     </Grid>
-                    <Grid item xs={2}></Grid>
+                    <Grid item xs={2}>
+                        <Typography style={{ marginTop: '20px' }}>Portfolio Inception Date</Typography>
+                        <TextField
+                            defaultValue={new Date()}
+                            type="date"
+                            onChange={handleDateChange}
+                        />
+                    </Grid>
                 </Grid>
                 {errorText.length > 0 && (
-                    <Alert severity="error">{errorText}</Alert>
+                    <Alert severity="error" style={{marginTop: '20px'}}>{errorText}</Alert>
                 )}
                 <Grid container spacing={2}>
                     <Grid item xs={5}>

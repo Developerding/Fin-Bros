@@ -16,7 +16,6 @@ public class Portfolio {
     @Id
     private String id;
     private String userId;
-    private double totalValue;
     private double capital;
     private LocalDateTime dateTime;
     @Indexed(unique = true)
