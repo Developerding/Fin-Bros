@@ -107,7 +107,9 @@ class AppStore {
           "&password=" +
           password
       );
+
       console.log("User created ", response.data);
+      return { data: response.data, status: 200 };
     } catch (err) {
       console.log(err);
       return err;

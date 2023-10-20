@@ -42,16 +42,19 @@ export const PasswordEmail = () => {
       console.log(res);
       setIsLoading(false);
 
+      //success case:
+      if (res?.status == 200) {
+        console.log(res);
+        const email = form.email;
+        navigate(LINKS.PASSWORDRESET, { state: { email: email } });
+      }
+
       // error handling:
-      if (res?.message) {
+      else {
         setSubmitError(true);
         setErrorMessage("Error generating email link to change password");
         return;
       }
-
-      // success case:
-      const email = form.email;
-      navigate(LINKS.PASSWORDRESET, { state: { email: email } });
     });
   };
 
