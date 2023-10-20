@@ -129,6 +129,19 @@ class AppStore {
     }
   };
 
+  loadStockController = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/stock"
+      )
+      console.log(response)
+      return response;
+    } catch (error) {
+      console.log(error)
+      return error;
+    }
+  }
+
   // // View Portfolio Details- from backend PortfolioController
   // viewPortfolioController = async (portfolioName : string) => {
   //   const headers = {
