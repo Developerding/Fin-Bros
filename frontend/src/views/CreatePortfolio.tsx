@@ -1,6 +1,7 @@
 import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useStores } from "../stores"
+import axios from "axios";
+import { useStores } from "../stores";
 
 export const CreatePortfolio = () => {
     const [portfolioName, setPortfolioName] = useState('');
@@ -15,10 +16,6 @@ export const CreatePortfolio = () => {
     const [errorText, setErrorText] = useState('');
     const [portfolioDate, setPortfolioDate] = useState('');
     const AppStore = useStores();
-    AppStore.loadStockController()
-    .then(res => {
-        console.log(res)
-    })
     const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
     const stocks = [
         {"name": "Apple Inc.", "ticker": "AAPL"},
@@ -62,6 +59,8 @@ export const CreatePortfolio = () => {
         {"name": "American Express Co.", "ticker": "AXP"},
         {"name": "Costco Wholesale Corp.", "ticker": "COST"}
     ]
+    const Appstore = useStores();
+
     const filteredStocks = stocks.filter((stock) =>
         stock.name.toLowerCase().startsWith(searchValue.toLowerCase())
     );
@@ -134,6 +133,7 @@ export const CreatePortfolio = () => {
                 setErrorText("Portfolio allocation does not add up to 100%")
             } else {
                 let currentDate = new Date();
+                let userId = Appstore.getUserId();
                 console.log(portfolioDate)
                 console.log({
                     currentDate: currentDate,
@@ -142,6 +142,21 @@ export const CreatePortfolio = () => {
                     portfolioCapital: portfolioCapital,
                     portfolio: portfolio
                 })
+                axios.post('http://localhost:8080/api/portfolio', {
+                    userId: userId,
+                    dateTime: portfolioDate,
+                    name: portfolioName,
+                    description: portfolioDescription,
+                    capital: portfolioCapital,
+                    allocations: portfolio
+                })
+                .then(function (response) {
+                    console.log(response);
+                    window.location.href = "/portfolio";
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
             }
         }
     }
