@@ -70,14 +70,10 @@ const Login = () => {
           setLoginError(true);
           setErrorMessage(res.response.data);
           setIsLoading(false);
-        } else if (res?.response?.status == 404) {
-          setLoginError(true);
-          setErrorMessage("Login Error");
-          setIsLoading(false);
         }
 
         // Login successful:
-        else {
+        else if (res?.registered == true && res?.email && res?.localId) {
           setLoginError(false);
           setErrorMessage("");
           console.log(res);
@@ -88,6 +84,10 @@ const Login = () => {
           setIsLoading(false);
 
           window.location.href = LINKS.HOME_PAGE;
+        } else {
+          setLoginError(true);
+          setErrorMessage("Login Error");
+          setIsLoading(false);
         }
       })
 
