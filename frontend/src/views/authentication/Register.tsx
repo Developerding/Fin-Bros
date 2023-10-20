@@ -79,6 +79,7 @@ const Register = () => {
         setErrorMessage(
           "Error creating new user. Please try again or use a different email"
         );
+        setIsLoading(false);
         return;
       }
     });
