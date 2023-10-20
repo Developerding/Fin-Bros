@@ -1,11 +1,14 @@
-import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent } from "@mui/material";
+import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, ListItem } from "@mui/material";
 import NavBar from "../components/NavBar/NavBar";
 import { ChangeEvent, useRef, useState } from "react";
 
 export const CreatePortfolio = () => {
     const [portfolioName, setPortfolioName] = useState('');
+    const [portfolioNameError, setPortfolioNameError] = useState(false);
     const [portfolioDescription, setPortfolioDescription] = useState('');
+    const [portfolioDescriptionError, setPortfolioDescriptionError] = useState(false)
     const [portfolioCapital, setPortfolioCapital] = useState('');
+    const [portfolioCapitalError, setPortfolioCapitalError] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
     const [portflio, setPortfolio] = useState<{}>({});
@@ -61,7 +64,9 @@ export const CreatePortfolio = () => {
     };
 
     const addStockToPortfolio = (stockName: string) => {
-        setSelectedStocks([...selectedStocks, stockName]);
+        if (!selectedStocks.includes(stockName)){
+            setSelectedStocks([stockName, ...selectedStocks]);
+        }
         setSearchValue('');
         if (stockSearchInputRef.current) {
             stockSearchInputRef.current.value = '';
@@ -78,6 +83,25 @@ export const CreatePortfolio = () => {
 
     const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
         setPortfolioCapital(e.target.value)
+    }
+
+    const handlePortfolioNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPortfolioName(e.target.value)
+    }
+
+    const handlePortfolioDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setPortfolioDescription(e.target.value)
+    }
+
+    const handleSubmit = async () => {
+        await portfolioName == '' ? setPortfolioNameError(true) : setPortfolioNameError(false)
+        await portfolioDescription == '' ? setPortfolioDescriptionError(true) : setPortfolioDescriptionError(false)
+        await portfolioCapital == '' ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
+        if (!(portfolioName == '' && portfolioDescription == '' && portfolioCapital == '')){
+            console.log("Submitting portfolio")
+        } else {
+            console.log("Error")
+        }
     }
 
     return (
@@ -100,7 +124,14 @@ export const CreatePortfolio = () => {
                                     label="Portfolio Name"
                                     type="text"
                                     sx={{ width: '100%', marginTop: '20px' }}
+                                    error={portfolioNameError}
+                                    onChange={handlePortfolioNameChange}
                                 />
+                                {portfolioNameError && (
+                                    <Typography variant="body2" color="error">
+                                        Please enter a portfolio name.
+                                    </Typography>
+                                )}
                                 <TextField
                                     id="portfolioDescription"
                                     label="Portfolio Description"
@@ -108,14 +139,27 @@ export const CreatePortfolio = () => {
                                     rows={4}
                                     type="text"
                                     sx={{ width: '100%', marginTop: '20px' }}
+                                    onChange={handlePortfolioDescriptionChange}
+                                    error={portfolioDescriptionError}
                                 />
+                                {portfolioDescriptionError && (
+                                    <Typography variant="body2" color="error">
+                                        Please enter a portfolio description.
+                                    </Typography>
+                                )}
                                 <TextField
                                     id="portfolioCapital"
                                     label="Portfolio Capital"
                                     type="number"
                                     onChange={handleCapitalChange}
                                     sx={{ width: '100%', marginTop: '20px' }}
+                                    error={portfolioCapitalError}
                                 />
+                                {portfolioCapitalError && (
+                                    <Typography variant="body2" color="error">
+                                        Please enter a portfolio capital.
+                                    </Typography>
+                                )}
                             </Grid>
                         </Grid>
                     </Grid>
@@ -141,26 +185,25 @@ export const CreatePortfolio = () => {
                                 </Paper>
                             )}
                         </Box>
-                        <Grid container spacing={2} sx={{marginTop: '20px'}}>
-                            {selectedStocks.map((stock, idx) => (
-                                <Grid item xs={4} key={idx}>
-                                    <Card sx={{ width: '100%' }}>
-                                        <CardContent>
-                                            <Typography>{stock}</Typography>
-                                            <TextField
-                                                id="stockSearch"
-                                                label="Enter Percentage of portfolio"
-                                                type="number"
-                                                sx={{ width: '100%', marginTop: '20px' }}
-                                                onChange={(e) => updatePortfolio(stock, e)}
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            ))}
-                        </Grid>
+                        <Card sx={{marginTop: '20px', height: '200px', overflow: 'auto'}}>
+                            <CardContent>
+                                {selectedStocks.map((stock, idx) => (
+                                    <MenuItem key={idx}>
+                                        <Typography>{stock}</Typography>
+                                        <TextField
+                                            id="stockSearch"
+                                            label="Enter Percentage of portfolio"
+                                            type="number"
+                                            sx={{ width: '100%', marginLeft: '20px' }}
+                                            onChange={(e) => updatePortfolio(stock, e)}
+                                        />
+                                    </MenuItem>
+                                ))}
+                            </CardContent>
+                        </Card>
                     </Grid>
                 </Grid>
+                <Button variant="contained" onClick={handleSubmit} style={{width: '100%', marginTop: '20px', backgroundColor: "#054be3", borderRadius: '10px'}}>Create portfolio</Button>
             </Box>
         </>
     );
