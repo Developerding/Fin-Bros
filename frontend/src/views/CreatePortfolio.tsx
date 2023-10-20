@@ -109,6 +109,8 @@ export const CreatePortfolio = () => {
             }
             if (sum > 100){
                 setErrorText("Portfolio allocation exceeds 100%")
+            } else if (sum != 100){
+                setErrorText("Portfolio allocation does not add up to 100%")
             } else {
                 console.log({
                     portfolioName: portfolioName,
