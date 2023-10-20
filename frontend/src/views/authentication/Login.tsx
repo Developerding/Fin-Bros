@@ -70,6 +70,10 @@ const Login = () => {
           setLoginError(true);
           setErrorMessage(res.response.data);
           setIsLoading(false);
+        } else if (res?.response?.status == 404) {
+          setLoginError(true);
+          setErrorMessage("Login Error");
+          setIsLoading(false);
         }
 
         // Login successful:

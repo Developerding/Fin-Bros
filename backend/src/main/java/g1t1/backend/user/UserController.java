@@ -13,6 +13,7 @@ import g1t1.backend.user.UserException.CannotUpdateUserDetailsException;
 
 @RestController
 @RequestMapping(path="api/v2")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;
@@ -33,7 +34,6 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> loginUser(@RequestBody FirebaseLogin firebaseLogin ){
         
         try{
@@ -60,7 +60,7 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @GetMapping("/userbyemail")
-    @CrossOrigin(origins = "http://localhost:5173")
+    // @CrossOrigin(origins = "http://localhost:5173")
     public UserRecord getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email);
     }
@@ -74,7 +74,7 @@ public class UserController {
      * @return return userRecord which is all the user data as an object
      */
     @PostMapping("/user/create")
-    @CrossOrigin(origins = "http://localhost:5173")
+    // @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> createUser(@RequestParam String email, @RequestParam String password) {
         try{
             UserRecord userRecord = userService.createUser(email, password);
@@ -118,7 +118,7 @@ public class UserController {
      * @param uid uid of user to edit
      */
     @PostMapping("/user/changepassword")
-    @CrossOrigin(origins = "http://localhost:5173")
+    // @CrossOrigin(origins = "http://localhost:5173")
     public ResponseEntity<?> changePassword(@RequestParam String email) {
         try{
             UserRecord userRecord = userService.editUserChangePassword(email);
