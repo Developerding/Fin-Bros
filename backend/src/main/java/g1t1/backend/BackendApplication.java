@@ -8,6 +8,8 @@ import java.util.Objects;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.crazzyghost.alphavantage.AlphaVantage;
+import com.crazzyghost.alphavantage.Config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -34,6 +36,14 @@ public class BackendApplication {
 		FirebaseApp.initializeApp(options);
 
 		System.out.println("Connected to Firebase!");
+
+		Config cfg = Config.builder()
+            .key("YX2FGEIVWJY89MVU")
+            .build();
+
+        AlphaVantage.api().init(cfg);
+
+		System.out.println("Alpha Vantage API connected!");
 
 	}
 }
