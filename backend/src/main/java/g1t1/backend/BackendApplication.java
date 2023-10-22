@@ -26,7 +26,6 @@ public class BackendApplication {
 
 		FileInputStream serviceAccount = new FileInputStream(file.getAbsoluteFile());
 		
-
 		FirebaseOptions.Builder builder = FirebaseOptions.builder();
 
 		FirebaseOptions options = builder.setCredentials(
@@ -37,8 +36,6 @@ public class BackendApplication {
 		if (FirebaseApp.getApps().isEmpty()) {
 			FirebaseApp.initializeApp(options);
 		}
-
-
 
 		System.out.println("Connected to Firebase!");
 
