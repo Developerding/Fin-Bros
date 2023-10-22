@@ -2,12 +2,12 @@ package g1t1.backend.stock;
 
 import org.springframework.web.bind.annotation.RestController;
 
-// import g1t1.backend.stock.StockRepository;
-
 import java.util.List;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -32,17 +32,29 @@ public class StockController {
         return stockService.findStockByName(name);
     }
 
+    @GetMapping("/findstockbysymbol")
+    public Stock findStockBySymbol(@RequestParam String symbol) {
+        return stockService.findStockBySymbol(symbol);
+    }
+
     // add data for a stock
     @GetMapping("/importstocks")
     public Stock importStocks(@RequestParam String symbolInput) {
         return stockService.importStocks(symbolInput);
     }
 
-    // STILL DOING
-    // get 1 year difference for stock
-    // @GetMapping("/oneyeardifference")
-    // public double getOneYearDifferenceStockPrice(@RequestParam String symbolInput) {
-    //     return stockService.getOneYearDifferenceStockPrice(symbolInput);
-    // }
+    // @RequestMapping("/getmovingaverage")
+    @RequestMapping(
+        value = "/getmovingaverage", 
+        method = RequestMethod.GET, 
+        produces = "application/json"
+        )
+    public Document calculateMovingAverage(
+        @RequestParam String symbol,
+        @RequestParam String startDate, 
+        @RequestParam String endDate
+        ) {
+        return stockService.calculateMovingAverage(symbol, startDate, endDate);
+    }
 
 }
