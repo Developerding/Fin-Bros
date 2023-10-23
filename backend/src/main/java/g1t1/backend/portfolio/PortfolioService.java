@@ -1,17 +1,25 @@
 package g1t1.backend.portfolio;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import g1t1.backend.allocation.Allocation;
+import g1t1.backend.stock.Stock;
+import g1t1.backend.stock.StockInstance;
+import g1t1.backend.stock.StockService;
+
 @Service
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
+    private final StockService stockService;
 
-    public PortfolioService(PortfolioRepository portfolioRepository){
+    public PortfolioService(PortfolioRepository portfolioRepository, StockService stockService){
         this.portfolioRepository = portfolioRepository;
+        this.stockService = stockService;
     }
 
     public ResponseEntity<String> createPortfolio(Portfolio portfolio){
@@ -22,9 +30,28 @@ public class PortfolioService {
             return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
         } else {
             // Portfolio name is unique, so we can proceed to create it
+            List<Allocation> allocations = portfolio.getAllocations();
+            LocalDateTime inceptionDate = portfolio.getDateTime();
+            int month = inceptionDate.getMonthValue();
+            int year = inceptionDate.getYear();
+            for (Allocation allocation : allocations){
+                String allocationName = allocation.getStockName();
+                Stock stock = stockService.findStockByName(allocationName);
+                List<StockInstance> stockData = stock.getStockData();
+                for (StockInstance stockInstance : stockData){
+                    String dateTime = stockInstance.getDate();
+                    String[] dateArr = dateTime.split("-");
+                    int stockYear = Integer.parseInt(dateArr[0]);
+                    int stockMonth = Integer.parseInt(dateArr[1]);
+                    if (month == stockMonth && year == stockYear){
+                        double close = stockInstance.getClose();
+                        allocation.setAveragePrice(close);
+                    }
+                }
+            }
             portfolioRepository.save(portfolio);
             String responseMessage = "Portfolio created successfully";
-            return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+            return new ResponseEntity<String>(responseMessage, HttpStatus.CREATED);
         }
     }
     

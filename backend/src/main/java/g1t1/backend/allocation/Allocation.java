@@ -11,7 +11,5 @@ public class Allocation{
     @Indexed(unique = true)
     private String stockName;
     private double averagePrice;
-    private double quantity;
-    private double capitalAllocated;
     private double percentage;
 }
