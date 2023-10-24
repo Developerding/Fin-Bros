@@ -60,6 +60,8 @@ export const CreatePortfolio = () => {
         {"name": "American Express Co.", "ticker": "AXP"},
         {"name": "Costco Wholesale Corp.", "ticker": "COST"}
     ]
+    const Appstore = useStores();
+
     const filteredStocks = stocks.filter((stock) =>
         stock.name.toLowerCase().startsWith(searchValue.toLowerCase())
     );
@@ -83,6 +85,14 @@ export const CreatePortfolio = () => {
             ...prevPortfolio,
             [stockName]: Number.parseInt(e.target.value)
         }));
+    }
+
+    const removeStock = (stockName: string) => {
+        setSelectedStocks(prevPortfolio => prevPortfolio.filter(stock => stock != stockName)),
+        setPortfolio(prevPortfolio => {
+            const {[stockName]: omittedKey, ...newPortfolio} = prevPortfolio
+            return newPortfolio;
+        })
     }
 
     const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -289,6 +299,9 @@ export const CreatePortfolio = () => {
                                             sx={{ width: '100%', marginLeft: '20px' }}
                                             onChange={(e) => updatePortfolio(stock, e)}
                                         />
+                                        <Button onClick={() => removeStock(stock)}>
+                                            -
+                                        </Button>
                                     </MenuItem>
                                 ))}
                                 {selectedStocks.length === 0 && (

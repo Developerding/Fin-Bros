@@ -8,6 +8,8 @@ import java.util.Objects;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.crazzyghost.alphavantage.AlphaVantage;
+import com.crazzyghost.alphavantage.Config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -23,7 +25,7 @@ public class BackendApplication {
 		File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
 
 		FileInputStream serviceAccount = new FileInputStream(file.getAbsoluteFile());
-
+		
 		FirebaseOptions.Builder builder = FirebaseOptions.builder();
 
 		FirebaseOptions options = builder.setCredentials(
@@ -31,9 +33,19 @@ public class BackendApplication {
 			)
 			.build();
 
-		FirebaseApp.initializeApp(options);
+		if (FirebaseApp.getApps().isEmpty()) {
+			FirebaseApp.initializeApp(options);
+		}
 
 		System.out.println("Connected to Firebase!");
+
+		Config cfg = Config.builder()
+            .key("YX2FGEIVWJY89MVU")
+            .build();
+
+        AlphaVantage.api().init(cfg);
+
+		System.out.println("Alpha Vantage API connected!");
 
 	}
 }

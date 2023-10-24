@@ -65,21 +65,23 @@ const Register = () => {
     }
     AppStore.registerController(form.email, form.password).then((res: any) => {
       console.log(res);
-      setIsLoading(false);
-      // email already exist
-      if (res?.response?.status) {
+
+      // success case:
+      if (res?.status == 200) {
+        setCreateError(false);
+        setErrorMessage("");
+        console.log(res);
+        navigate(LINKS.EMAILVERIFICATION, { state: { email: form.email } });
+      }
+      // email already exist or other errors
+      else {
         setCreateError(true);
         setErrorMessage(
           "Error creating new user. Please try again or use a different email"
         );
+        setIsLoading(false);
         return;
       }
-
-      // success case:
-      setCreateError(false);
-      setErrorMessage("");
-      console.log(res);
-      navigate(LINKS.EMAILVERIFICATION, { state: { email: form.email } });
     });
   };
 

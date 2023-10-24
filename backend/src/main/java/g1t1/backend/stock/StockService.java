@@ -3,8 +3,12 @@ package g1t1.backend.stock;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.timeseries.response.MetaData;
@@ -13,6 +17,8 @@ import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
 
 @Service
 public class StockService {
+    @Autowired
+    private MongoTemplate mongoTemplate;
     private final StockRepository stockRepository;
 
     @Autowired
@@ -24,12 +30,14 @@ public class StockService {
         return stockRepository.findAll();
     }
 
-    public Stock findStockByName(String name) {
-
-        Stock stock = stockRepository.getStockByName(name);
-
+    public Stock findStockBySymbol(String symbol) {
+        Stock stock = stockRepository.getStockBySymbol(symbol);
         return stock;
+    }
 
+    public Stock findStockByName(String name) {
+        Stock stock = stockRepository.getStockByName(name);
+        return stock;
     }
 
     // add data for a stock
@@ -121,15 +129,60 @@ public class StockService {
         stock.setStockData(stockData);
         
         stockRepository.save(stock);
-
         return stock;
-
     }
 
-    // STILL DOING
-    // get one year difference in stock price for a stock
-    // public double getOneYearDifferenceStockPrice(String symbolInput) {
 
-    // }
+    public Document calculateMovingAverage(String symbol, String startDate, String endDate) {
+
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("symbol").is(symbol)),
+            Aggregation.unwind("stockData"),
+            Aggregation.match(
+                Criteria.where("stockData.dateTime")
+                        .gte(startDate)
+                        .lte(endDate)
+            ),
+            Aggregation.group()
+                .avg("stockData.open").as("avgOpen")
+                .avg("stockData.close").as("avgClose")
+                .first("stockData.close").as("endDateClosePrice")
+                .first("stockData.dateTime").as("endDate")
+                .last("stockData.close").as("startDateClosePrice")
+                .last("stockData.dateTime").as("startDate")
+                .last("symbol").as("symbol"),
+            Aggregation.project()
+                .and("symbol").as("symbol")
+                .and("avgOpen").as("avgOpen")
+                .and("avgClose").as("avgClose")
+                .and("endDateClosePrice").as("endDateClosePrice")
+                .and("endDate").as("endDate")
+                .and("startDateClosePrice").as("startDateClosePrice")
+                .and("startDate").as("startDate")
+                .andExpression("endDateClosePrice - startDateClosePrice").as("difference")
+        );
+
+        Document results = mongoTemplate.aggregate(aggregation, "stock", MovingAverageResult.class).getRawResults();
+
+        // Document format
+        // {
+        //     "results": [
+        //         {
+        //             "_id": null,
+        //             "avgOpen": 136.62666666666667,
+        //             "avgClose": 138.69500000000002,
+        //             "endDateClosePrice": 138.46,
+        //             "endDate": "2023-10-13",
+        //             "startDateClosePrice": 128.59,
+        //             "startDate": "2023-05-31",
+        //             "symbol": "IBM",
+        //             "difference": 9.870000000000005
+        //         }
+        //     ],
+        //     "ok": 1.0
+        // }
+
+        return results;
+    }
 
 }

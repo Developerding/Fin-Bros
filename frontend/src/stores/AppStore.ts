@@ -107,7 +107,9 @@ class AppStore {
           "&password=" +
           password
       );
+
       console.log("User created ", response.data);
+      return { data: response.data, status: 200 };
     } catch (err) {
       console.log(err);
       return err;
@@ -126,7 +128,7 @@ class AppStore {
       return err;
     }
   };
-
+  
   uploadPortfolioController = async (data: Object) => {
     try {
       const response = await axios.post(
