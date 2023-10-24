@@ -62,9 +62,10 @@ public class PortfolioService {
         return portfolioRepository.findByUserId(userIdCookie);
     }
 
-    public Portfolio findPortfolioByNameAndUserId(String name, HashMap<String,String> userHash){
-        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userHash.get("userId"), name);
-        return portfolio;
+    public Portfolio findPortfolioByNameAndUserId(String portfolioName, String userId){
+        Portfolio retrievedPortfolio = portfolioRepository.findByUserIdAndName(userId, portfolioName);
+        System.out.println(retrievedPortfolio);
+        return retrievedPortfolio;
     }
 
     public ResponseEntity<String> findAndEditPortfolioByName(String name, Portfolio updatedPortfolio){

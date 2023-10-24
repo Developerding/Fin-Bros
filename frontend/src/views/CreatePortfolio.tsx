@@ -60,7 +60,6 @@ export const CreatePortfolio = () => {
         {"name": "American Express Co.", "ticker": "AXP"},
         {"name": "Costco Wholesale Corp.", "ticker": "COST"}
     ]
-    const Appstore = useStores();
 
     const filteredStocks = stocks.filter((stock) =>
         stock.name.toLowerCase().startsWith(searchValue.toLowerCase())
