@@ -25,26 +25,36 @@ public class PortfolioService {
     }
 
     public ResponseEntity<String> createPortfolio(Portfolio portfolio){
-        List<Allocation> allocations = portfolio.getAllocations();
-        LocalDateTime inceptionDate = portfolio.getDateTime();
-        int month = inceptionDate.getMonthValue();
-        int year = inceptionDate.getYear();
-        for (Allocation allocation : allocations){
-            String allocationName = allocation.getStockName();
-            Stock stock = stockService.findStockByName(allocationName);
-            List<StockInstance> stockData = stock.getStockData();
-            for (StockInstance stockInstance : stockData){
-                String dateTime = stockInstance.getDate();
-                String[] parts = dateTime.split("-");
-                    Integer instanceYear = Integer.parseInt(parts[0]);
-                    Integer instanceMonth = Integer.parseInt(parts[1]);
-                    if (instanceYear.equals(year) && instanceMonth.equals(month)){
-                        allocation.setAveragePrice(stockInstance.getClose());
+        // Check if a portfolio with the same name already exists for the given user
+        Portfolio retrievedPortfolio = portfolioRepository.findByUserIdAndName(portfolio.getUserId(), portfolio.getName());
+        if (retrievedPortfolio != null) {
+            String responseMessage = "A portfolio with this name already exists for this user.";
+            return new ResponseEntity<>(responseMessage, HttpStatus.BAD_REQUEST);
+        } else {
+            // Portfolio name is unique, so we can proceed to create it
+            List<Allocation> allocations = portfolio.getAllocations();
+            LocalDateTime inceptionDate = portfolio.getDateTime();
+            int month = inceptionDate.getMonthValue();
+            int year = inceptionDate.getYear();
+            for (Allocation allocation : allocations){
+                String allocationName = allocation.getStockName();
+                Stock stock = stockService.findStockByName(allocationName);
+                List<StockInstance> stockData = stock.getStockData();
+                for (StockInstance stockInstance : stockData){
+                    String dateTime = stockInstance.getDate();
+                    String[] dateArr = dateTime.split("-");
+                    int stockYear = Integer.parseInt(dateArr[0]);
+                    int stockMonth = Integer.parseInt(dateArr[1]);
+                    if (month == stockMonth && year == stockYear){
+                        double close = stockInstance.getClose();
+                        allocation.setAveragePrice(close);
                     }
+                }
             }
+            portfolioRepository.save(portfolio);
+            String responseMessage = "Portfolio created successfully";
+            return new ResponseEntity<String>(responseMessage, HttpStatus.CREATED);
         }
-        portfolioRepository.save(portfolio);
-        return new ResponseEntity<String>("Portfolio Created Successfully", HttpStatus.CREATED);
     }
     
 

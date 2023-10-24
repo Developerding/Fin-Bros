@@ -1,21 +1,22 @@
 import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
-import { ChangeEvent, useEffect, useRef, useState } from "react";
-import axios from "axios";
+import { ChangeEvent, useRef, useState } from "react";
 import { useStores } from "../stores";
 
 export const CreatePortfolio = () => {
+    const AppStore = useStores();
     const [portfolioName, setPortfolioName] = useState('');
     const [portfolioNameError, setPortfolioNameError] = useState(false);
     const [portfolioDescription, setPortfolioDescription] = useState('');
     const [portfolioDescriptionError, setPortfolioDescriptionError] = useState(false)
-    const [portfolioCapital, setPortfolioCapital] = useState('');
+    const [portfolioCapital, setPortfolioCapital] = useState(0);
     const [portfolioCapitalError, setPortfolioCapitalError] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
-    const [portfolio, setPortfolio] = useState<{ [key: string]: string }>({});
+    const [portfolio, setPortfolio] = useState<{ [key: string]: number }>({});
     const [errorText, setErrorText] = useState('');
+    const [successText, setSuccessText] = useState('');
     const [portfolioDate, setPortfolioDate] = useState('');
-    const AppStore = useStores();
+    const [portfolioDateError, setPortfolioDateError] = useState(false);
     const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
     const stocks = [
         {"name": "Apple Inc.", "ticker": "AAPL"},
@@ -82,7 +83,7 @@ export const CreatePortfolio = () => {
     const updatePortfolio = (stockName: string, e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setPortfolio(prevPortfolio => ({
             ...prevPortfolio,
-            [stockName]: e.target.value
+            [stockName]: Number.parseInt(e.target.value)
         }));
     }
 
@@ -95,7 +96,7 @@ export const CreatePortfolio = () => {
     }
 
     const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPortfolioCapital(e.target.value)
+        setPortfolioCapital(Number.parseInt(e.target.value))
     }
 
     const handlePortfolioNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -113,8 +114,9 @@ export const CreatePortfolio = () => {
     const handleSubmit = async () => {
         await portfolioName == '' ? setPortfolioNameError(true) : setPortfolioNameError(false)
         await portfolioDescription == '' ? setPortfolioDescriptionError(true) : setPortfolioDescriptionError(false)
-        await portfolioCapital == '' ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
-        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == '' || selectedStocks.length == 0 || portfolioDate.length == 0){
+        await portfolioCapital == 0 ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
+        await portfolioDate == '' ? setPortfolioDateError(true) : setPortfolioDateError(false)
+        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == 0 || selectedStocks.length == 0 || portfolioDate.length == 0){
             setErrorText("Please fill up missing information below")
             setTimeout(() => {
                 setErrorText("")
@@ -123,40 +125,67 @@ export const CreatePortfolio = () => {
             setErrorText("")
             let sum = 0;
             for (const key in portfolio) {
-                if (portfolio.hasOwnProperty(key)) {
-                  sum += Number.parseInt(portfolio[key]);
-                }
+                sum += portfolio[key];
             }
             if (sum > 100){
                 setErrorText("Portfolio allocation exceeds 100%")
+                setTimeout(() => {
+                    setErrorText("")
+                }, 3000);
             } else if (sum != 100){
                 setErrorText("Portfolio allocation does not add up to 100%")
+                setTimeout(() => {
+                    setErrorText("")
+                }, 3000);
             } else {
-                let currentDate = new Date();
-                let userId = Appstore.getUserId();
-                console.log(portfolioDate)
-                console.log({
-                    currentDate: currentDate,
-                    portfolioName: portfolioName,
-                    portfolioDescription: portfolioDescription,
-                    portfolioCapital: portfolioCapital,
-                    portfolio: portfolio
-                })
-                axios.post('http://localhost:8080/api/portfolio', {
-                    userId: userId,
-                    dateTime: portfolioDate,
-                    name: portfolioName,
-                    description: portfolioDescription,
-                    capital: portfolioCapital,
-                    allocations: portfolio
-                })
-                .then(function (response) {
-                    console.log(response);
-                    window.location.href = "/portfolio";
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+                let parts = portfolioDate.split('-');
+                let year = parseInt(parts[0], 10);
+                let month = parseInt(parts[1], 10) - 1;
+                let day = parseInt(parts[2], 10);
+                let date = new Date(year,month,day);
+                let currentDate = new Date()
+                if (date > currentDate){
+                    setErrorText("Please input an inception date before today")
+                    setTimeout(() => {
+                        setErrorText("")
+                    }, 3000);
+                } else {
+                    let data = {
+                        userId: 2,
+                        capital: portfolioCapital,
+                        dateTime: date,
+                        name: portfolioName,
+                        description: portfolioDescription,
+                        allocations: [] as { [key: string] : any }[]
+                    }
+                    for (const key in portfolio){
+                        let stockDict : { [key: string]: any } = {}
+                        stockDict['stockName'] = key;
+                        stockDict['percentage'] = portfolio[key];
+                        data.allocations.push(stockDict)
+                    }
+                    AppStore.uploadPortfolioController(data)
+                    .then((res: any) => {
+                        setSuccessText(res.data)
+                        setPortfolioName("")
+                        setPortfolioDescription("")
+                        setPortfolioDescription("")
+                        setPortfolio({});
+                        setSelectedStocks([]);
+                        setPortfolioDate("");
+                        setTimeout(() => {
+                            setSuccessText("")
+                        }, 3000);
+                        console.log(res);
+                    })
+                    .catch((err: any) => {
+                        setErrorText(err.response.data)
+                        setTimeout(() => {
+                            setErrorText("")
+                        }, 3000);
+                        console.log(err);
+                    });
+                }
             }
         }
     }
@@ -172,14 +201,18 @@ export const CreatePortfolio = () => {
                     <Grid item xs={2}>
                         <Typography style={{ marginTop: '20px' }}>Portfolio Inception Date</Typography>
                         <TextField
-                            defaultValue={new Date()}
                             type="date"
+                            value={portfolioDate}
                             onChange={handleDateChange}
+                            error={portfolioDateError}
                         />
                     </Grid>
                 </Grid>
                 {errorText.length > 0 && (
                     <Alert severity="error" style={{marginTop: '20px'}}>{errorText}</Alert>
+                )}
+                {successText.length > 0 && (
+                    <Alert severity="success" style={{marginTop: '20px'}}>{successText}</Alert>
                 )}
                 <Grid container spacing={2}>
                     <Grid item xs={5}>
@@ -192,6 +225,7 @@ export const CreatePortfolio = () => {
                                     sx={{ width: '100%', marginTop: '20px' }}
                                     error={portfolioNameError}
                                     onChange={handlePortfolioNameChange}
+                                    value={portfolioName}
                                 />
                                 {portfolioNameError && (
                                     <Typography variant="body2" color="error">
@@ -204,6 +238,7 @@ export const CreatePortfolio = () => {
                                     multiline
                                     rows={8}
                                     type="text"
+                                    value={portfolioDescription}
                                     sx={{ width: '100%', marginTop: '20px' }}
                                     onChange={handlePortfolioDescriptionChange}
                                     error={portfolioDescriptionError}
@@ -218,6 +253,7 @@ export const CreatePortfolio = () => {
                                     label="Portfolio Capital"
                                     type="number"
                                     onChange={handleCapitalChange}
+                                    value={portfolioCapital}
                                     sx={{ width: '100%', marginTop: '20px' }}
                                     error={portfolioCapitalError}
                                 />
@@ -244,7 +280,7 @@ export const CreatePortfolio = () => {
                                     <MenuList>
                                         {filteredStocks.map((stock, idx) => (
                                             <MenuItem key={idx}>
-                                                <ListItemText onClick={() => addStockToPortfolio(stock.name)}>{stock.name}</ListItemText>
+                                                <ListItemText onClick={() => addStockToPortfolio(stock.ticker)}>{stock.name}</ListItemText>
                                             </MenuItem>
                                         ))}
                                     </MenuList>

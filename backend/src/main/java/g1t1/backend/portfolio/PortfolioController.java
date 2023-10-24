@@ -1,5 +1,6 @@
 package g1t1.backend.portfolio;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.HashMap;
 
@@ -32,24 +33,26 @@ public class PortfolioController {
     }
 
     // get all portfolios
-    @GetMapping
-    public List<Portfolio> findAllPortfolios(@RequestBody HashMap<String,String> userIdCookie){
-        return portfolioService.findAllPortfoliosByUserId(userIdCookie);
+    @GetMapping("/{userId}")
+    public List<Portfolio> findAllPortfolios(@PathVariable String userId){
+        return portfolioService.findAllPortfoliosByUserId(userId);
     }
 
     // get portfolio by name
-    @GetMapping("/{name}")
-    public Portfolio findPortfolioByName(@PathVariable String name, @RequestBody HashMap<String,String> userIdCookie){
-        return portfolioService.findPortfolioByNameAndUserId(name, userIdCookie);
-    }
+    // @GetMapping("/{name}")
+    // public void findPortfolioByName(@PathVariable String name, @CookieValue("USERID") String userIdCookie){
+    //     // return portfolioService.findPortfolioByNameAndUserId(name, userData);
+    //     System.out.println(name);
+    //     System.out.println(userIdCookie);
+    // }
 
-    @PutMapping("/edit/{name}")
-    public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String name, @RequestBody Portfolio portfolio){
-        return portfolioService.findAndEditPortfolioByName(name, portfolio);
-    }
+    // @PutMapping("/edit/{name}")
+    // public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String name, @RequestBody Portfolio portfolio){
+    //     return portfolioService.findAndEditPortfolioByName(name, portfolio);
+    // }
 
-    @DeleteMapping("/{name}")
-    public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name, @RequestBody HashMap<String,String> userIdCookie){
-        return portfolioService.findAndDeletePortfolioByName(name, userIdCookie);
-    }
+    // @DeleteMapping("/{name}")
+    // public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name){
+    //     return portfolioService.findAndDeletePortfolioByName(name);
+    // }
 }
