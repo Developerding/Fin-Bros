@@ -58,8 +58,8 @@ public class PortfolioService {
     }
     
 
-    public List<Portfolio> findAllPortfoliosByUserId(HashMap<String,String> userHash){
-        return portfolioRepository.findByUserId(userHash.get("userId"));
+    public List<Portfolio> findAllPortfoliosByUserId(String userIdCookie){
+        return portfolioRepository.findByUserId(userIdCookie);
     }
 
     public Portfolio findPortfolioByNameAndUserId(String name, HashMap<String,String> userHash){

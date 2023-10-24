@@ -166,25 +166,26 @@ export const CreatePortfolio = () => {
                     }
                     AppStore.uploadPortfolioController(data)
                     .then((res: any) => {
-                        setSuccessText(res.data)
-                        setPortfolioName("")
-                        setPortfolioDescription("")
-                        setPortfolioDescription("")
-                        setPortfolio({});
-                        setSelectedStocks([]);
-                        setPortfolioDate("");
-                        setTimeout(() => {
-                            setSuccessText("")
-                        }, 3000);
-                        console.log(res);
+                        if (res.status == 201){
+                            setSuccessText(res.data)
+                            setPortfolioName("")
+                            setPortfolioDescription("")
+                            setPortfolioDescription("")
+                            setPortfolio({});
+                            setSelectedStocks([]);
+                            setPortfolioDate("");
+                            setPortfolioCapital(0);
+                            setTimeout(() => {
+                                setSuccessText("")
+                            }, 3000);
+                            console.log(res);
+                        } else {
+                            setErrorText(res.response.data)
+                            setTimeout(() => {
+                                setErrorText("")
+                            }, 3000);
+                        }
                     })
-                    .catch((err: any) => {
-                        setErrorText(err.response.data)
-                        setTimeout(() => {
-                            setErrorText("")
-                        }, 3000);
-                        console.log(err);
-                    });
                 }
             }
         }
