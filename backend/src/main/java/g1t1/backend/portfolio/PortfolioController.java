@@ -39,17 +39,15 @@ public class PortfolioController {
     }
 
     // get portfolio by name
-    // @GetMapping("/{name}")
-    // public void findPortfolioByName(@PathVariable String name, @CookieValue("USERID") String userIdCookie){
-    //     // return portfolioService.findPortfolioByNameAndUserId(name, userData);
-    //     System.out.println(name);
-    //     System.out.println(userIdCookie);
-    // }
+    @GetMapping("/{portfolioName}/{userId}")
+    public Portfolio findPortfolioByName(@PathVariable String portfolioName, @PathVariable String userId){
+        return portfolioService.findPortfolioByNameAndUserId(portfolioName, userId);
+    }
 
-    // @PutMapping("/edit/{name}")
-    // public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String name, @RequestBody Portfolio portfolio){
-    //     return portfolioService.findAndEditPortfolioByName(name, portfolio);
-    // }
+    @PutMapping("/edit/{portfolioName}")
+    public ResponseEntity<String> findAndEditPortfolioByName(@PathVariable String portfolioName, @RequestBody Portfolio portfolio){
+        return portfolioService.findAndEditPortfolioByName(portfolioName, portfolio);
+    }
 
     // @DeleteMapping("/{name}")
     // public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name){

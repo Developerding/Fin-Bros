@@ -140,6 +140,30 @@ class AppStore {
       return err;
     }
   }
+
+  updatePortfolioController = async (data: Object, portfolioName: String) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/portfolio/edit/${portfolioName}`, data
+      )
+      return response
+    } catch (error) {
+      console.log(error)
+      return error;
+    }
+  }
+
+  getPortfolioByUserIdController = async (userId : String, portfolioName : String) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`,
+      )
+      return response
+    } catch (err) {
+      console.log(err)
+      return err;
+    }
+  }
 }
 
 const hydrate = create({
