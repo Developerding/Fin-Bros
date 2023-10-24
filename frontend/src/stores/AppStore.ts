@@ -126,6 +126,18 @@ class AppStore {
       return err;
     }
   };
+
+  uploadPortfolioController = async (data: Object) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/portfolio", data
+      )
+      return response
+    } catch (err) {
+      console.log(err)
+      return err;
+    }
+  }
 }
 
 const hydrate = create({

@@ -1,8 +1,9 @@
 import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
-import axios from "axios";
 import { ChangeEvent, useRef, useState } from "react";
+import { useStores } from "../stores";
 
 export const CreatePortfolio = () => {
+    const AppStore = useStores();
     const [portfolioName, setPortfolioName] = useState('');
     const [portfolioNameError, setPortfolioNameError] = useState(false);
     const [portfolioDescription, setPortfolioDescription] = useState('');
@@ -139,7 +140,6 @@ export const CreatePortfolio = () => {
                         setErrorText("")
                     }, 3000);
                 } else {
-                    let url = 'http://localhost:8080/api/portfolio'
                     let data = {
                         userId: 2,
                         capital: portfolioCapital,
@@ -154,9 +154,9 @@ export const CreatePortfolio = () => {
                         stockDict['percentage'] = portfolio[key];
                         data.allocations.push(stockDict)
                     }
-                    try {
-                        const response = await axios.post(url, data);
-                        setSuccessText(response.data)
+                    AppStore.uploadPortfolioController(data)
+                    .then((res: any) => {
+                        setSuccessText(res.data)
                         setPortfolioName("")
                         setPortfolioDescription("")
                         setPortfolioDescription("")
@@ -166,12 +166,15 @@ export const CreatePortfolio = () => {
                         setTimeout(() => {
                             setSuccessText("")
                         }, 3000);
-                    } catch (error : any) {
-                        setErrorText(error.response.data)
+                        console.log(res);
+                    })
+                    .catch((err: any) => {
+                        setErrorText(err.response.data)
                         setTimeout(() => {
                             setErrorText("")
                         }, 3000);
-                    }
+                        console.log(err);
+                    });
                 }
             }
         }
