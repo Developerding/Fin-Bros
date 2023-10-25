@@ -7,3 +7,9 @@ public interface StockRepository extends MongoRepository<Stock, String> {
     public Stock getStockBySymbol(String symbol);
 
 }
+
+// public interface StockRepository extends MongoRepository<StockInput, String> {
+    
+//     // public Stock getStockByName(String name);
+
+// }
