@@ -4,15 +4,19 @@ import java.time.LocalDate;
 
 public class MovingAverageResult {
     
+    private String symbol;
     private double avgOpen; 
     private double avgClose; 
     private double endDateClosePrice; 
-    private LocalDate endDate;
+    private String endDate;
     private double startDateClosePrice;
-    private LocalDate startDate;
+    private String startDate;
     private double difference;
 
-    public MovingAverageResult(double avgOpen, double avgClose, double endDateClosePrice, LocalDate endDate, double startDateClosePrice, LocalDate startDate, double difference) {
+    public MovingAverageResult() {}
+
+    public MovingAverageResult(String symbol, double avgOpen, double avgClose, double endDateClosePrice, String endDate, double startDateClosePrice, String startDate, double difference) {
+        this.symbol = symbol;
         this.avgOpen = avgOpen;
         this.avgClose = avgClose;
         this.endDateClosePrice = endDateClosePrice;
@@ -20,6 +24,10 @@ public class MovingAverageResult {
         this.startDateClosePrice = startDateClosePrice;
         this.startDate = startDate;
         this.difference = difference;
+    }
+
+    public String getSymbol() {
+        return symbol;
     }
 
     public double getAvgClose() {
@@ -34,7 +42,7 @@ public class MovingAverageResult {
         return this.endDateClosePrice;
     }
 
-    public LocalDate getEndDate() {
+    public String getEndDate() {
         return this.endDate;
     }
 
@@ -42,7 +50,7 @@ public class MovingAverageResult {
         return this.startDateClosePrice;
     }
 
-    public LocalDate getStartDate() {
+    public String getStartDate() {
         return this.startDate;
     }
 

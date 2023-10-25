@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import org.bson.Document;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,18 +44,27 @@ public class StockController {
         return stockService.importStocks(symbolInput);
     }
 
-    // @RequestMapping("/getmovingaverage")
+    // get analytics of a stock between 2 dates
     @RequestMapping(
         value = "/getmovingaverage", 
         method = RequestMethod.GET, 
         produces = "application/json"
         )
-    public Document calculateMovingAverage(
+    public MovingAverageResult calculateMovingAverage(
         @RequestParam String symbol,
         @RequestParam String startDate, 
         @RequestParam String endDate
         ) {
         return stockService.calculateMovingAverage(symbol, startDate, endDate);
     }
+
+    // get 3 months, 6 months, 1 year, 3 years, 5 years and 10 years analytics of a stock
+    @RequestMapping("/gettotalmovingaverage")
+    public TotalMovingAverageResult getTotalMovingAverageResult(
+        @RequestParam String symbol,
+        @RequestParam String currentDate    
+        ) {
+        return stockService.getTotalMovingAverageResult(symbol, currentDate);
+    }   
 
 }
