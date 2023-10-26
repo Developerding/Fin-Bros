@@ -1,5 +1,7 @@
 package g1t1.backend.logger;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,7 +12,9 @@ public class LoggerService {
         this.loggerRepository = loggerRepository;
     }
 
-    public void createLog(Log log) {
+    public ResponseEntity<String> createLog(Log log) {
         loggerRepository.save(log);
+        String responseMessage = "Log created successfully";
+        return new ResponseEntity<String>(responseMessage, HttpStatus.CREATED);
     }
 }

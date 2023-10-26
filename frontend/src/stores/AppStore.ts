@@ -164,6 +164,18 @@ class AppStore {
       return err;
     }
   }
+
+  createLogController = async (data : Object) => {
+    try {
+      const response = await axios.post(
+        `http://localhost:8080/api/log`, data
+      )
+      return response
+    } catch (error) {
+      console.log(error)
+      return error;
+    }
+  }
 }
 
 const hydrate = create({

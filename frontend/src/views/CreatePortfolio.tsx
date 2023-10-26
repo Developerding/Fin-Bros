@@ -4,6 +4,7 @@ import { useStores } from "../stores";
 
 export const CreatePortfolio = () => {
     const AppStore = useStores();
+    const userId = AppStore.getUserId();
     const [portfolioName, setPortfolioName] = useState('');
     const [portfolioNameError, setPortfolioNameError] = useState(false);
     const [portfolioDescription, setPortfolioDescription] = useState('');
@@ -150,7 +151,7 @@ export const CreatePortfolio = () => {
                     }, 3000);
                 } else {
                     let data = {
-                        userId: 2,
+                        userId: userId,
                         capital: portfolioCapital,
                         dateTime: date,
                         name: portfolioName,
@@ -184,6 +185,22 @@ export const CreatePortfolio = () => {
                                 setErrorText("")
                             }, 3000);
                         }
+                    })
+                    .then(() => {
+                        const d = new Date();
+                        const month = d.getMonth() + 1;
+                        const day = d.getDate();
+                        const year = d.getFullYear();
+                        const hour = d.getHours();
+                        const second = d.getSeconds();
+
+                        const formattedDate = `${month}/${day}/${year}`;
+                        const formattedTime = `${hour}:${second}`;
+
+                        const logData = {
+                            message: `${userId} created portfolio ${portfolioName} at ${formattedDate} ${formattedTime}`
+                        };
+                        AppStore.createLogController(logData);
                     })
                 }
             }
