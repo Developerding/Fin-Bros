@@ -10,8 +10,4 @@ public class Log {
     @Id
     private String id;
     private String message;
-
-    public Log(String message) {
-        this.message = message;
-    }
 }

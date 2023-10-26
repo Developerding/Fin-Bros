@@ -4,12 +4,12 @@ import { useStores } from "../stores";
 
 export const EditPortfolio = () => {
     const AppStore = useStores();
+    const userId = AppStore.getUserId();
     const [originalPortfolioName, setOriginalPortfolioName] = useState("");
     useEffect(() => {
       let currentPageURL = window.location.href;
       let urlArr = currentPageURL.split('/')
       let portfolioName = urlArr[urlArr.length - 1]
-      let userId = "2"
       AppStore.getPortfolioByUserIdController(userId, portfolioName)
       .then((res: any) => {
         let data = res.data
@@ -179,7 +179,7 @@ export const EditPortfolio = () => {
                     }, 3000);
                 } else {
                     let data = {
-                        userId: 2,
+                        userId: userId,
                         capital: portfolioCapital,
                         dateTime: date,
                         name: portfolioName,
@@ -213,6 +213,22 @@ export const EditPortfolio = () => {
                                 setErrorText("")
                             }, 3000);
                         }
+                    })
+                    .then(() => {
+                        const d = new Date();
+                        const month = d.getMonth() + 1;
+                        const day = d.getDate();
+                        const year = d.getFullYear();
+                        const hour = d.getHours();
+                        const second = d.getSeconds();
+
+                        const formattedDate = `${month}/${day}/${year}`;
+                        const formattedTime = `${hour}:${second}`;
+
+                        const logData = {
+                            message: `${userId} edited portfolio ${originalPortfolioName} to ${portfolioName} at ${formattedDate} ${formattedTime}`
+                        };
+                        AppStore.createLogController(logData);
                     })
                 }
             }
