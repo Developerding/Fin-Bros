@@ -128,7 +128,20 @@ class AppStore {
       return err;
     }
   };
-  
+
+  viewPortfolioController = async (portfolioName : string, userId : string) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+        );      
+      console.log(response.data);
+      return response.data;
+    } catch (err) {
+      console.log(err)
+      return err;
+    }
+  }
+
   uploadPortfolioController = async (data: Object) => {
     try {
       const response = await axios.post(

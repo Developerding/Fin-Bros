@@ -4,53 +4,56 @@ import { Container, Grid, Typography, Card, CardContent, MenuList, MenuItem } fr
 import DoughnutChart from "../components/chart/Chart";
 import { useStores } from "../stores";
 
-const stockPortfolioData = {
-    "_id": {
-      "$oid": "65322c839e44a31b94a6933c"
-    },
-    "userId": "1",
-    "capital": 50000,
-    "dateTime": {
-      "$date": "2023-10-14T08:30:06.629Z"
-    },
-    "name": "test2",
-    "description": "This is a sample portfolio with a unique name.",
-    "allocations": [
-      {
-        "stockName": "AAPL",
-        "averagePrice": 150,
-        "quantity": 100,
-        "capitalAllocated": 15000,
-        "percentage": 30
-      },
-      {
-        "stockName": "MSFT",
-        "averagePrice": 150,
-        "quantity": 100,
-        "capitalAllocated": 15000,
-        "percentage": 70
-      }
-    ],
-    "_class": "g1t1.backend.portfolio.Portfolio"
-};
-// const AppStore = useStores();
+// const stockPortfolioData = {
+//   "_id": {
+//     "$oid": "65322c839e44a31b94a6933c"
+//   },
+//   "userId": "1",
+//   "capital": 50000,
+//   "dateTime": {
+//     "$date": "2023-10-14T08:30:06.629Z"
+//   },
+//   "name": "test2",
+//   "description": "This is a sample portfolio with a unique name.",
+//   "allocations": [
+//     {
+//       "stockName": "AAPL",
+//       "averagePrice": 150,
+//       "quantity": 100,
+//       "capitalAllocated": 15000,
+//       "percentage": 30
+//     },
+//     {
+//       "stockName": "MSFT",
+//       "averagePrice": 150,
+//       "quantity": 100,
+//       "capitalAllocated": 15000,
+//       "percentage": 70
+//     }
+//   ],
+//   "_class": "g1t1.backend.portfolio.Portfolio"
+// };
+const ViewPortfolioDetails = ()=> {
+  const AppStore = useStores();
+  const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
 
-// const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
+  useEffect(() => {
+    // Check if AppStore is correctly configured and accessible
+    console.log("AppStore:", AppStore);
 
-// const ViewPortfolioDetails = ()=> {
-//   useEffect(() => {
-//     AppStore.viewPortfolioController("test1")
-//       .then((res) => {
-//         console.log("Response data:", res);
-//         setStockPortfolioData(res);
-//       })
-//       .catch((error) => {
-//         console.error("Error:", error);
-//       });
-//   }, []);
+    // Make an API call to fetch portfolio data
+    // AppStore.viewPortfolioController("portfolioName","userId")
+    AppStore.viewPortfolioController("portfolio name","EKgAcTlO4fY1FFLppdfx6qzfVsT2")
+      .then((res) => {
+        console.log("Response data:", res);
+        setStockPortfolioData(res);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+    }, 
+    []);
 
-// NOTE: just comment line 53 and uncomment the stuff  on top
-function ViewPortfolioDetails() {
   return (
     <>
       <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
@@ -120,7 +123,9 @@ function ViewPortfolioDetails() {
               Overall Returns
             </Typography>
             <Card>
-              <CardContent>something</CardContent>
+              <CardContent>
+                (stock price now - stock price when portfolio was created ) *
+              </CardContent>
             </Card>
           </Grid>
 
@@ -137,12 +142,15 @@ function ViewPortfolioDetails() {
             </Typography>
             <Card>
               <CardContent>
-                <MenuList>
-                {stockPortfolioData.allocations.map((allocation:any) => (
-                    <MenuItem key={allocation.stockName}>
-                      <Typography>{allocation.stockName} - {allocation.percentage}% , Capital is ${allocation.capitalAllocated} for {allocation.quantity} shares </Typography>
-                    </MenuItem>
-                  ))}
+              <MenuList>
+                 {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
+                  <MenuItem key={index}>
+                    <Typography>
+                      Stock: {allocation.stockName}, Average Price: {allocation.averagePrice}, Percentage: {allocation.percentage}%
+                    </Typography>
+                  </MenuItem>
+                ))} 
+
                 </MenuList>
               </CardContent>
             </Card>
