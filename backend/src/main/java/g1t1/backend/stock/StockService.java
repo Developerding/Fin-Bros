@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
+import com.crazzyghost.alphavantage.fundamentaldata.response.CompanyOverview;
+import com.crazzyghost.alphavantage.fundamentaldata.response.CompanyOverviewResponse;
 import com.crazzyghost.alphavantage.timeseries.response.MetaData;
 import com.crazzyghost.alphavantage.timeseries.response.StockUnit;
 import com.crazzyghost.alphavantage.timeseries.response.TimeSeriesResponse;
@@ -53,6 +55,7 @@ public class StockService {
     // add data for a stock
     public Stock importStocks(String symbolInput) {
 
+        // get all monthly stock prices data dating back 20+ years if available
         TimeSeriesResponse response = AlphaVantage.api()
             .timeSeries()
             .monthly()
@@ -92,31 +95,8 @@ public class StockService {
             throw new StockCannotImportException("Cannot import this stock as its symbol is not found!");
         }
 
-        // Stock format to store in database
-        // {
-        //     "id": "...",
-        //     "symbol": "IBM",
-        //     "name": "IBM",
-        //     "description": "...",
-        //     [
-        //         {
-        //             "open": 140.04,
-        //             "high": 143.415,
-        //             "low": 138.27,
-        //             "close": 138.46,
-        //             "adjustedClose": 0.0,
-        //             "volume": 32319252,
-        //             "dividendAmount": 0.0,
-        //             "splitCoefficient": 0.0,
-        //             "dateTime": "2023-10-13"
-        //         },
-        //         ...
-        //     ]
-        // }
-
         String symbol = metaData.getSymbol();
         String name = metaData.getSymbol();
-        String description = String.format("This is %s stock data", symbol);
         List<StockInstance> stockData = new ArrayList<>();
 
         for (StockUnit dataForAStockItem : dataForAStockList) {
@@ -137,12 +117,89 @@ public class StockService {
 
         }
 
+        // after getting stock data, now get company data for the stock
+        CompanyOverviewResponse companyOverviewResponse = AlphaVantage
+            .api()
+            .fundamentalData()
+            .companyOverview()
+            .forSymbol(symbolInput)
+            .fetchSync();
+
+        // companyOverviewResponse format
+        // {
+        //     "overview": {
+        //         "description": "...",
+        //         "country": "...",
+        //         "exchange": "..."
+        //     },
+        //     "errorMessage": "..."
+        // }
+
+        CompanyOverview overview = companyOverviewResponse.getOverview();
+        String description = "";
+        String country = "";
+        String exchange = "";
+        String industry = "";
+        String sector = "";
+        String assetType = "";
+
+        // means no company fundamental data
+        if (overview != null) {
+            description = overview.getDescription();
+            country = overview.getCountry();
+            exchange = overview.getExchange();
+            industry = overview.getIndustry();
+            sector = overview.getSector();
+            assetType = overview.getAssetType();
+        } 
+
+        // String description = companyOverviewResponse.getOverview().getDescription();
+        // String country = companyOverviewResponse.getOverview().getCountry();
+        // String exchange = companyOverviewResponse.getOverview().getExchange();
+        // String industry = companyOverviewResponse.getOverview().getIndustry();
+        // String sector = companyOverviewResponse.getOverview().getSector();
+        // String assetType = companyOverviewResponse.getOverview().getAssetType();
+
+        // form an object of Stock
+        // Stock format to store in database
+        // {
+        //     "id": "...",
+        //     "symbol": "IBM",
+        //     "name": "IBM",
+        //     "description": "...",
+        //     "country": "USA",
+        //     "exchange": "NYSE",
+        //     "industry": "COMPUTER & OFFICE EQUIPMENT",
+        //     "sector": "TECHNOLOGY",
+        //     "assetType": "Common Stock",
+        //     [
+        //         {
+        //             "open": 140.04,
+        //             "high": 143.415,
+        //             "low": 138.27,
+        //             "close": 138.46,
+        //             "adjustedClose": 0.0,
+        //             "volume": 32319252,
+        //             "dividendAmount": 0.0,
+        //             "splitCoefficient": 0.0,
+        //             "dateTime": "2023-10-13"
+        //         },
+        //         ...
+        //     ]
+        // }
+
         Stock stock = new Stock();
         stock.setSymbol(symbol);
         stock.setName(name);
         stock.setDescription(description);
+        stock.setCountry(country);
+        stock.setExchange(exchange);
+        stock.setIndustry(industry);
+        stock.setSector(sector);
+        stock.setAssetType(assetType);
         stock.setStockData(stockData);
         
+        // save this Stock object into db
         stockRepository.save(stock);
         return stock;
     }
