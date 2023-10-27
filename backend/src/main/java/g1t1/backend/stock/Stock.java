@@ -14,6 +14,11 @@ public class Stock {
     private String symbol;
     private String name;
     private String description;
+    private String country;
+    private String exchange;
+    private String industry;
+    private String sector;
+    private String assetType;
     private List<StockInstance> stockData;
 
 }
