@@ -11,6 +11,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useStores } from "../stores";
+import App from "../App";
 
 const ViewPortfolio = () => {
 
@@ -41,19 +43,24 @@ const ViewPortfolio = () => {
   
   // portfolios data
   const [portfolios, setPortfolios] = useState([] as portfolio[]);
+  const AppStore = useStores();
 
   // get portfolio data from backend
   useEffect(() => {
-    const getPortfoliosUrl = "http://localhost:8080/api/portfolio"; 
-    const getPortfoliosFromBackend = async () => {
-      await axios.get(getPortfoliosUrl)
-      .then(response => {
-        const portfoliosData = response.data
-        console.log(portfoliosData)
-        setPortfolios(portfoliosData)
-      })
+    // const getPortfoliosUrl = "http://localhost:8080/api/portfolio"; 
+    // const getPortfoliosFromBackend = async () => {
+    //   await axios.get(getPortfoliosUrl)
+    //   .then(response => {
+    //     const portfoliosData = response.data
+    //     console.log(portfoliosData)
+    //     setPortfolios(portfoliosData)
+    //   })
+    // }
+    // getPortfoliosFromBackend();
+    AppStore.getPortfoliosController(AppStore.getUserId()).then((response: any) => {
+      setPortfolios(response.data);
     }
-    getPortfoliosFromBackend();
+    );
   }, []);
 
   // when clicking into the portfolio
@@ -107,7 +114,9 @@ const ViewPortfolio = () => {
 
   return (
     <>
-      <NavBar />
+      {/* <NavBar /> */}
+      <h2>Welcome back!</h2>
+      <h4>Here are your portfolios: </h4>
       <Container maxWidth={false} sx={{ marginTop: 3, maxWidth: '60%' }}>
         <Grid container spacing={3}>
           {renderPortfolios()}

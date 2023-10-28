@@ -189,6 +189,19 @@ class AppStore {
       return error;
     }
   }
+
+  getPortfoliosController = async (userId : String) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/portfolio/${userId}`
+      )
+      console.log(response.data)
+      return response
+    } catch (err) {
+      console.log(err)
+      return err;
+    }
+  }
 }
 
 const hydrate = create({
