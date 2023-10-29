@@ -10,47 +10,28 @@ import axios from "axios";
 import { useStores } from "../stores";
 
 import PortfolioStock from "../components/PortfolioStock";
+import PortfolioName from "../components/formComponents/controlled/PortfolioName";
+import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
+import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
 
 const Testing = () => {
   const [form, setForm] = useState({
-    name: "",
+    portfolioName: "",
+    portfolioDescription: "",
+    portfolioDate: "",
+    portfolioCapital: 0,
+    stocks: [],
   });
 
   const [error, setError] = useState(false);
   const AppStore = useStores();
   const submitEvent = () => {
-    AppStore.loginController("ryan.poy.2021@scis.smu.edu.sg", "password123")
-      .then((res: any) => {
-        console.log(res);
-      })
-      .catch((err: any) => {
-        console.log(err);
-      });
+    console.log("submit");
   };
   return (
     <>
       <NavBar />
       <NoUserNavBar />
-      <ControlledTextInput
-        label="Name"
-        placeholder="Enter Name"
-        formControlId="name"
-        formValue={form.name}
-        setFormControlState={setForm}
-        error={error}
-        errorText="Name is required"
-      />
-
-      {/* <ControlledSelectInput
-        label="Label"
-        placeholder="Enter Name"
-        formControlId="name"
-        formValue={form.name}
-        setFormControlState={setForm}
-        error={error}
-        errorText="Name is required"
-        options={["1", "2", "3"]}
-      /> */}
 
       <Stack gap={1} direction="row">
         <PrimaryButton
@@ -61,10 +42,36 @@ const Testing = () => {
         <OutlinedButton buttonText="Login/Register" />
       </Stack>
 
-      <PortfolioStock
-        currentPercentage={2}
-        stockName="testing"
+      <PortfolioStock currentPercentage={2} stockName="testing" />
+      <PortfolioName
+        label="Portfolio Name"
+        placeholder="Enter portfolio name"
+        formControlId="portfolioName"
+        formValue={form.portfolioName}
+        formData={form}
+        setFormControlState={setForm}
+        error={error}
+        errorText="Please enter a portfolio name"
       />
+      <PortfolioDescription
+        label="Portfolio Description"
+        placeholder="Enter description"
+        formControlId="portfolioDescription"
+        formValue={form.portfolioDescription}
+        formData={form}
+        setFormControlState={setForm}
+        error={error}
+        errorText="Please enter a description"
+      />
+      {/* <PortfolioDate
+        label="Portfolio inception date"
+        formControlId="portfolioDate"
+        formValue={form.portfolioDate}
+        formData={form}
+        setFormControlState={setForm}
+        error={error}
+        errorText="Please enter a date"
+      /> */}
     </>
   );
 };

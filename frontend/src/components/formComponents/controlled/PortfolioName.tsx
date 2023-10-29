@@ -1,5 +1,4 @@
-import { Person } from "@mui/icons-material";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import FormatColorTextIcon from "@mui/icons-material/FormatColorText";
 import {
   Box,
   InputAdornment,
@@ -24,7 +23,7 @@ interface Props {
   className?: string;
 }
 
-const LoginInput: FC<Props> = ({
+const PortfolioName: FC<Props> = ({
   label,
   placeholder,
   formControlId,
@@ -50,14 +49,14 @@ const LoginInput: FC<Props> = ({
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <PersonOutlineOutlinedIcon />
+              <FormatColorTextIcon />
             </InputAdornment>
           ),
         }}
         label={label}
         placeholder={placeholder}
-        error={error && !validator.isEmail(formValue)}
-        helperText={error && !validator.isEmail(formValue) ? errorText : ""}
+        error={error && !validator.isEmpty(formValue)}
+        helperText={error && !validator.isEmpty(formValue) ? errorText : ""}
         value={formValue || ""}
         onChange={handleChange}
         style={{
@@ -69,4 +68,4 @@ const LoginInput: FC<Props> = ({
   );
 };
 
-export default LoginInput;
+export default PortfolioName;
