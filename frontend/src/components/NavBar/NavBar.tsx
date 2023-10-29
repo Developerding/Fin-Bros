@@ -172,7 +172,7 @@ const NavBar = () => {
             >
               <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
                 <img
-                  src="src/assets/img/finbros.png"
+                  src="/assets/img/finbros.png"
                   style={{ width: "200px", height: "64px" }}
                 />
               </div>
@@ -216,7 +216,7 @@ const NavBar = () => {
           >
             <div onClick={handleNavigation} style={{ cursor: "pointer" }}>
               <img
-                src="src/assets/img/finbros.png"
+                src="/assets/img/finbros.png"
                 style={{ width: "170px", height: "64px" }}
               />
             </div>
