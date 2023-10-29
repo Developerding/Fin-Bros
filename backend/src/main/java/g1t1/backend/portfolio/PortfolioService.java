@@ -105,9 +105,8 @@ public class PortfolioService {
         }
     }
 
-    public ResponseEntity<String> findAndDeletePortfolioByName(String name, HashMap<String,String> userHash) {
-        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userHash.get("userId"), name);
-        System.out.println(portfolio);
+    public ResponseEntity<String> findAndDeletePortfolioByName(String portfolioName, String userId) {
+        Portfolio portfolio = portfolioRepository.findByUserIdAndName(userId, portfolioName);
         if (portfolio == null){
             String responseMessage = "Portfolio does not exist";
             return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
