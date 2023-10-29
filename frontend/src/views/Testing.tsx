@@ -13,6 +13,7 @@ import PortfolioStock from "../components/PortfolioStock";
 import PortfolioName from "../components/formComponents/controlled/PortfolioName";
 import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
 import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
+import PortfolioCapital from "../components/formComponents/controlled/PortfolioCapital";
 
 const Testing = () => {
   const [form, setForm] = useState({
@@ -74,6 +75,15 @@ const Testing = () => {
         setFormControlState={setForm}
         error={error}
         errorText="Please enter a date"
+      />
+      <PortfolioCapital
+        label="Portfolio Capital"
+        formControlId="portfolioCapital"
+        formValue={form.portfolioCapital}
+        formData={form}
+        setFormControlState={setForm}
+        error={error}
+        errorText="Please enter a starting capital"
       />
     </>
   );

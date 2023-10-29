@@ -16,7 +16,7 @@ interface Props {
   label: string;
   placeholder?: string;
   formControlId: string;
-  formValue: string;
+  formValue: any;
   formData: any;
   setFormControlState: React.Dispatch<React.SetStateAction<any>>;
   error?: boolean;
