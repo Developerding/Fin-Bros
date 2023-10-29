@@ -46,8 +46,8 @@ public class PortfolioController {
         return portfolioService.findAndEditPortfolioByName(portfolioName, portfolio);
     }
 
-    // @DeleteMapping("/{name}")
-    // public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String name){
-    //     return portfolioService.findAndDeletePortfolioByName(name);
-    // }
+    @DeleteMapping("/{portfolioName}/{userId}")
+    public ResponseEntity<String> findAndDeletePortfolioByName(@PathVariable String portfolioName, @PathVariable String userId){
+        return portfolioService.findAndDeletePortfolioByName(portfolioName, userId);
+    }
 }
