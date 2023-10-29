@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "../components/NavBar/NavBar";
 import ControlledTextInput from "../components/formComponents/controlled/ControlledTextInput";
 import { Button, Stack } from "@mui/material";
@@ -25,6 +25,9 @@ const Testing = () => {
 
   const [error, setError] = useState(false);
   const AppStore = useStores();
+  useEffect(() => {
+    console.log(form);
+  }, [form]);
   const submitEvent = () => {
     console.log("submit");
   };
@@ -63,7 +66,7 @@ const Testing = () => {
         error={error}
         errorText="Please enter a description"
       />
-      {/* <PortfolioDate
+      <PortfolioDate
         label="Portfolio inception date"
         formControlId="portfolioDate"
         formValue={form.portfolioDate}
@@ -71,7 +74,7 @@ const Testing = () => {
         setFormControlState={setForm}
         error={error}
         errorText="Please enter a date"
-      /> */}
+      />
     </>
   );
 };
