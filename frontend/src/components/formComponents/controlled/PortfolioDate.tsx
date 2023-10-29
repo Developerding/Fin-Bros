@@ -45,7 +45,6 @@ const PortfolioDate: FC<Props> = ({
         <DatePicker
           disableFuture
           label={label}
-          //   placeholder=""
           value={formValue ? dayjs(formValue) : null}
           //   className="w100"
           onChange={(newValue) =>

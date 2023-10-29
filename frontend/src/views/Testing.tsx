@@ -30,6 +30,15 @@ const Testing = () => {
     console.log(form);
   }, [form]);
   const submitEvent = () => {
+    if (
+      form.portfolioCapital == 0 ||
+      form.portfolioDate == "" ||
+      form.portfolioDescription == "" ||
+      form.portfolioName == "" ||
+      form.stocks.length == 0
+    ) {
+      setError(true);
+    }
     console.log("submit");
   };
   return (

@@ -55,8 +55,8 @@ const PortfolioName: FC<Props> = ({
         }}
         label={label}
         placeholder={placeholder}
-        error={error && !validator.isEmpty(formValue)}
-        helperText={error && !validator.isEmpty(formValue) ? errorText : ""}
+        error={error && validator.isEmpty(formValue)}
+        helperText={error && validator.isEmpty(formValue) ? errorText : ""}
         value={formValue || ""}
         onChange={handleChange}
         style={{

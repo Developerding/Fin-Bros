@@ -56,8 +56,8 @@ const PortfolioDescription: FC<Props> = ({
         label={label}
         multiline
         placeholder={placeholder}
-        error={error && !validator.isEmpty(formValue)}
-        helperText={error && !validator.isEmpty(formValue) ? errorText : ""}
+        error={error && validator.isEmpty(formValue)}
+        helperText={error && validator.isEmpty(formValue) ? errorText : ""}
         value={formValue || ""}
         onChange={handleChange}
         style={{
