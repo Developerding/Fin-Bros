@@ -3,7 +3,7 @@ export const Rapie = () => {
     <>
       <div>Rapie sucks </div>
       <div>
-        <img src="/src/assets/img/boolets.jpeg" alt="picture" />
+        <img src="/assets/img/boolets.jpeg" alt="picture" />
       </div>
     </>
   );
