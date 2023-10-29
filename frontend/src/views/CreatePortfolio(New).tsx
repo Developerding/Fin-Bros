@@ -1,5 +1,10 @@
-import { Paper, Typography } from "@mui/material";
+import { Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Container } from "@mui/system";
 import { useState, useEffect } from "react";
+import PortfolioName from "../components/formComponents/controlled/PortfolioName";
+import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
+import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
+import PortfolioCapital from "../components/formComponents/controlled/PortfolioCapital";
 
 const CreatePortfolio_V2 = () => {
   // Constants of all stocks:
@@ -55,9 +60,71 @@ const CreatePortfolio_V2 = () => {
   });
 
   return (
-    <Paper>
-      <Typography variant="h2">Create Portfolio</Typography>
-    </Paper>
+    <Container maxWidth="xl" sx={{ width: "100%" }}>
+      <Paper
+        sx={{
+          margin: "auto",
+          marginTop: "50px",
+          width: "90%",
+          borderRadius: "15px",
+        }}
+      >
+        <Grid container alignItems="center" justifyContent="center">
+          {/* Title */}
+          <Grid item>
+            <Typography
+              variant="body1"
+              sx={{ marginTop: "16px", fontSize: "36px", fontWeight: "bold" }}
+            >
+              Create Portfolio
+            </Typography>
+          </Grid>
+
+          {/* Contents */}
+          <Grid container spacing={2}>
+            {/* left columns */}
+            <Grid item xs={4}>
+              {/* Portfolio Name */}
+              <Grid item>
+                <PortfolioName />
+              </Grid>
+              {/* Portfolio Description */}
+              <Grid item>
+                <PortfolioDescription />
+              </Grid>
+              {/* Inception Date */}
+              <Grid item>
+                <PortfolioDate />
+              </Grid>
+              {/* Capital */}
+              <Grid item>
+                <PortfolioCapital />
+              </Grid>
+            </Grid>
+
+            {/* RHS */}
+            <Grid item xs={8}>
+              {/* Search Bar */}
+              <Box
+                sx={{ width: "calc(100%-32px)", margin: "16px 16px 0px 16px" }}
+              >
+                <TextField
+                  id="stockSearch"
+                  label="Search for stocks"
+                  type="text"
+                  style={{
+                    marginTop: "10px",
+                    width: "100%",
+                  }}
+                  // onChange={handleChange}
+                  // inputRef={stockSearchInputRef}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Paper>
+    </Container>
   );
 };
 

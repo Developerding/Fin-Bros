@@ -12,3 +12,4 @@ export const PASSWORDRESET = "/passwordreset";
 export const PASSWORDEMAIL = "/passwordemail";
 export const VIEWPROFILE = "/viewprofile";
 export const CHANGE_PASSWORD = "/changepassword";
+export const CREATE_PORTFOLIO_2 = "/new2";

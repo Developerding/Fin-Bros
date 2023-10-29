@@ -14,6 +14,7 @@ import PasswordReset from "../views/authentication/PasswordReset.tsx";
 import PasswordEmail from "../views/authentication/PasswordEmail.tsx";
 import ViewProfile from "../views/authentication/ViewProfile.tsx";
 import ChangePassword from "../views/authentication/ChangePassword.tsx";
+import CreatePortfolio_V2 from "../views/CreatePortfolio(New).tsx";
 
 const Screens = () => {
   return (
@@ -38,6 +39,7 @@ const Screens = () => {
       <Route path={LINKS.PASSWORDEMAIL} element={<PasswordEmail />} />
       <Route path={LINKS.VIEWPROFILE} element={<ViewProfile />} />
       <Route path={LINKS.CHANGE_PASSWORD} element={<ChangePassword />} />
+      <Route path={LINKS.CREATE_PORTFOLIO_2} element={<CreatePortfolio_V2 />} />
     </Routes>
   );
 };
