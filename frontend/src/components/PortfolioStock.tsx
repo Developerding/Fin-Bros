@@ -6,7 +6,8 @@ interface Props {
   className?: string;
   stockName: string;
   currentPercentage: number;
-  onClick?: () => void;
+  onClick: () => void;
+  onChange: () => void;
   divStyle?: {};
   divClassName?: string;
 }
@@ -17,6 +18,7 @@ const PortfolioStock: FC<Props> = ({
     stockName,
     currentPercentage,
     onClick,
+    onChange,
     divStyle,
     divClassName
 }) => {
@@ -33,7 +35,8 @@ const PortfolioStock: FC<Props> = ({
                     <Stack direction="row" justifyContent="space-around" spacing={2}>
                         {/* Unsure why the app still compiles with an error */}
                         <TextField  
-                            placeholder={currentPercentage} 
+                            placeholder="0"
+                            onChange={onChange}
                             type="number" 
                             InputProps={{ inputMode:'numeric', pattern: '[0-9]*',
                             endAdornment:<InputAdornment position="end">%</InputAdornment>
