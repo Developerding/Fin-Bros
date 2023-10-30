@@ -129,91 +129,94 @@ class AppStore {
     }
   };
 
-  viewPortfolioController = async (portfolioName : string, userId : string) => {
+  viewPortfolioController = async (portfolioName: string, userId: string) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
-        );      
+      );
       console.log(response.data);
       return response.data;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return err;
     }
-  }
+  };
 
   uploadPortfolioController = async (data: Object) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/portfolio", data
-      )
-      return response
+        "http://localhost:8080/api/portfolio",
+        data
+      );
+      return response;
     } catch (err) {
-      console.log(err)
-      return err;
+      console.log(err);
+      throw err;
     }
-  }
+  };
 
   updatePortfolioController = async (data: Object, portfolioName: String) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/portfolio/edit/${portfolioName}`, data
-      )
-      return response
+        `http://localhost:8080/api/portfolio/edit/${portfolioName}`,
+        data
+      );
+      return response;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return error;
     }
-  }
+  };
 
-  getPortfolioByUserIdController = async (userId : String, portfolioName : String) => {
+  getPortfolioByUserIdController = async (
+    userId: String,
+    portfolioName: String
+  ) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`,
-      )
-      return response
+        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+      );
+      return response;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return err;
     }
-  }
+  };
 
-  createLogController = async (data : Object) => {
+  createLogController = async (data: Object) => {
     try {
-      const response = await axios.post(
-        `http://localhost:8080/api/log`, data
-      )
-      return response
+      const response = await axios.post(`http://localhost:8080/api/log`, data);
+      return response;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return error;
     }
-  }
+  };
 
-  getPortfoliosController = async (userId : String) => {
+  getPortfoliosController = async (userId: String) => {
     try {
       const response = await axios.get(
         `http://localhost:8080/api/portfolio/${userId}`
-      )
-      console.log(response.data)
-      return response
+      );
+      console.log(response.data);
+      return response;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return err;
     }
-  }
+  };
 
-  deletePortfolioController = async (portfolioName : String, userId: String) => {
+  deletePortfolioController = async (portfolioName: String, userId: String) => {
     try {
       const response = await axios.delete(
         `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
-      )
-      return response
+      );
+      return response;
     } catch (err) {
-      console.log(err)
+      console.log(err);
       return err;
     }
-  }
+  };
 }
 
 const hydrate = create({

@@ -107,7 +107,7 @@ const Testing = () => {
         <OutlinedButton buttonText="Login/Register" />
       </Stack>
 
-      <PortfolioStock currentPercentage={2} stockName="testing" />
+      {/* <PortfolioStock currentPercentage={2} stockName="testing" /> */}
       <PortfolioName
         label="Portfolio Name"
         placeholder="Enter portfolio name"
@@ -128,7 +128,7 @@ const Testing = () => {
         error={error}
         errorText="Please enter a description"
       />
-      <PortfolioDate
+      {/* <PortfolioDate
         label="Portfolio inception date"
         formControlId="portfolioDate"
         formValue={form.portfolioDate}
@@ -136,7 +136,7 @@ const Testing = () => {
         setFormControlState={setForm}
         error={error}
         errorText="Please enter a date"
-      />
+      /> */}
       <PortfolioCapital
         label="Portfolio Capital"
         formControlId="portfolioCapital"

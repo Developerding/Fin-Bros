@@ -10,13 +10,13 @@ import React, { FC, useState } from "react";
 import validator from "validator";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
 interface Props {
   label: string;
   placeholder?: string;
   formControlId: string;
-  formValue: any;
+  formValue: Dayjs | null;
   formData: any;
   setFormControlState: React.Dispatch<React.SetStateAction<any>>;
   error?: boolean;
