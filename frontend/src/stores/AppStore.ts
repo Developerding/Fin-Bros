@@ -202,6 +202,18 @@ class AppStore {
       return err;
     }
   }
+
+  deletePortfolioController = async (portfolioName : String, userId: String) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+      )
+      return response
+    } catch (err) {
+      console.log(err)
+      return err;
+    }
+  }
 }
 
 const hydrate = create({

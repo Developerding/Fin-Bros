@@ -1,4 +1,3 @@
-import NavBar from "../components/NavBar/NavBar";
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
@@ -7,13 +6,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import Button from '@mui/material/Button';
-
-import axios from 'axios';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStores } from "../stores";
-import App from "../App";
+import OutlinedButton from "../components/buttons/OutlinedButton";
+import PrimaryButton from "../components/buttons/PrimaryButton";
 
 const ViewPortfolio = () => {
 
@@ -46,6 +43,7 @@ const ViewPortfolio = () => {
   const [portfolios, setPortfolios] = useState([] as portfolio[]);
   const [isHovering, setIsHovering] = useState(false);
   const AppStore = useStores();
+
 
   // get portfolio data from backend
   useEffect(() => {
@@ -97,7 +95,7 @@ const ViewPortfolio = () => {
                       height: '100%',
                     }}
                   >
-                    <Paper elevation={3} sx={{ width: 1, display:"flex", height:"100%", paddingY:1, justifyContent:"start", paddingLeft:2 }}>
+                    <Paper elevation={3} sx={{ width: 1, display:"flex", height:"100%", paddingY:2, justifyContent:"start", paddingLeft:2 }}>
                     <Stack direction="column" justifyContent="center" sx={{width: 1}}>
                     <Stack direction="row" alignItems="center" spacing={10}>
                         <Box sx={{ p: 1 }}>
@@ -124,19 +122,33 @@ const ViewPortfolio = () => {
                             textOverflow: 'ellipsis',
                             display: '-webkit-box',
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
+                            WebkitBoxOrient: 'horizontal',
                           }}>
                             {portfolio.description}
                           </Typography>
                         </Box>
                       </Stack>
                       <Stack direction={"row"} justifyContent={"end"} sx={{paddingRight: 1, paddingBottom: 1}}>
-                      <Button onClick={editClick}>
+                      {/* <Button onClick={editClick}>
                         <Typography variant="h6">Edit Portfolio</Typography>
-                      </Button>
-                      <Button>
-                        <Typography variant="h6">Delete Portfolio</Typography>
-                      </Button>
+                      </Button> */}
+                      <OutlinedButton
+                      buttonText="Edit"
+                      onClick={(e:any) => {
+                        e.stopPropagation();
+                        navigate(`/edit/${portfolio.name}`);
+                      }}
+                      >
+                      </OutlinedButton>
+                      <PrimaryButton
+                      buttonText="Delete"
+                      onClick={(e:any) => {
+                        e.stopPropagation();
+                        AppStore.deletePortfolioController(portfolio.name, AppStore.getUserId());
+                        window.location.reload();
+                      }}
+                      >
+                      </PrimaryButton>
                     </Stack>
                     </Stack>
                     </Paper>
