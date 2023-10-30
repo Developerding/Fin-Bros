@@ -1,6 +1,18 @@
-import { Autocomplete, Button, Grid, List, Paper, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Avatar,
+  Button,
+  Grid,
+  List,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box, Container } from "@mui/system";
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect, ChangeEvent, useRef } from "react";
 import PortfolioName from "../components/formComponents/controlled/PortfolioName";
 import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
 import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
@@ -57,6 +69,8 @@ const CreatePortfolio_V2 = () => {
     percentage: number;
   };
 
+  const textFieldRef = useRef(null);
+
   const [error, setError] = useState(false);
 
   const [portfolio, setPortfolio] = useState({
@@ -67,18 +81,57 @@ const CreatePortfolio_V2 = () => {
     allocations: [] as StockAllocation[],
   });
 
-  // Add stocks
-  const addStock = (stockName: string) => { 
-    if (!portfolio.allocations.some(item => item.stockName === stockName)) {
+  // Search value
+  const [searchValue, setSearchValue] = useState("");
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
+    null
+  );
+  const [filterOptions, setFilterOptions] = useState(allStocks);
 
-      const newAllocation: StockAllocation = { stockName, percentage: 0};
-      setPortfolio({...portfolio, allocations:[...portfolio.allocations,newAllocation]})     
+  // Search function (auto complete)
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    const filtered = allStocks.filter(
+      (option) =>
+        option.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        option.ticker.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setFilterOptions(filtered);
+  };
+
+  const handleSearchClick = (ticker: string) => {
+    setSearchValue("");
+    setFilterOptions(allStocks);
+    setAnchorEl(null);
+    const alreadyExists = portfolio.allocations.some(
+      (allocation) => allocation.stockName === ticker
+    );
+    if (!alreadyExists) {
+      const obj = {
+        stockName: ticker,
+        percentage: 0,
+      };
+      setPortfolio({
+        ...portfolio,
+        allocations: [...portfolio.allocations, obj],
+      });
     }
-  }
+  };
+
+  // Add stocks
+  const addStock = (stockName: string) => {
+    if (!portfolio.allocations.some((item) => item.stockName === stockName)) {
+      const newAllocation: StockAllocation = { stockName, percentage: 0 };
+      setPortfolio({
+        ...portfolio,
+        allocations: [...portfolio.allocations, newAllocation],
+      });
+    }
+  };
 
   useEffect(() => {
-    console.log(portfolio)
-  }, [portfolio])
+    console.log(portfolio);
+  }, [portfolio]);
 
   // Remove stocks
   const removeStock = (stockName: string) => {
@@ -98,28 +151,31 @@ const CreatePortfolio_V2 = () => {
     setPortfolio((prevPortfolio) => ({
       ...prevPortfolio,
       allocations: prevPortfolio.allocations.map((allocation) => {
-        if (allocation.stockName === stockName){
-          return {...allocation, percentage: Number.parseInt(e.target.value)};
+        if (allocation.stockName === stockName) {
+          return { ...allocation, percentage: Number.parseInt(e.target.value) };
         }
         return allocation;
-      })
-    }))
-  }
+      }),
+    }));
+  };
 
   // Handles submit verification
   const handleSubmit = async () => {
-    (await portfolio.portfolioName) == "" || (await portfolio.portfolioDescription) == "" || (await portfolio.portfolioCapital) == 0 || (await portfolio.portfolioDate) == "" ? setError(true) : setError(false)
-  }
+    (await portfolio.portfolioName) == "" ||
+    (await portfolio.portfolioDescription) == "" ||
+    (await portfolio.portfolioCapital) == 0 ||
+    (await portfolio.portfolioDate) == ""
+      ? setError(true)
+      : setError(false);
+  };
 
   const options = allStocks.map((option) => {
-    const firstLetter = option.name[0]
+    const firstLetter = option.name[0];
     return {
-      firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
+      firstLetter: /[0-9]/.test(firstLetter) ? "0-9" : firstLetter,
       ...option,
     };
   });
-
-  
 
   return (
     <Container maxWidth="xl" sx={{ width: "100%" }}>
@@ -161,39 +217,39 @@ const CreatePortfolio_V2 = () => {
               </Grid>
               {/* Portfolio Description */}
               <Grid item>
-                <PortfolioDescription 
-                label="Portfolio Description"
-                placeholder="Enter description"
-                formControlId="portfolioDescription"
-                formValue={portfolio.portfolioDescription}
-                formData={portfolio}
-                setFormControlState={setPortfolio}
-                error={error}
-                errorText="Please enter a description"
+                <PortfolioDescription
+                  label="Portfolio Description"
+                  placeholder="Enter description"
+                  formControlId="portfolioDescription"
+                  formValue={portfolio.portfolioDescription}
+                  formData={portfolio}
+                  setFormControlState={setPortfolio}
+                  error={error}
+                  errorText="Please enter a description"
                 />
               </Grid>
               {/* Inception Date */}
               <Grid item>
-                <PortfolioDate 
-                label="Portfolio inception date"
-                formControlId="portfolioDate"
-                formValue={portfolio.portfolioDate}
-                formData={portfolio}
-                setFormControlState={setPortfolio}
-                error={error}
-                errorText="Please enter a date"
+                <PortfolioDate
+                  label="Portfolio inception date"
+                  formControlId="portfolioDate"
+                  formValue={portfolio.portfolioDate}
+                  formData={portfolio}
+                  setFormControlState={setPortfolio}
+                  error={error}
+                  errorText="Please enter a date"
                 />
               </Grid>
               {/* Capital */}
               <Grid item>
                 <PortfolioCapital
-                label="Portfolio Capital"
-                formControlId="portfolioCapital"
-                formValue={portfolio.portfolioCapital}
-                formData={portfolio}
-                setFormControlState={setPortfolio}
-                error={error}
-                errorText="Please enter a starting capital"
+                  label="Portfolio Capital"
+                  formControlId="portfolioCapital"
+                  formValue={portfolio.portfolioCapital}
+                  formData={portfolio}
+                  setFormControlState={setPortfolio}
+                  error={error}
+                  errorText="Please enter a starting capital"
                 />
               </Grid>
             </Grid>
@@ -204,58 +260,100 @@ const CreatePortfolio_V2 = () => {
               <Box
                 sx={{ width: "calc(100%-32px)", margin: "16px 16px 0px 16px" }}
               >
-                {/* <TextField
+                <TextField
                   id="stockSearch"
+                  ref={textFieldRef}
                   label="Search for stocks"
                   type="text"
+                  value={searchValue}
                   style={{
                     marginTop: "10px",
                     width: "100%",
                   }}
-                  // onChange={handleChange}
-                  // inputRef={stockSearchInputRef}
-                /> */}
+                  onChange={handleSearchChange}
+                  onFocus={(e) => setAnchorEl(e.currentTarget)}
+                  onBlur={() => setAnchorEl(null)}
+                />
+                <Popper
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  placement="bottom-start"
+                  style={{ width: textFieldRef?.current?.offsetWidth }}
+                >
+                  <MenuList
+                    style={{
+                      maxHeight: "230px",
+                      width: "100%",
+                      overflowY: "auto",
+                      border: "1px solid black",
+                      borderRadius: "10px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    {filterOptions.map((obj, index) => (
+                      <MenuItem
+                        key={index}
+                        onClick={() => handleSearchClick}
+                        style={{ marginTop: "16px" }}
+                      >
+                        <Grid container alignItems="center" spacing={2}>
+                          <Grid item xs={1}>
+                            <Avatar src={`/assets/stocks/${obj.ticker}.png`} />
+                          </Grid>
+                          <Grid item xs={2}>
+                            <Typography
+                              variant="body1"
+                              sx={{ fontWeight: "bold" }}
+                            >
+                              {obj.ticker}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={8}>
+                            <Typography variant="body2">{obj.name}</Typography>
+                          </Grid>
+                        </Grid>
+                      </MenuItem>
+                    ))}
+                  </MenuList>
+                </Popper>
 
-                <Autocomplete
+                {/* <Autocomplete
                   id="grouped-demo"
-                  options={
-                    options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))
-
-                  }
+                  options={options.sort(
+                    (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+                  )}
                   groupBy={(option) => option.firstLetter}
                   getOptionLabel={(option) => option.name}
-                  sx={{ width: "100%" }}
-                  renderInput={(params) => <TextField {...params} label="Search for Stock" />}
-                  isOptionEqualToValue={(option, value) => option.ticker === value.ticker}
-                  onChange={(event, value)=> {
-                      if (value !== null) {
-                        addStock(value.ticker);
-                      }
-                    }
-                  }
-                  clearOnBlur = {true}
-                />
-                <Paper
-                  elevation={0}
-                  sx={{maxHeight: 250, overflow: 'auto'}}
+                  sx={{ width: "100%", marginTop: "26px" }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Search for Stock" >
+                        <Avatar src={`/assets/stocks/${params.ticker}.png`} />
 
-                >
-                  
-                  {portfolio.allocations.map((allocations, index)=> (
-                  <PortfolioStock
-                    stockName={allocations.stockName}
-                    currentPercentage={allocations.percentage}
-                    key={index}
-                    onClick={() => removeStock(allocations.stockName)}
-                    onChange={(e) => handlePercentageChange(allocations.stockName, e)}
-                  />
-                ))}
-                  
-                
+                  )}
+                  isOptionEqualToValue={(option, value) =>
+                    option.ticker === value.ticker
+                  }
+                  onChange={(event, value) => {
+                    if (value !== null) {
+                      addStock(value.ticker);
+                    }
+                  }}
+                  clearOnBlur={true}
+                /> */}
+
+                <Paper elevation={0} sx={{ maxHeight: 250, overflow: "auto" }}>
+                  {portfolio.allocations.map((allocations, index) => (
+                    <PortfolioStock
+                      stockName={allocations.stockName}
+                      currentPercentage={allocations.percentage}
+                      key={index}
+                      onClick={() => removeStock(allocations.stockName)}
+                      onChange={(e) =>
+                        handlePercentageChange(allocations.stockName, e)
+                      }
+                    />
+                  ))}
                 </Paper>
-                
-                
-                
               </Box>
             </Grid>
           </Grid>
@@ -273,8 +371,6 @@ const CreatePortfolio_V2 = () => {
             Create portfolio
           </Button>
         </Grid>
-
-        
       </Paper>
     </Container>
   );
