@@ -68,13 +68,23 @@ public class PortfolioService {
         return retrievedPortfolio;
     }
 
-    public ResponseEntity<String> findAndEditPortfolioByName(String name, Portfolio updatedPortfolio){
+    public ResponseEntity<String> findAndEditPortfolioByName(String name,  Portfolio updatedPortfolio){
         String userId = updatedPortfolio.getUserId();
         Portfolio portfolio = portfolioRepository.findByUserIdAndName(userId, name);
         if (portfolio == null){
             String responseMessage = "Portfolio does not exist";
             return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
-        } else {
+        }
+
+        // Since portfolio name is unique, need to check if the new name is being used by the user
+        if(name != updatedPortfolio.getName()){
+            Portfolio portfolioCheck = portfolioRepository.findByUserIdAndName(userId, updatedPortfolio.getName());
+            if (portfolioCheck != null ){
+                String responseMessage = "Portfolio name is already in use";
+                return new ResponseEntity<String>(responseMessage, HttpStatus.BAD_REQUEST);
+            }
+        }
+        
             portfolio.setCapital(updatedPortfolio.getCapital());
             portfolio.setDateTime(updatedPortfolio.getDateTime());
             portfolio.setDescription(updatedPortfolio.getDescription());
@@ -102,7 +112,7 @@ public class PortfolioService {
             portfolioRepository.save(portfolio);
             String responseMessage = "Portfolio updated successfully";
             return new ResponseEntity<>(responseMessage, HttpStatus.ACCEPTED);
-        }
+        
     }
 
     public ResponseEntity<String> findAndDeletePortfolioByName(String portfolioName, String userId) {
