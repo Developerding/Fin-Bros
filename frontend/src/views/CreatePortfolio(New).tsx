@@ -18,51 +18,10 @@ import PortfolioDescription from "../components/formComponents/controlled/Portfo
 import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
 import PortfolioCapital from "../components/formComponents/controlled/PortfolioCapital";
 import PortfolioStock from "../components/PortfolioStock";
+import { allStocks } from "../constants/stocks";
 
 const CreatePortfolio_V2 = () => {
   // Constants of all stocks:
-  const allStocks = [
-    { name: "Apple Inc.", ticker: "AAPL" },
-    { name: "Microsoft Corp.", ticker: "MSFT" },
-    { name: "Amazon.com Inc.", ticker: "AMZN" },
-    { name: "Alphabet Inc.", ticker: "GOOGL" },
-    { name: "Facebook, Inc.", ticker: "FB" },
-    { name: "Berkshire Hathaway Inc.", ticker: "BRK.A" },
-    { name: "Tesla, Inc.", ticker: "TSLA" },
-    { name: "NVIDIA Corporation", ticker: "NVDA" },
-    { name: "JPMorgan Chase & Co.", ticker: "JPM" },
-    { name: "Johnson & Johnson", ticker: "JNJ" },
-    { name: "Visa Inc.", ticker: "V" },
-    { name: "Procter & Gamble Co.", ticker: "PG" },
-    { name: "UnitedHealth Group Inc.", ticker: "UNH" },
-    { name: "Home Depot Inc.", ticker: "HD" },
-    { name: "Mastercard Inc.", ticker: "MA" },
-    { name: "Bank of America Corp.", ticker: "BAC" },
-    { name: "Walt Disney Co.", ticker: "DIS" },
-    { name: "Netflix Inc.", ticker: "NFLX" },
-    { name: "Adobe Inc.", ticker: "ADBE" },
-    { name: "PayPal Holdings Inc.", ticker: "PYPL" },
-    { name: "Exxon Mobil Corp.", ticker: "XOM" },
-    { name: "Coca-Cola Co.", ticker: "KO" },
-    { name: "Intel Corp.", ticker: "INTC" },
-    { name: "Cisco Systems Inc.", ticker: "CSCO" },
-    { name: "PepsiCo Inc.", ticker: "PEP" },
-    { name: "Walmart Inc.", ticker: "WMT" },
-    { name: "Chevron Corp.", ticker: "CVX" },
-    { name: "AT&T Inc.", ticker: "T" },
-    { name: "Merck & Co. Inc.", ticker: "MRK" },
-    { name: "Verizon Communications Inc.", ticker: "VZ" },
-    { name: "Nike Inc.", ticker: "NKE" },
-    { name: "Boeing Co.", ticker: "BA" },
-    { name: "Oracle Corp.", ticker: "ORCL" },
-    { name: "Goldman Sachs Group Inc.", ticker: "GS" },
-    { name: "McDonald's Corp.", ticker: "MCD" },
-    { name: "3M Co.", ticker: "MMM" },
-    { name: "Salesforce.com Inc.", ticker: "CRM" },
-    { name: "Abbott Laboratories", ticker: "ABT" },
-    { name: "American Express Co.", ticker: "AXP" },
-    { name: "Costco Wholesale Corp.", ticker: "COST" },
-  ];
 
   type StockAllocation = {
     stockName: string;
@@ -100,6 +59,7 @@ const CreatePortfolio_V2 = () => {
   };
 
   const handleSearchClick = (ticker: string) => {
+    console.log("menu list clicked!");
     setSearchValue("");
     setFilterOptions(allStocks);
     setAnchorEl(null);
@@ -107,7 +67,7 @@ const CreatePortfolio_V2 = () => {
       (allocation) => allocation.stockName === ticker
     );
     if (!alreadyExists) {
-      const obj = {
+      const obj: StockAllocation = {
         stockName: ticker,
         percentage: 0,
       };
@@ -148,6 +108,10 @@ const CreatePortfolio_V2 = () => {
     stockName: string,
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    // if (e.target.value.includes("e")) {
+    //   e.preventDefault();
+    //   return;
+    // }
     setPortfolio((prevPortfolio) => ({
       ...prevPortfolio,
       allocations: prevPortfolio.allocations.map((allocation) => {
@@ -216,7 +180,7 @@ const CreatePortfolio_V2 = () => {
                 />
               </Grid>
               {/* Portfolio Description */}
-              <Grid item>
+              <Grid item style={{ marginTop: "40px" }}>
                 <PortfolioDescription
                   label="Portfolio Description"
                   placeholder="Enter description"
@@ -229,7 +193,7 @@ const CreatePortfolio_V2 = () => {
                 />
               </Grid>
               {/* Inception Date */}
-              <Grid item>
+              <Grid item style={{ marginTop: "40px" }}>
                 <PortfolioDate
                   label="Portfolio inception date"
                   formControlId="portfolioDate"
@@ -241,7 +205,7 @@ const CreatePortfolio_V2 = () => {
                 />
               </Grid>
               {/* Capital */}
-              <Grid item>
+              <Grid item style={{ marginTop: "40px" }}>
                 <PortfolioCapital
                   label="Portfolio Capital"
                   formControlId="portfolioCapital"
@@ -288,15 +252,21 @@ const CreatePortfolio_V2 = () => {
                       border: "1px solid black",
                       borderRadius: "10px",
                       marginTop: "4px",
+                      backgroundColor: "white",
                     }}
                   >
                     {filterOptions.map((obj, index) => (
                       <MenuItem
                         key={index}
-                        onClick={() => handleSearchClick}
+                        onMouseDown={() => console.log("clicked")}
                         style={{ marginTop: "16px" }}
                       >
-                        <Grid container alignItems="center" spacing={2}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          spacing={2}
+                          onMouseDown={() => handleSearchClick(obj.ticker)}
+                        >
                           <Grid item xs={1}>
                             <Avatar src={`/assets/stocks/${obj.ticker}.png`} />
                           </Grid>
@@ -317,42 +287,49 @@ const CreatePortfolio_V2 = () => {
                   </MenuList>
                 </Popper>
 
-                {/* <Autocomplete
-                  id="grouped-demo"
-                  options={options.sort(
-                    (a, b) => -b.firstLetter.localeCompare(a.firstLetter)
+                <Paper
+                  elevation={3}
+                  sx={{ height: 350, overflow: "auto", marginTop: "10px" }}
+                >
+                  {portfolio.allocations.length == 0 ? (
+                    <Box
+                      justifyContent="center"
+                      display="flex"
+                      alignItems="center"
+                    >
+                      <Typography variant="body1" style={{ color: "red" }}>
+                        No stocks added
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <>
+                      <Box
+                        justifyContent="center"
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <Typography
+                          variant="body1"
+                          style={{ fontSize: "24px", fontWeight: "bold" }}
+                        >
+                          Allocations
+                        </Typography>
+                      </Box>
+                      {portfolio.allocations.map((allocation, index) => (
+                        <PortfolioStock
+                          stockName={allocation.stockName}
+                          currentPercentage={allocation.percentage}
+                          key={index}
+                          removeStock={() => removeStock(allocation.stockName)}
+                          handlePercentChange={(
+                            e: ChangeEvent<
+                              HTMLInputElement | HTMLTextAreaElement
+                            >
+                          ) => handlePercentageChange(allocation.stockName, e)}
+                        />
+                      ))}
+                    </>
                   )}
-                  groupBy={(option) => option.firstLetter}
-                  getOptionLabel={(option) => option.name}
-                  sx={{ width: "100%", marginTop: "26px" }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Search for Stock" >
-                        <Avatar src={`/assets/stocks/${params.ticker}.png`} />
-
-                  )}
-                  isOptionEqualToValue={(option, value) =>
-                    option.ticker === value.ticker
-                  }
-                  onChange={(event, value) => {
-                    if (value !== null) {
-                      addStock(value.ticker);
-                    }
-                  }}
-                  clearOnBlur={true}
-                /> */}
-
-                <Paper elevation={0} sx={{ maxHeight: 250, overflow: "auto" }}>
-                  {portfolio.allocations.map((allocations, index) => (
-                    <PortfolioStock
-                      stockName={allocations.stockName}
-                      currentPercentage={allocations.percentage}
-                      key={index}
-                      onClick={() => removeStock(allocations.stockName)}
-                      onChange={(e) =>
-                        handlePercentageChange(allocations.stockName, e)
-                      }
-                    />
-                  ))}
                 </Paper>
               </Box>
             </Grid>
