@@ -1,4 +1,5 @@
 import {
+  Alert,
   Autocomplete,
   Avatar,
   Button,
@@ -8,6 +9,7 @@ import {
   MenuList,
   Paper,
   Popper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,8 +32,11 @@ const CreatePortfolio_V2 = () => {
 
   const textFieldRef = useRef(null);
 
-  const [error, setError] = useState(false);
-
+  const [error, setError] = useState({
+    status: false,
+    message: "",
+  });
+  
   const [portfolio, setPortfolio] = useState({
     portfolioName: "",
     portfolioDescription: "",
@@ -125,13 +130,36 @@ const CreatePortfolio_V2 = () => {
 
   // Handles submit verification
   const handleSubmit = async () => {
-    (await portfolio.portfolioName) == "" ||
-    (await portfolio.portfolioDescription) == "" ||
-    (await portfolio.portfolioCapital) == 0 ||
-    (await portfolio.portfolioDate) == ""
-      ? setError(true)
-      : setError(false);
-  };
+    // Check whether all of the fields are filled
+    if (
+      portfolio.portfolioCapital == 0 ||
+      portfolio.portfolioDate == "" ||
+      portfolio.portfolioDescription == "" ||
+      portfolio.portfolioName == "" ||
+      portfolio.allocations.length == 0
+    ) 
+    {
+      setError((prevError) => ({...prevError, status: true}));
+      setError((prevError) => ({...prevError, message: "Fill in all required information"}));
+    }
+    else {
+      let sum = 0;
+      for (let key in portfolio.allocations){
+        sum += portfolio.allocations[key].percentage;
+      }
+      
+      
+
+      if (sum > 100) {
+        setError((prevError) => ({...prevError, message: "Portfolio allocation exceeds 100%"}));
+      }
+      else if (sum != 100) {
+        setError((prevError) => ({...prevError, message: "Portfolio allocation does not add up to 100%"}));
+      }
+    }
+
+
+  }
 
   const options = allStocks.map((option) => {
     const firstLetter = option.name[0];
@@ -175,7 +203,7 @@ const CreatePortfolio_V2 = () => {
                   formValue={portfolio.portfolioName}
                   formData={portfolio}
                   setFormControlState={setPortfolio}
-                  error={error}
+                  error={error.status}
                   errorText="Please enter a portfolio name"
                 />
               </Grid>
@@ -188,7 +216,7 @@ const CreatePortfolio_V2 = () => {
                   formValue={portfolio.portfolioDescription}
                   formData={portfolio}
                   setFormControlState={setPortfolio}
-                  error={error}
+                  error={error.status}
                   errorText="Please enter a description"
                 />
               </Grid>
@@ -200,7 +228,7 @@ const CreatePortfolio_V2 = () => {
                   formValue={portfolio.portfolioDate}
                   formData={portfolio}
                   setFormControlState={setPortfolio}
-                  error={error}
+                  error={error.status}
                   errorText="Please enter a date"
                 />
               </Grid>
@@ -212,7 +240,7 @@ const CreatePortfolio_V2 = () => {
                   formValue={portfolio.portfolioCapital}
                   formData={portfolio}
                   setFormControlState={setPortfolio}
-                  error={error}
+                  error={error.status}
                   errorText="Please enter a starting capital"
                 />
               </Grid>
@@ -348,6 +376,21 @@ const CreatePortfolio_V2 = () => {
             Create portfolio
           </Button>
         </Grid>
+        {
+          error.status == true &&
+          <Snackbar
+            open={error.status}
+            autoHideDuration={6000}
+            // onClose={handleClose}
+            // message="Please fill in all information"
+            >
+              <Alert severity="error" sx={{ width: '100%' }}>
+                { error.message }
+              </Alert>
+          </Snackbar>
+        }
+        
+        
       </Paper>
     </Container>
   );
