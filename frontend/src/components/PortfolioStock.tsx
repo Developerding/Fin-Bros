@@ -63,6 +63,7 @@ const PortfolioStock: FC<Props> = ({
             <TextField
               type="number"
               placeholder="0"
+              value={currentPercentage}
               onChange={(event) => {
                 if (event.target.value.includes("e")) {
                   event.preventDefault();

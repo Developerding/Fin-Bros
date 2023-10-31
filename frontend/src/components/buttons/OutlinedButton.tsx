@@ -5,7 +5,7 @@ interface Props {
   style?: {};
   className?: string;
   buttonText: string;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   divStyle?: {};
   divClassName?: string;
 }

@@ -1,368 +1,441 @@
-import { Typography, TextField, Grid, Box, MenuList, MenuItem, Paper, ListItemText, Card, CardContent, Button, Alert } from "@mui/material";
+import {
+  Typography,
+  TextField,
+  Grid,
+  Box,
+  MenuList,
+  MenuItem,
+  Paper,
+  ListItemText,
+  Card,
+  CardContent,
+  Button,
+  Alert,
+  Snackbar,
+  Container,
+  Popper,
+  Avatar,
+  Skeleton,
+  CircularProgress,
+} from "@mui/material";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useStores } from "../stores";
+import { useLocation, useNavigate } from "react-router";
+import * as LINKS from "../routes/links";
+import dayjs, { Dayjs } from "dayjs";
+import PrimaryButton from "../components/buttons/PrimaryButton";
+import PortfolioStock from "../components/PortfolioStock";
+import PortfolioCapital from "../components/formComponents/controlled/PortfolioCapital";
+import PortfolioDate from "../components/formComponents/controlled/PortfolioDate";
+import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
+import PortfolioName from "../components/formComponents/controlled/PortfolioName";
+import { allStocks } from "../constants/stocks";
+
+interface portfolio {
+  portfolioName: string;
+  portfolioCapital: number;
+  portfolioDescription: string;
+  portfolioDate: Dayjs | null;
+  allocations: allocation[];
+}
+
+interface allocation {
+  stockName: string;
+  percentage: number;
+}
+
+interface StockAllocation {
+  stockName: string;
+  percentage: number;
+}
 
 export const EditPortfolio = () => {
-    const AppStore = useStores();
-    const userId = AppStore.getUserId();
-    const [originalPortfolioName, setOriginalPortfolioName] = useState("");
-    useEffect(() => {
-      let currentPageURL = window.location.href;
-      let urlArr = currentPageURL.split('/')
-      let portfolioName = urlArr[urlArr.length - 1]
-      AppStore.getPortfolioByUserIdController(userId, portfolioName)
-      .then((res: any) => {
-        let data = res.data
-        setPortfolioName(data.name)
-        setOriginalPortfolioName(data.name)
-        setPortfolioDescription(data.description)
-        setPortfolioCapital(data.capital)
-        let dateTime = data.dateTime
-        let dateTimeArr = dateTime.split('T')
-        setPortfolioDate(dateTimeArr[0])
-        let allocations = data.allocations;
-        for (let stockData of allocations){
-          let stockName = stockData.stockName
-          let percentage = stockData.percentage;
-          setSelectedStocks([...selectedStocks, stockName]);
-          setPortfolio(prevPortfolio => ({
-            ...prevPortfolio,
-            [stockName]: percentage
-          }))
-        }
-      })
-    }, [])
-    const [portfolioName, setPortfolioName] = useState('');
-    const [portfolioNameError, setPortfolioNameError] = useState(false);
-    const [portfolioDescription, setPortfolioDescription] = useState('');
-    const [portfolioDescriptionError, setPortfolioDescriptionError] = useState(false)
-    const [portfolioCapital, setPortfolioCapital] = useState(0);
-    const [portfolioCapitalError, setPortfolioCapitalError] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [selectedStocks, setSelectedStocks] = useState<string[]>([]);
-    const [portfolio, setPortfolio] = useState<{ [key: string]: number }>({});
-    const [errorText, setErrorText] = useState('');
-    const [successText, setSuccessText] = useState('');
-    const [portfolioDate, setPortfolioDate] = useState('');
-    const [portfolioDateError, setPortfolioDateError] = useState(false);
-    const stockSearchInputRef = useRef<HTMLInputElement | null>(null);
-    const stocks = [
-        {"name": "Apple Inc.", "ticker": "AAPL"},
-        {"name": "Microsoft Corp.", "ticker": "MSFT"},
-        {"name": "Amazon.com Inc.", "ticker": "AMZN"},
-        {"name": "Alphabet Inc.", "ticker": "GOOGL"},
-        {"name": "Facebook, Inc.", "ticker": "FB"},
-        {"name": "Berkshire Hathaway Inc.", "ticker": "BRK.A"},
-        {"name": "Tesla, Inc.", "ticker": "TSLA"},
-        {"name": "NVIDIA Corporation", "ticker": "NVDA"},
-        {"name": "JPMorgan Chase & Co.", "ticker": "JPM"},
-        {"name": "Johnson & Johnson", "ticker": "JNJ"},
-        {"name": "Visa Inc.", "ticker": "V"},
-        {"name": "Procter & Gamble Co.", "ticker": "PG"},
-        {"name": "UnitedHealth Group Inc.", "ticker": "UNH"},
-        {"name": "Home Depot Inc.", "ticker": "HD"},
-        {"name": "Mastercard Inc.", "ticker": "MA"},
-        {"name": "Bank of America Corp.", "ticker": "BAC"},
-        {"name": "Walt Disney Co.", "ticker": "DIS"},
-        {"name": "Netflix Inc.", "ticker": "NFLX"},
-        {"name": "Adobe Inc.", "ticker": "ADBE"},
-        {"name": "PayPal Holdings Inc.", "ticker": "PYPL"},
-        {"name": "Exxon Mobil Corp.", "ticker": "XOM"},
-        {"name": "Coca-Cola Co.", "ticker": "KO"},
-        {"name": "Intel Corp.", "ticker": "INTC"},
-        {"name": "Cisco Systems Inc.", "ticker": "CSCO"},
-        {"name": "PepsiCo Inc.", "ticker": "PEP"},
-        {"name": "Walmart Inc.", "ticker": "WMT"},
-        {"name": "Chevron Corp.", "ticker": "CVX"},
-        {"name": "AT&T Inc.", "ticker": "T"},
-        {"name": "Merck & Co. Inc.", "ticker": "MRK"},
-        {"name": "Verizon Communications Inc.", "ticker": "VZ"},
-        {"name": "Nike Inc.", "ticker": "NKE"},
-        {"name": "Boeing Co.", "ticker": "BA"},
-        {"name": "Oracle Corp.", "ticker": "ORCL"},
-        {"name": "Goldman Sachs Group Inc.", "ticker": "GS"},
-        {"name": "McDonald's Corp.", "ticker": "MCD"},
-        {"name": "3M Co.", "ticker": "MMM"},
-        {"name": "Salesforce.com Inc.", "ticker": "CRM"},
-        {"name": "Abbott Laboratories", "ticker": "ABT"},
-        {"name": "American Express Co.", "ticker": "AXP"},
-        {"name": "Costco Wholesale Corp.", "ticker": "COST"}
-    ]
+  const AppStore = useStores();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const [portfolio, setPortfolio] = useState<portfolio>({
+    portfolioName: "",
+    portfolioCapital: 0,
+    portfolioDescription: "",
+    portfolioDate: null,
+    allocations: [],
+  });
+  const [originalPortfolioName, setOriginalPortfolioName] = useState("");
+  const textFieldRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState({
+    status: false,
+    message: "",
+  });
+  const [success, setSuccess] = useState({
+    status: false,
+    message: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [portfolioLoading, setPortfolioLoading] = useState(false);
 
-    const filteredStocks = stocks.filter((stock) =>
-        stock.name.toLowerCase().startsWith(searchValue.toLowerCase())
+  // Search function (auto complete)
+  const [searchValue, setSearchValue] = useState("");
+  const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLElement) | null>(
+    null
+  );
+  const [filterOptions, setFilterOptions] = useState(allStocks);
+
+  // Search function (auto complete)
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+    const filtered = allStocks.filter(
+      (option) =>
+        option.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        option.ticker.toLowerCase().includes(e.target.value.toLowerCase())
     );
+    setFilterOptions(filtered);
+  };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setSearchValue(e.target.value);
-    };
+  const handleSearchClick = (ticker: string) => {
+    console.log("menu list clicked!");
+    setSearchValue("");
+    setFilterOptions(allStocks);
+    setAnchorEl(null);
+    const alreadyExists = portfolio.allocations.some(
+      (allocation) => allocation.stockName === ticker
+    );
+    if (!alreadyExists) {
+      const obj: StockAllocation = {
+        stockName: ticker,
+        percentage: 0,
+      };
+      setPortfolio({
+        ...portfolio,
+        allocations: [...portfolio.allocations, obj],
+      });
+    }
+  };
 
-    const addStockToPortfolio = (stockName: string) => {
-        if (!selectedStocks.includes(stockName)){
-            setSelectedStocks([...selectedStocks, stockName]);
+  useEffect(() => {
+    console.log(portfolio);
+  }, [portfolio]);
+
+  // Remove stocks
+  const removeStock = (stockName: string) => {
+    setPortfolio((prevPortfolio) => {
+      const newAllocations = prevPortfolio.allocations.filter(
+        (allocation) => allocation.stockName !== stockName
+      );
+      return { ...prevPortfolio, allocations: newAllocations };
+    });
+  };
+
+  // Handle percentage change
+  const handlePercentageChange = (
+    stockName: string,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPortfolio((prevPortfolio) => ({
+      ...prevPortfolio,
+      allocations: prevPortfolio.allocations.map((allocation) => {
+        if (allocation.stockName === stockName) {
+          return { ...allocation, percentage: Number.parseInt(e.target.value) };
         }
-        setSearchValue('');
-        if (stockSearchInputRef.current) {
-            stockSearchInputRef.current.value = '';
-        }
-  
+        return allocation;
+      }),
+    }));
+  };
+
+  // starting useEffect:
+  useEffect(() => {
+    setPortfolioLoading(true);
+    if (state == null) {
+      navigate(LINKS.HOME_PAGE);
+      return;
     }
+    setOriginalPortfolioName(state.portfolioName);
 
-    const updatePortfolio = (stockName: string, e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setPortfolio(prevPortfolio => ({
-            ...prevPortfolio,
-            [stockName]: Number.parseInt(e.target.value)
-        }));
-    }
+    // Getting original portfolio Data:
+    AppStore.getPortfolioByUserIdController(
+      AppStore.getUserId(),
+      state.portfolioName
+    ).then((res: any) => {
+      let data = res.data;
+      const portfolioName = data.name;
+      const portfolioDescription = data.description;
+      const portfolioCapital = data.capital;
+      let portfolioDate = data.dateTime;
+      portfolioDate = dayjs(portfolioDate);
+      let allocations = [];
+      for (let stockData of data.allocations) {
+        allocations.push({
+          stockName: stockData.stockName,
+          percentage: stockData.percentage,
+        });
+      }
+      setPortfolio({
+        portfolioName: portfolioName,
+        portfolioCapital: portfolioCapital,
+        portfolioDescription: portfolioDescription,
+        portfolioDate: portfolioDate,
+        allocations: allocations,
+      });
+      setPortfolioLoading(false);
+    });
+  }, []);
 
-    const removeStock = (stockName: string) => {
-        setSelectedStocks(prevPortfolio => prevPortfolio.filter(stock => stock != stockName)),
-        setPortfolio(prevPortfolio => {
-            const {[stockName]: omittedKey, ...newPortfolio} = prevPortfolio
-            return newPortfolio;
-        })
-    }
+  return (
+    <Container maxWidth="xl" sx={{ width: "100%" }}>
+      {portfolioLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          position="relative"
+          width={"80%"}
+          height={500}
+          margin="auto"
+          borderRadius="100px"
+        >
+          <Skeleton variant="rectangular" width="100%" height="100%" />
+          <CircularProgress
+            style={{
+              position: "absolute",
+              zIndex: 10,
+            }}
+          />
+        </Box>
+      ) : (
+        <Paper
+          sx={{
+            margin: "auto",
+            marginTop: "50px",
+            width: "90%",
+            borderRadius: "15px",
+          }}
+        >
+          <Grid container alignItems="center" justifyContent="center">
+            {/* Title */}
+            <Grid item>
+              <Typography
+                variant="body1"
+                sx={{ marginTop: "16px", fontSize: "36px", fontWeight: "bold" }}
+              >
+                Edit Portfolio
+              </Typography>
+            </Grid>
 
-    const handleCapitalChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPortfolioCapital(Number.parseInt(e.target.value))
-    }
-
-    const handlePortfolioNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPortfolioName(e.target.value)
-    }
-
-    const handlePortfolioDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPortfolioDescription(e.target.value)
-    }
-
-    const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPortfolioDate(e.target.value)
-    }
-
-    const handleSubmit = async () => {
-        await portfolioName == '' ? setPortfolioNameError(true) : setPortfolioNameError(false)
-        await portfolioDescription == '' ? setPortfolioDescriptionError(true) : setPortfolioDescriptionError(false)
-        await portfolioCapital == 0 ? setPortfolioCapitalError(true) : setPortfolioCapitalError(false)
-        await portfolioDate == '' ? setPortfolioDateError(true) : setPortfolioDateError(false)
-        if (portfolioName == '' || portfolioDescription == '' || portfolioCapital == 0 || selectedStocks.length == 0 || portfolioDate.length == 0){
-            setErrorText("Please fill up missing information below")
-            setTimeout(() => {
-                setErrorText("")
-            }, 3000);
-        } else {
-            setErrorText("")
-            let sum = 0;
-            for (const key in portfolio) {
-                sum += portfolio[key];
-            }
-            if (sum > 100){
-                setErrorText("Portfolio allocation exceeds 100%")
-                setTimeout(() => {
-                    setErrorText("")
-                }, 3000);
-            } else if (sum != 100){
-                setErrorText("Portfolio allocation does not add up to 100%")
-                setTimeout(() => {
-                    setErrorText("")
-                }, 3000);
-            } else {
-                let parts = portfolioDate.split('-');
-                let year = parseInt(parts[0], 10);
-                let month = parseInt(parts[1], 10) - 1;
-                let day = parseInt(parts[2], 10);
-                let date = new Date(year,month,day);
-                let currentDate = new Date()
-                if (date > currentDate){
-                    setErrorText("Please input an inception date before today")
-                    setTimeout(() => {
-                        setErrorText("")
-                    }, 3000);
-                } else {
-                    let data = {
-                        userId: userId,
-                        capital: portfolioCapital,
-                        dateTime: date,
-                        name: portfolioName,
-                        description: portfolioDescription,
-                        allocations: [] as { [key: string] : any }[]
-                    }
-                    for (const key in portfolio){
-                        let stockDict : { [key: string]: any } = {}
-                        stockDict['stockName'] = key;
-                        stockDict['percentage'] = portfolio[key];
-                        data.allocations.push(stockDict)
-                    }
-                    AppStore.updatePortfolioController(data, originalPortfolioName)
-                    .then((res: any) => {
-                        if (res.status == 202){
-                            setSuccessText(res.data)
-                            setPortfolioName("")
-                            setPortfolioDescription("")
-                            setPortfolioDescription("")
-                            setPortfolio({});
-                            setSelectedStocks([]);
-                            setPortfolioDate("");
-                            setPortfolioCapital(0);
-                            setTimeout(() => {
-                                setSuccessText("")
-                            }, 3000);
-                            console.log(res);
-                        } else {
-                            setErrorText(res.response.data)
-                            setTimeout(() => {
-                                setErrorText("")
-                            }, 3000);
-                        }
-                    })
-                    .then(() => {
-                        const d = new Date();
-                        const month = d.getMonth() + 1;
-                        const day = d.getDate();
-                        const year = d.getFullYear();
-                        const hour = d.getHours();
-                        const second = d.getSeconds();
-
-                        const formattedDate = `${month}/${day}/${year}`;
-                        const formattedTime = `${hour}:${second}`;
-
-                        const logData = {
-                            message: `${userId} edited portfolio ${originalPortfolioName} to ${portfolioName} at ${formattedDate} ${formattedTime}`
-                        };
-                        AppStore.createLogController(logData);
-                    })
-                }
-            }
-        }
-    }
-
-    return (
-        <>
-            <Box sx={{ marginLeft: '30px', marginRight: '30px' }}>
-                <Grid container>
-                    <Grid item xs={2}></Grid>
-                    <Grid item xs={8} style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Typography variant="h2" style={{ marginTop: '20px' }}>Edit portfolio {originalPortfolioName}</Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Typography style={{ marginTop: '20px' }}>Portfolio Inception Date</Typography>
-                        <TextField
-                            type="date"
-                            value={portfolioDate}
-                            onChange={handleDateChange}
-                            error={portfolioDateError}
-                        />
-                    </Grid>
+            {/* Contents */}
+            <Grid container spacing={2}>
+              {/* left columns */}
+              <Grid item xs={4}>
+                {/* Portfolio Name */}
+                <Grid item>
+                  <PortfolioName
+                    label="Portfolio Name"
+                    placeholder="Enter portfolio name"
+                    formControlId="portfolioName"
+                    formValue={portfolio.portfolioName}
+                    formData={portfolio}
+                    setFormControlState={setPortfolio}
+                    error={error.status}
+                    errorText="Please enter a portfolio name"
+                  />
                 </Grid>
-                {errorText.length > 0 && (
-                    <Alert severity="error" style={{marginTop: '20px'}}>{errorText}</Alert>
-                )}
-                {successText.length > 0 && (
-                    <Alert severity="success" style={{marginTop: '20px'}}>{successText}</Alert>
-                )}
-                <Grid container spacing={2}>
-                    <Grid item xs={5}>
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <TextField
-                                    id="portfolioName"
-                                    label="Portfolio Name"
-                                    type="text"
-                                    sx={{ width: '100%', marginTop: '20px' }}
-                                    error={portfolioNameError}
-                                    onChange={handlePortfolioNameChange}
-                                    value={portfolioName}
-                                />
-                                {portfolioNameError && (
-                                    <Typography variant="body2" color="error">
-                                        Please enter a portfolio name.
-                                    </Typography>
-                                )}
-                                <TextField
-                                    id="portfolioDescription"
-                                    label="Portfolio Description"
-                                    multiline
-                                    rows={8}
-                                    type="text"
-                                    value={portfolioDescription}
-                                    sx={{ width: '100%', marginTop: '20px' }}
-                                    onChange={handlePortfolioDescriptionChange}
-                                    error={portfolioDescriptionError}
-                                />
-                                {portfolioDescriptionError && (
-                                    <Typography variant="body2" color="error">
-                                        Please enter a portfolio description.
-                                    </Typography>
-                                )}
-                                <TextField
-                                    id="portfolioCapital"
-                                    label="Portfolio Capital"
-                                    type="number"
-                                    onChange={handleCapitalChange}
-                                    value={portfolioCapital}
-                                    sx={{ width: '100%', marginTop: '20px' }}
-                                    error={portfolioCapitalError}
-                                />
-                                {portfolioCapitalError && (
-                                    <Typography variant="body2" color="error">
-                                        Please enter a portfolio capital.
-                                    </Typography>
-                                )}
+                {/* Portfolio Description */}
+                <Grid item style={{ marginTop: "40px" }}>
+                  <PortfolioDescription
+                    label="Portfolio Description"
+                    placeholder="Enter description"
+                    formControlId="portfolioDescription"
+                    formValue={portfolio.portfolioDescription}
+                    formData={portfolio}
+                    setFormControlState={setPortfolio}
+                    error={error.status}
+                    errorText="Please enter a description"
+                  />
+                </Grid>
+                {/* Inception Date */}
+                <Grid item style={{ marginTop: "40px" }}>
+                  <PortfolioDate
+                    label="Portfolio inception date"
+                    formControlId="portfolioDate"
+                    formValue={portfolio.portfolioDate}
+                    formData={portfolio}
+                    setFormControlState={setPortfolio}
+                    error={error.status}
+                    errorText="Please enter a date"
+                  />
+                </Grid>
+                {/* Capital */}
+                <Grid item style={{ marginTop: "40px" }}>
+                  <PortfolioCapital
+                    label="Portfolio Capital"
+                    formControlId="portfolioCapital"
+                    formValue={portfolio.portfolioCapital}
+                    formData={portfolio}
+                    setFormControlState={setPortfolio}
+                    error={error.status}
+                    errorText="Please enter a starting capital"
+                  />
+                </Grid>
+              </Grid>
+
+              {/* RHS */}
+              <Grid item xs={8}>
+                {/* Search Bar */}
+                <Box
+                  sx={{
+                    width: "calc(100%-32px)",
+                    margin: "16px 16px 0px 16px",
+                  }}
+                >
+                  <TextField
+                    id="stockSearch"
+                    ref={textFieldRef}
+                    label="Search for stocks"
+                    type="text"
+                    value={searchValue}
+                    style={{
+                      marginTop: "10px",
+                      width: "100%",
+                    }}
+                    onChange={handleSearchChange}
+                    onFocus={(e) => setAnchorEl(e.currentTarget)}
+                    onBlur={() => setAnchorEl(null)}
+                  />
+                  <Popper
+                    open={Boolean(anchorEl)}
+                    anchorEl={anchorEl}
+                    placement="bottom-start"
+                    style={{ width: textFieldRef?.current?.offsetWidth }}
+                  >
+                    <MenuList
+                      style={{
+                        maxHeight: "230px",
+                        width: "100%",
+                        overflowY: "auto",
+                        border: "1px solid black",
+                        borderRadius: "10px",
+                        marginTop: "4px",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      {filterOptions.map((obj, index) => (
+                        <MenuItem
+                          key={index}
+                          onMouseDown={() => console.log("clicked")}
+                          style={{ marginTop: "16px" }}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            spacing={2}
+                            onMouseDown={() => handleSearchClick(obj.ticker)}
+                          >
+                            <Grid item xs={1}>
+                              <Avatar
+                                src={`/assets/stocks/${obj.ticker}.png`}
+                              />
                             </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={7}>
-                        <Box>
-                            <TextField
-                                id="stockSearch"
-                                label="Search for stocks"
-                                type="text"
-                                sx={{ width: '100%', marginTop: '20px' }}
-                                onChange={handleChange}
-                                inputRef={stockSearchInputRef}
-                            />
-                            {searchValue && (
-                                <Paper sx={{ width: '100%', margin: 'auto' }}>
-                                    <MenuList>
-                                        {filteredStocks.map((stock, idx) => (
-                                            <MenuItem key={idx}>
-                                                <ListItemText onClick={() => addStockToPortfolio(stock.ticker)}>{stock.name}</ListItemText>
-                                            </MenuItem>
-                                        ))}
-                                    </MenuList>
-                                </Paper>
-                            )}
+                            <Grid item xs={2}>
+                              <Typography
+                                variant="body1"
+                                sx={{ fontWeight: "bold" }}
+                              >
+                                {obj.ticker}
+                              </Typography>
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography variant="body2">
+                                {obj.name}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </MenuItem>
+                      ))}
+                    </MenuList>
+                  </Popper>
+
+                  <Paper
+                    elevation={3}
+                    sx={{ height: 350, overflow: "auto", marginTop: "10px" }}
+                  >
+                    {portfolio.allocations.length == 0 ? (
+                      <Box
+                        justifyContent="center"
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <Typography variant="body1" style={{ color: "red" }}>
+                          No stocks added
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <>
+                        <Box
+                          justifyContent="center"
+                          display="flex"
+                          alignItems="center"
+                        >
+                          <Typography
+                            variant="body1"
+                            style={{ fontSize: "24px", fontWeight: "bold" }}
+                          >
+                            Allocations
+                          </Typography>
                         </Box>
-                        <Card sx={{marginTop: '20px', height: '290px', overflow: 'auto'}}>
-                            <CardContent>
-                                {selectedStocks.map((stock, idx) => (
-                                    <MenuItem key={idx}>
-                                        <Typography>{stock}</Typography>
-                                        <TextField
-                                            id="stockSearch"
-                                            label="Enter Percentage of portfolio"
-                                            type="number"
-                                            sx={{ width: '100%', marginLeft: '20px' }}
-                                            value={portfolio[stock]}
-                                            onChange={(e) => updatePortfolio(stock, e)}
-                                        />
-                                        <Button onClick={() => removeStock(stock)}>
-                                            -
-                                        </Button>
-                                    </MenuItem>
-                                ))}
-                                {selectedStocks.length === 0 && (
-                                    <Typography variant="body2" color="error">
-                                        No stocks have been added to the portfolio.
-                                    </Typography>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
-                <Button variant="contained" onClick={handleSubmit} style={{width: '100%', marginTop: '20px', backgroundColor: "#054be3", borderRadius: '10px'}}>Edit portfolio</Button>
-            </Box>
-        </>
-    );
+                        {portfolio.allocations.map((allocation, index) => (
+                          <PortfolioStock
+                            stockName={allocation.stockName}
+                            currentPercentage={allocation.percentage}
+                            key={index}
+                            removeStock={() =>
+                              removeStock(allocation.stockName)
+                            }
+                            handlePercentChange={(
+                              e: ChangeEvent<
+                                HTMLInputElement | HTMLTextAreaElement
+                              >
+                            ) =>
+                              handlePercentageChange(allocation.stockName, e)
+                            }
+                          />
+                        ))}
+                      </>
+                    )}
+                  </Paper>
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* <PrimaryButton
+            buttonText="Create portfolio"
+            onClick={handleSubmit}
+            isLoading={loading}
+            style={{ width: "100%", margin: "0px" }}
+            divStyle={{ width: "100%", padding: "20px" }}
+          /> */}
+          </Grid>
+        </Paper>
+      )}
+      {error.status == true && (
+        <Snackbar
+          open={error.status}
+          autoHideDuration={6000}
+          // onClose={handleClose}
+          // message="Please fill in all information"
+        >
+          <Alert severity="error" sx={{ width: "100%" }}>
+            {error.message}
+          </Alert>
+        </Snackbar>
+      )}
+
+      {success.status && (
+        <Snackbar open={success.status} autoHideDuration={6000}>
+          <Alert severity="success" sx={{ width: "100%" }}>
+            {success.message}
+          </Alert>
+        </Snackbar>
+      )}
+    </Container>
+  );
 };
 
 export default EditPortfolio;
