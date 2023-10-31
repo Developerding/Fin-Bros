@@ -15,13 +15,15 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Drawer from "@mui/material/Drawer";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import OutlinedButton from "../buttons/OutlinedButton";
-import { Stack } from "@mui/material";
+import { ListItemIcon, ListItemText, Paper, Stack } from "@mui/material";
 import { useStores } from "../../stores";
 import * as LINKS from "../../routes/links";
 import { useNavigate } from "react-router";
+import CalendarViewMonthIcon from "@mui/icons-material/CalendarViewMonth";
+import CreateIcon from "@mui/icons-material/Create";
+import SearchIcon from "@mui/icons-material/Search";
 
 const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const NavBar = () => {
   const AppStore = useStores();
@@ -78,17 +80,43 @@ const NavBar = () => {
   const renderMenuType = (menuType: string) => {
     if (menuType === "portfolio") {
       return (
-        <div>
-          <MenuItem>Option 1</MenuItem>
-          <MenuItem>Option 2</MenuItem>
-        </div>
+        <Paper style={{ width: "250px", height: "100%" }}>
+          <MenuItem
+            sx={{ height: "75px" }}
+            onClick={() => {
+              navigate(LINKS.VIEWPORTFOLIOS);
+            }}
+          >
+            <ListItemIcon>
+              <CalendarViewMonthIcon />
+            </ListItemIcon>
+            <ListItemText>View all portfolios</ListItemText>
+          </MenuItem>
+
+          <MenuItem
+            sx={{ height: "75px" }}
+            onClick={() => {
+              navigate(LINKS.CREATE_PORTFOLIO);
+            }}
+          >
+            <ListItemIcon>
+              <CreateIcon />
+            </ListItemIcon>
+            <ListItemText>Create portfolio</ListItemText>
+          </MenuItem>
+        </Paper>
       );
-    } else if (menuType === "stock") {
-      return;
-      <div>
-        <MenuItem>Option 3</MenuItem>
-        <MenuItem>Option 4</MenuItem>
-      </div>;
+    } else if (menuType === "stocks") {
+      return (
+        <Paper style={{ width: "250px", height: "100%" }}>
+          <MenuItem sx={{ height: "75px" }}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText>Search Stock</ListItemText>
+          </MenuItem>
+        </Paper>
+      );
     }
   };
 
@@ -153,13 +181,64 @@ const NavBar = () => {
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", md: "none" },
+                "& .MuiDrawer-paperAnchorLeft": {
+                  width: "250px",
+                },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <Typography
+                textAlign={"center"}
+                style={{
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                  fontSize: "26px",
+                }}
+              >
+                Portfolio
+              </Typography>
+              <MenuItem
+                sx={{ height: "75px" }}
+                onClick={() => {
+                  navigate(LINKS.VIEWPORTFOLIOS);
+                  handleCloseNavMenu();
+                }}
+              >
+                <ListItemIcon>
+                  <CalendarViewMonthIcon />
+                </ListItemIcon>
+                <ListItemText>View all portfolios</ListItemText>
+              </MenuItem>
+
+              <MenuItem
+                sx={{ height: "75px" }}
+                onClick={() => {
+                  navigate(LINKS.CREATE_PORTFOLIO);
+                  handleCloseNavMenu();
+                }}
+              >
+                <ListItemIcon>
+                  <CreateIcon />
+                </ListItemIcon>
+                <ListItemText>Create portfolio</ListItemText>
+              </MenuItem>
+
+              <Typography
+                textAlign={"center"}
+                style={{
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                  fontSize: "26px",
+                }}
+              >
+                Stocks
+              </Typography>
+
+              <MenuItem sx={{ height: "75px" }}>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText>Search Stock</ListItemText>
+              </MenuItem>
             </Drawer>
 
             <Box
@@ -222,23 +301,51 @@ const NavBar = () => {
             </div>
           </Box>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              // <div
-              //   onMouseEnter={(e) => handleOpenMenuDropDown(e, "portfolio")}
-
-              //   onMouseLeave={() => handleCloseMenuDropDown()}
-              // >
-              <Button
-                key={page}
-                onMouseEnter={(e) => handleOpenMenuDropDown(e, "portfolio")}
-                // onMouseLeave={handleCloseMenuDropDown}
-                sx={{ my: 2, color: "white", display: "block" }}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+            }}
+          >
+            <Box
+              style={{
+                height: "67px",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => handleOpenMenuDropDown(e, "portfolio")}
+            >
+              <Typography
+                sx={{
+                  fontSize: "20px",
+                  marginLeft: "50px",
+                  marginRight: "50px",
+                }}
               >
-                {page}
-              </Button>
-              // </div>
-            ))}
+                Portfolio
+              </Typography>
+            </Box>
+
+            <Box
+              style={{
+                height: "67px",
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => handleOpenMenuDropDown(e, "stocks")}
+            >
+              <Typography
+                sx={{
+                  fontSize: "20px",
+                  marginLeft: "50px",
+                  marginRight: "50px",
+                }}
+              >
+                Stocks
+              </Typography>
+            </Box>
 
             <Menu
               anchorEl={anchorElMenu}
@@ -248,6 +355,11 @@ const NavBar = () => {
               // onMouseLeave={handleCloseMenuDropDown}
               MenuListProps={{
                 onMouseLeave: handleCloseMenuDropDown,
+              }}
+              sx={{
+                "& .MuiMenu-list": {
+                  padding: "0px",
+                },
               }}
             >
               {renderMenuType(menuDropdown)}
