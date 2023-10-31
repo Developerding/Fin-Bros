@@ -129,6 +129,20 @@ class AppStore {
     }
   };
 
+  // To be implemented in viewPortfolioDetails
+  // viewStockController = async (stockSymbol: string) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `http://localhost:8080/api/stock/findstockbysymbol/${stockSymbol}`
+  //     );
+  //     console.log(response.data);
+  //     return response.data;
+  //   } catch (err) {
+  //     console.log(err);
+  //     return err;
+  //   }
+  // };
+
   viewPortfolioController = async (portfolioName: string, userId: string) => {
     try {
       const response = await axios.get(
