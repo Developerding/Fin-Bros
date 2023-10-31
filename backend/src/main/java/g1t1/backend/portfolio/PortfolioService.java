@@ -77,7 +77,7 @@ public class PortfolioService {
         }
 
         // Since portfolio name is unique, need to check if the new name is being used by the user
-        if(name != updatedPortfolio.getName()){
+        if(!name.equals(updatedPortfolio.getName())){
             Portfolio portfolioCheck = portfolioRepository.findByUserIdAndName(userId, updatedPortfolio.getName());
             if (portfolioCheck != null ){
                 String responseMessage = "Portfolio name is already in use";

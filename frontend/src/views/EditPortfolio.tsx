@@ -179,6 +179,110 @@ export const EditPortfolio = () => {
     });
   }, []);
 
+  // Handles submit verification
+  const handleSubmit = async () => {
+    setLoading(true);
+    setSuccess({
+      status: false,
+      message: "",
+    });
+    // Check whether all of the fields are filled
+    if (
+      portfolio.portfolioCapital == 0 ||
+      portfolio.portfolioDate == null ||
+      portfolio.portfolioDescription == "" ||
+      portfolio.portfolioName == "" ||
+      portfolio.allocations.length == 0
+    ) {
+      setError({
+        status: true,
+        message: "Fill in all required information",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // summing of allocations
+    let sum = 0;
+    for (let key in portfolio.allocations) {
+      sum += portfolio.allocations[key].percentage;
+    }
+
+    if (sum > 100) {
+      setError({
+        status: true,
+        message: "Portfolio allocation exceeds 100%",
+      });
+      setLoading(false);
+      return;
+    } else if (sum != 100) {
+      setError({
+        status: true,
+        message: "Portfolio allocation does not add up to 100%",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Checking of Date:
+    let currentDate = dayjs();
+    if (portfolio.portfolioDate > currentDate) {
+      setError({
+        status: true,
+        message: "Portfolio date cannot be in the future",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // Calling Controller:
+    const jsDate = portfolio.portfolioDate.toDate();
+    const data = {
+      userId: AppStore.getUserId(),
+      capital: portfolio.portfolioCapital,
+      dateTime: jsDate,
+      name: portfolio.portfolioName,
+      description: portfolio.portfolioDescription,
+      allocations: portfolio.allocations,
+    };
+    AppStore.updatePortfolioController(data, originalPortfolioName)
+      .then((response) => {
+        console.log(response);
+        setError({
+          status: false,
+          message: "",
+        });
+        setSuccess({
+          status: true,
+          message: "Portfolio updated successfully",
+        });
+        // logging the status
+        const d = new Date();
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        const year = d.getFullYear();
+        const hour = d.getHours();
+        const second = d.getSeconds();
+        const formattedDate = `${month}/${day}/${year}`;
+        const formattedTime = `${hour}:${second}`;
+        const logData = {
+          message: `${AppStore.getUserId()} updated portfolio ${
+            portfolio.portfolioName
+          } at ${formattedDate} ${formattedTime}`,
+        };
+        setLoading(false);
+        AppStore.createLogController(logData);
+      })
+      .catch((error) => {
+        console.log(error);
+        setError({
+          status: true,
+          message: "Portfolio name already exists",
+        });
+        setLoading(false);
+      });
+  };
+
   return (
     <Container maxWidth="xl" sx={{ width: "100%" }}>
       {portfolioLoading ? (
@@ -404,13 +508,13 @@ export const EditPortfolio = () => {
               </Grid>
             </Grid>
 
-            {/* <PrimaryButton
-            buttonText="Create portfolio"
-            onClick={handleSubmit}
-            isLoading={loading}
-            style={{ width: "100%", margin: "0px" }}
-            divStyle={{ width: "100%", padding: "20px" }}
-          /> */}
+            <PrimaryButton
+              buttonText="Edit portfolio"
+              onClick={handleSubmit}
+              isLoading={loading}
+              style={{ width: "100%", margin: "0px" }}
+              divStyle={{ width: "100%", padding: "20px" }}
+            />
           </Grid>
         </Paper>
       )}
