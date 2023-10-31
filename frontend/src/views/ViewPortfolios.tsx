@@ -54,9 +54,17 @@ const ViewPortfolio = () => {
   // when clicking into the portfolio
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/viewportfoliodetails");
+  const handleClick = (
+    portfolio : portfolio
+       ) => {
+    navigate("/viewportfoliodetails", {
+      state: {
+        userId: AppStore.getUserId(),
+        portfolioName: portfolio.name,
+      },
+    });
   };
+
   const editClick = (
     portfolio: portfolio,
     e?: React.MouseEvent<HTMLButtonElement>
@@ -126,7 +134,7 @@ const ViewPortfolio = () => {
                       <Stack
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
-                        onClick={handleClick}
+                        onClick={()=>handleClick(portfolio)}
                         sx={{
                           cursor: "pointer",
                           display: "flex",
