@@ -82,6 +82,20 @@ const Login = () => {
           AppStore.setIsLoggedIn(true);
 
           setIsLoading(false);
+          // logging the status
+          const d = new Date();
+          const month = d.getMonth() + 1;
+          const day = d.getDate();
+          const year = d.getFullYear();
+          const hour = d.getHours();
+          const second = d.getSeconds();
+          const formattedDate = `${month}/${day}/${year}`;
+          const formattedTime = `${hour}:${second}`;
+          const logData = {
+            message: `${AppStore.getUserId()} login at ${formattedDate} ${formattedTime}`,
+          };
+
+          AppStore.createLogController(logData);
 
           window.location.href = LINKS.HOME_PAGE;
         } else {

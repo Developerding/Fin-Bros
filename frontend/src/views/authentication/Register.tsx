@@ -71,6 +71,20 @@ const Register = () => {
         setCreateError(false);
         setErrorMessage("");
         console.log(res);
+        // logging the status
+        const d = new Date();
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        const year = d.getFullYear();
+        const hour = d.getHours();
+        const second = d.getSeconds();
+        const formattedDate = `${month}/${day}/${year}`;
+        const formattedTime = `${hour}:${second}`;
+        const logData = {
+          message: `${AppStore.getUserId()} registered for an account at ${formattedDate} ${formattedTime}`,
+        };
+
+        AppStore.createLogController(logData);
         navigate(LINKS.EMAILVERIFICATION, { state: { email: form.email } });
       }
       // email already exist or other errors

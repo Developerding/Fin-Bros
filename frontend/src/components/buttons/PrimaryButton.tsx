@@ -6,7 +6,7 @@ interface Props {
   style?: {};
   className?: string;
   buttonText: string;
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   divStyle?: {};
   divClassName?: string;
   isLoading?: boolean;
@@ -27,7 +27,7 @@ const PrimaryButton: FC<Props> = ({
     height: "42px",
     width: "158px",
     borderRadius: "10px",
-    color:"white",
+    color: "white",
   };
   const buttonStyle = { ...defaultStyle, ...style };
   return (

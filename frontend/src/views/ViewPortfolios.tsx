@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { useStores } from "../stores";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import PrimaryButton from "../components/buttons/PrimaryButton";
+import { Modal } from "@mui/base";
+import DeleteModal from "../components/DeleteModal";
 
 const ViewPortfolio = () => {
   // components
@@ -29,17 +31,25 @@ const ViewPortfolio = () => {
   }));
 
   // specify datatypes for portfolio in portfolios
+  interface allocation {
+    stockName: string;
+    averagePrice: number;
+    percentage: number;
+  }
+
   interface portfolio {
     id: string;
     capital: number;
     dateTime: Date;
     name: string;
     description: string;
+    allocations: allocation[];
   }
 
   // portfolios data
   const [portfolios, setPortfolios] = useState([] as portfolio[]);
   const [isHovering, setIsHovering] = useState(false);
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const AppStore = useStores();
 
   // get portfolio data from backend
@@ -54,9 +64,7 @@ const ViewPortfolio = () => {
   // when clicking into the portfolio
   const navigate = useNavigate();
 
-  const handleClick = (
-    portfolio : portfolio
-       ) => {
+  const handleClick = (portfolio: portfolio) => {
     navigate("/viewportfoliodetails", {
       state: {
         userId: AppStore.getUserId(),
@@ -93,6 +101,8 @@ const ViewPortfolio = () => {
     // function to render all portfolios via a loop
     return (
       <>
+        {/* modal component */}
+
         <h2>Welcome back!</h2>
         <h4>Here are your portfolios:</h4>
         <Container
@@ -134,7 +144,7 @@ const ViewPortfolio = () => {
                       <Stack
                         onMouseEnter={() => handleMouseEnter(index)}
                         onMouseLeave={handleMouseLeave}
-                        onClick={()=>handleClick(portfolio)}
+                        onClick={() => handleClick(portfolio)}
                         sx={{
                           cursor: "pointer",
                           display: "flex",
@@ -231,13 +241,9 @@ const ViewPortfolio = () => {
                               />
                               <PrimaryButton
                                 buttonText="Delete"
-                                onClick={(e: any) => {
-                                  e.stopPropagation();
-                                  AppStore.deletePortfolioController(
-                                    portfolio.name,
-                                    AppStore.getUserId()
-                                  );
-                                  window.location.reload();
+                                onClick={(e) => {
+                                  e?.stopPropagation();
+                                  setDeleteModalOpen(true);
                                 }}
                               ></PrimaryButton>
                             </Stack>
@@ -245,6 +251,11 @@ const ViewPortfolio = () => {
                         </Paper>
                       </Stack>
                     </Grid>
+                    <DeleteModal
+                      portfolioName={portfolio.name}
+                      isOpen={isDeleteModalOpen}
+                      setIsOpen={setDeleteModalOpen}
+                    />
 
                     {isHovering === index && (
                       <Grid item xs={12} sm={5}>

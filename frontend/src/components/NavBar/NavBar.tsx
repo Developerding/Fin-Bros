@@ -73,6 +73,19 @@ const NavBar = () => {
   };
 
   const handleLogOut = () => {
+    // logging the status
+    const d = new Date();
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const year = d.getFullYear();
+    const hour = d.getHours();
+    const second = d.getSeconds();
+    const formattedDate = `${month}/${day}/${year}`;
+    const formattedTime = `${hour}:${second}`;
+    const logData = {
+      message: `${AppStore.getUserId()} logout at ${formattedDate} ${formattedTime}`,
+    };
+    AppStore.createLogController(logData);
     AppStore.logout();
     window.location.reload();
   };
