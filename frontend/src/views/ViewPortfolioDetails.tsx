@@ -24,34 +24,43 @@ const ViewPortfolioDetails = () => {
   const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
   const [hoveredRow, setHoveredRow] = useState(-1); // to change the background color of the row when hovered
   const { state } = useLocation();
-  const { userId, portfolioName } = state;
+  // const { userId, portfolioName } = state;
+  const userId = "1";
+  const portfolioName = "test2";
+  const [stocks, setStocks] = useState([]);
 
   useEffect(() => {
     // Make an API call to fetch portfolio data
     AppStore.viewPortfolioController(portfolioName, userId)
-      .then((res) => {
-        // console.log("Portfolio data:", res);
+      .then(async (res) => {
         setStockPortfolioData(res);
+        console.log(res);
+        for (let stock of res.allocations) {
+          await getStock(stock.stockName)
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-  },
-    []);
+  }, []);
 
   ///////////// Function to fetch stock data from API /////////////
   /// uncomment this + line 239-247 + line 132-144 in AppStore.ts viewStockController once debugging is done ///  
-  // const getStock = (stockTicker: string) => {
-  //   // Fetch stock data
-  //   return AppStore.viewStockController(stockTicker)
-  //     .then((res) => {
-  //       return res; // Return the result
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //       return null; // Return null in case of an error
-  //     });
-  // };
+  const getStock = (stockTicker: string) => {
+    // Fetch stock data
+    console.log(stockTicker)
+    return AppStore.viewStockController(stockTicker)
+      .then((res) => {
+        // console.log(stocks.includes(res));
+        // if (stocks.includes(res)) {
+        setStocks(prevStocks => [...prevStocks, res]);
+        // }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        return null; // Return null in case of an error
+      });
+  };
 
   // Find the stock name from allStocks object from the allocations.stockName (which is the ticker)
   const getRealStockName = (stockName: string) => {
@@ -235,18 +244,36 @@ const ViewPortfolioDetails = () => {
             </Typography>
             <Grid item xs={12}>
               <Card>
-                <CardContent>
-                  {/* Complete viewStockController function first */}
-                  {/* {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
-                    <div key={index}>
-                      <Typography variant="subtitle1">
-                        Stock: {getStock(allocation?.stockName).name}
-                        Country: {getStock(allocation?.stockName).Country}
-                        Sector: {getStock(allocation?.stockName).sector}
-                      </Typography>
-                    </div>
-                  ))} */}
-                  <Typography variant="subtitle1"> Need to show geographic data </Typography>
+                <CardContent>                  
+                  <TableContainer>
+                      <Table>
+                        <TableHead >
+                          <TableRow >
+                            {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>Symbol</TableCell> */}
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Name</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Country</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Sector</TableCell>
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          { stocks.map((stock: any, index: number) => (
+                            <TableRow key={index}>
+                              {/* <TableCell align="center">
+                                <Avatar src={`/assets/stocks/${stock.name}.png`} sx={{ width: 50, height: 50 }} />
+                              </TableCell> */}
+                              <TableCell align="center">
+                                <Typography variant="h5" >
+                                  {getRealStockName(stock.name)}
+                                </Typography>
+                              </TableCell>
+                              <TableCell align="center">{stock.country}</TableCell>
+                              <TableCell align="center">{stock.sector}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                 </CardContent>
               </Card>
             </Grid>
