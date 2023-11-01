@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container, Grid, Typography, Card, CardContent, Stack, Avatar } from "@mui/material";
-import DoughnutChart from "../components/chart/Chart";
+import AllocationChart from "../components/chart/AllocationChart";
 import { useStores } from "../stores";
 import { useLocation } from "react-router";
 import { allStocks } from "../constants/stocks";
@@ -296,15 +296,11 @@ const ViewPortfolioDetails = () => {
           <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {/* insert donut chart, can add piechart for regions they belong to */}
             <CardContent>
-              <DoughnutChart></DoughnutChart>
+              <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
             </CardContent>
           </Card>
         </Grid>
         <Grid container spacing={4} sx={{ marginTop: "1%" }}>
-
-
-
-
         </Grid>
       </Container>
     </>
