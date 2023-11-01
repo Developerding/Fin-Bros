@@ -8,15 +8,15 @@ function AllocationChart(props) {
   if (props.allocations) {
     Chart.register(ArcElement, Tooltip, Legend)
     let data = {
-    labels: props.allocations.map(stock => stock.stockName),
-    datasets: [
-        {
-            label: 'Allocation percentage',
-            data: props.allocations.map(stock => stock.percentage),
-            borderWidth: 1,
-            backgroundColor: props.allocations.map(_ => randomRGB()),
-        },
-    ],
+        labels: props.allocations.map(stock => stock.stockName),
+        datasets: [
+            {
+                label: 'Portfolio allocation percentage',
+                data: props.allocations.map(stock => stock.percentage),
+                borderWidth: 1,
+                backgroundColor: props.allocations.map(_ => randomRGB()),
+            },
+        ],
     };
     return (
         <div style={{width: '300px', height: '300px'}}>
