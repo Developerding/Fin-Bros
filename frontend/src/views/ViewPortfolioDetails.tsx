@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Container, Grid, Typography, Card, CardContent, Stack, Avatar } from "@mui/material";
+import { Container, Grid, Typography, Card, CardContent, Stack, Avatar, Box } from "@mui/material";
 import AllocationChart from "../components/chart/AllocationChart";
 import { useStores } from "../stores";
 import { useLocation } from "react-router";
 import { allStocks } from "../constants/stocks";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import RegionChart from "../components/chart/RegionChart";
 
 
 const handleRowClick = (allocation: any) => {
@@ -24,9 +25,7 @@ const ViewPortfolioDetails = () => {
   const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
   const [hoveredRow, setHoveredRow] = useState(-1); // to change the background color of the row when hovered
   const { state } = useLocation();
-  // const { userId, portfolioName } = state;
-  const userId = "1";
-  const portfolioName = "test2";
+  const { userId, portfolioName } = state;
   const [stocks, setStocks] = useState([]);
 
   useEffect(() => {
@@ -34,7 +33,6 @@ const ViewPortfolioDetails = () => {
     AppStore.viewPortfolioController(portfolioName, userId)
       .then(async (res) => {
         setStockPortfolioData(res);
-        console.log(res);
         for (let stock of res.allocations) {
           await getStock(stock.stockName)
         }
@@ -48,12 +46,21 @@ const ViewPortfolioDetails = () => {
   /// uncomment this + line 239-247 + line 132-144 in AppStore.ts viewStockController once debugging is done ///  
   const getStock = (stockTicker: string) => {
     // Fetch stock data
-    console.log(stockTicker)
     return AppStore.viewStockController(stockTicker)
       .then((res) => {
-        // console.log(stocks.includes(res));
         // if (stocks.includes(res)) {
-        setStocks(prevStocks => [...prevStocks, res]);
+        setStocks(prevStocks => {
+          // Check if the stock already exists in the state
+          const isStockExists = prevStocks.some(stock => stock.name === res.name);
+
+          // If the stock doesn't exist, add it to the state
+          if (!isStockExists) {
+            return [...prevStocks, res];
+          }
+
+          // If the stock exists, return the previous state
+          return prevStocks;
+        });
         // }
       })
       .catch((error) => {
@@ -280,23 +287,27 @@ const ViewPortfolioDetails = () => {
           </Grid>
         </Grid>
 
-        {/* Analytics */}
         <Grid item xs={4}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "500",
-              textAlign: "center",
-              marginBottom: "1%",
-              marginTop: "1%"
-            }}
-          >
-            Analytics
+          <Typography variant="h4" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
+            <b>Analytics</b>
           </Typography>
           <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {/* insert donut chart, can add piechart for regions they belong to */}
             <CardContent>
-              <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gap: 1,
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                }}
+              >
+                <Grid item>
+                  <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
+                </Grid>
+                <Grid item>
+                  <RegionChart stocks={stocks ? stocks : null}></RegionChart>
+                </Grid>
+              </Box>
             </CardContent>
           </Card>
         </Grid>
