@@ -302,9 +302,27 @@ const ViewPortfolioDetails = () => {
                 }}
               >
                 <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>Portfolio Allocation by Stock</b>
+                  </Typography>
                   <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
                 </Grid>
                 <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>Portfolio Allocation by Region</b>
+                  </Typography>
                   <RegionChart stocks={stocks ? stocks : null}></RegionChart>
                 </Grid>
               </Box>
