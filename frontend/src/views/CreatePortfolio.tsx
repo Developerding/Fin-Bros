@@ -52,6 +52,7 @@ const CreatePortfolio_V2 = () => {
     portfolioCapital: 0,
     allocations: [] as StockAllocation[],
   });
+  const [total, setTotal] = useState(0);
 
   // Search value
   const [searchValue, setSearchValue] = useState("");
@@ -94,6 +95,20 @@ const CreatePortfolio_V2 = () => {
   useEffect(() => {
     console.log(portfolio);
   }, [portfolio]);
+
+  useEffect(() => {
+    if (portfolio.allocations.length == 0) {
+      setTotal(0);
+      return;
+    }
+    let total = 0;
+    portfolio.allocations.map((obj) => {
+      if (obj.percentage) {
+        total += obj.percentage;
+      }
+    });
+    setTotal(total);
+  }, [portfolio.allocations]);
 
   // Remove stocks
   const removeStock = (stockName: string) => {
@@ -302,6 +317,19 @@ const CreatePortfolio_V2 = () => {
                   error={error.status}
                   errorText="Please enter a starting capital"
                 />
+              </Grid>
+
+              <Grid item style={{ marginTop: "20px" }}>
+                <Typography
+                  variant="body1"
+                  style={{
+                    fontSize: "24px",
+                    marginLeft: "16px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Total Allocations: {total}%
+                </Typography>
               </Grid>
             </Grid>
 
