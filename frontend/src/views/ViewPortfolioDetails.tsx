@@ -29,6 +29,9 @@ const ViewPortfolioDetails = () => {
     navigate("/stock", {
       state: {
         stockName: allocation.stockName,
+        avgPrice: allocation.averagePrice,
+        portfolio: stockPortfolioData,
+        stocks: stocks
       },
     });
   };

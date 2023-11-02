@@ -1,9 +1,9 @@
-import { Chart, Legend, Tooltip, CategoryScale, LinearScale, PointElement, LineElement, Title } from "chart.js";
+import { Chart, Legend, Tooltip, CategoryScale, LinearScale, PointElement, LineElement, Title, scales } from "chart.js";
 import { Line } from "react-chartjs-2";
 
 function StockChart(props) {
   if (props.stock && props.purchasedStock) {
-    let stockData = props.stock.stockData.reverse();
+    let stockData = props.stock.stockData;
     Chart.register(
         CategoryScale,
         LinearScale,
@@ -13,7 +13,14 @@ function StockChart(props) {
         Tooltip,
         Legend
     );
-    console.log(stockData[0]["date"])
+    // console.log(stockData[0]["date"])
+    let options = {
+        scales: {
+            x: {
+                reverse: true
+            }
+        }
+    }
     let data = {
         labels: stockData.map(stock => stock.date),
         datasets: [
@@ -35,7 +42,7 @@ function StockChart(props) {
     };
     return (
         <div style={{width: '900px', height: '900px'}}>
-            <Line data={data}></Line>
+            <Line data={data} options={options}></Line>
         </div>
     );
   } else {
