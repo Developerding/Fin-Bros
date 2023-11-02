@@ -10,21 +10,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/stock")
 public class StockController {
     private final StockService stockService;
 
     @Autowired
-    public StockController(StockService stockService){
+    public StockController(StockService stockService) {
         this.stockService = stockService;
     }
 
     @GetMapping
-    public List<Stock> findAllStocks(){
+    public List<Stock> findAllStocks() {
         return stockService.findAllStocks();
     }
 
@@ -45,26 +46,21 @@ public class StockController {
     }
 
     // get analytics of a stock between 2 dates
-    @RequestMapping(
-        value = "/getmovingaverage", 
-        method = RequestMethod.GET, 
-        produces = "application/json"
-        )
+    @RequestMapping(value = "/getmovingaverage", method = RequestMethod.GET, produces = "application/json")
     public MovingAverageResult calculateMovingAverage(
-        @RequestParam String symbol,
-        @RequestParam String startDate, 
-        @RequestParam String endDate
-        ) {
+            @RequestParam String symbol,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
         return stockService.calculateMovingAverage(symbol, startDate, endDate);
     }
 
-    // get 3 months, 6 months, 1 year, 3 years, 5 years and 10 years analytics of a stock
+    // get 3 months, 6 months, 1 year, 3 years, 5 years and 10 years analytics of a
+    // stock
     @RequestMapping("/gettotalmovingaverage")
     public TotalMovingAverageResult getTotalMovingAverageResult(
-        @RequestParam String symbol,
-        @RequestParam String currentDate    
-        ) {
+            @RequestParam String symbol,
+            @RequestParam String currentDate) {
         return stockService.getTotalMovingAverageResult(symbol, currentDate);
-    }   
+    }
 
 }
