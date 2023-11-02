@@ -20,6 +20,7 @@ const handleRowClick = (allocation: any) => {
 // const isPositiveReturn = (allocation) => returns(allocation) > 0;
 // const performance = (allocation) => Math.round(returns(allocation) / capitalAllocated(allocation) * 100) / 100;
 
+
 const ViewPortfolioDetails = () => {
   const AppStore = useStores();
   const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
@@ -42,8 +43,8 @@ const ViewPortfolioDetails = () => {
       });
   }, []);
 
+
   ///////////// Function to fetch stock data from API /////////////
-  /// uncomment this + line 239-247 + line 132-144 in AppStore.ts viewStockController once debugging is done ///  
   const getStock = (stockTicker: string) => {
     // Fetch stock data
     return AppStore.viewStockController(stockTicker)
@@ -69,12 +70,18 @@ const ViewPortfolioDetails = () => {
       });
   };
 
+
+
   // Find the stock name from allStocks object from the allocations.stockName (which is the ticker)
   const getRealStockName = (stockName: string) => {
     const stock = allStocks.find((stock) => stock.ticker === stockName);
     return stock?.name;
   };
 
+  const getCurrentStockPrice = (stockName: string) => {
+    const stock = stocks.find((stock) => stock.name === stockName);
+    return stock?.stockData[0].close;
+  }
 
   // To format the dateTime string from Portfolio object
   function formatDateTime(dateTimeString: string) {
@@ -83,9 +90,39 @@ const ViewPortfolioDetails = () => {
     return date.toLocaleDateString('en-US', options); // Replace 'en-US' with the desired locale
   }
 
+  const capital = stockPortfolioData?.capital;
+
+  const getCurrentStockPriceForAllocations = {};
+  const allocationData = stockPortfolioData.allocations?.map((allocation) => {
+    const stockName = allocation.stockName;
+    const currentStockPrice = getCurrentStockPrice(stockName);
+    getCurrentStockPriceForAllocations[stockName] = currentStockPrice;
+
+    const capitalAllocated = (allocation.percentage / 100) * capital;
+    const numberOfSharesBought = Math.round(capitalAllocated / allocation.averagePrice);
+    const returns = Math.round(
+      (currentStockPrice - allocation.averagePrice) * (capitalAllocated / allocation.averagePrice)
+    );
+    const isPositiveReturn = returns > 0;
+    const performance = Math.round((returns / capitalAllocated) * 100) / 100;
+
+    return {
+      stockName: allocation.stockName,
+      capitalAllocated,
+      numberOfSharesBought,
+      currentStockPrice,
+      returns,
+      isPositiveReturn,
+      performance,
+    };
+  });
+
+  // console.log(allocationData);
+
 
   return (
     <>
+    
       <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -113,8 +150,8 @@ const ViewPortfolioDetails = () => {
                 </Typography>
 
                 <Stack sx={{ width: 1, display: "flex", height: "100%", paddingY: 2, justifyContent: "start", paddingLeft: 1 }}>
-                  <Typography> This portfolio was created by user <b>{stockPortfolioData.userId}</b>. </Typography>
-                  <Typography sx={{ paddingY: 2 }}>
+                  {/*<Typography> This portfolio was created by user <b>{stockPortfolioData.userId}</b>. </Typography> */}
+                  <Typography sx={{ paddingY: 1 }}>
                     Portfolio consists of stocks from {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
                       <span key={index}>
                         <b>{getRealStockName(allocation.stockName)}</b>
@@ -123,6 +160,8 @@ const ViewPortfolioDetails = () => {
                           : index === stockPortfolioData.allocations.length - 2
                             ? ' and '
                             : ', '}
+
+                        
                       </span>
                     ))}
                   </Typography>
@@ -210,7 +249,7 @@ const ViewPortfolioDetails = () => {
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Number of Shares Bought</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Current Price</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Returns ($)</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance wrt Total Initial Capital(%)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance wrt Stock Capital Allocation(%)</TableCell>
                           </TableRow>
                         </TableHead>
 
@@ -218,28 +257,32 @@ const ViewPortfolioDetails = () => {
                           {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
 
                             <TableRow key={index}>
-                              <TableCell align="center">{allocation.stockName} </TableCell>
+                              <TableCell align="center">{allocationData.stockName} </TableCell>
+                              {/* allocation % x capital */}
                               <TableCell align="center">{allocation.percentage / 100 * stockPortfolioData.capital}</TableCell>
-                              <TableCell align="center">{Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)}</TableCell>
-                              <TableCell align="center">200</TableCell>
-                              <TableCell align="center">{Math.round((200 - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital))}</TableCell>
+                              {/* allocation % x capital / buying price */}
+                              <TableCell align="center">{Math.round(allocation.percentage / 100 * stockPortfolioData.capital /allocation.averagePrice) }</TableCell>
+                              {/* current price */}
+                              <TableCell align="center">{getCurrentStockPrice(allocation.stockName)}</TableCell>
+
+                              {/* (current price - buying price) * capital allocated */}
+                              <TableCell align="center">{Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice))}</TableCell>
                               <TableCell align="center"
                                 sx={{
                                   fontWeight: "bold",
                                   color: // Change color of the percentage based on whether it is positive or negative
-                                    Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice * (200 - allocation.averagePrice)) / 100 > 0
+                                  Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)) / (allocation.percentage * stockPortfolioData.capital/100) > 0
                                       ? "green"
                                       : "red",
                                 }}
                               >
-                                {Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice * (200 - allocation.averagePrice)) / 100}
+                                {Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)) / (allocation.percentage * stockPortfolioData.capital/100)}
                               </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
                       </Table>
                     </TableContainer>
-                    <Typography variant="subtitle1" sx={{ marginTop: "2%" }}> <i>Formula: stock price now - stock price when portfolio was created </i></Typography>
 
                   </CardContent>
                 </Card>
