@@ -6,6 +6,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStores } from "../stores";
@@ -35,6 +36,7 @@ const ViewPortfolio = () => {
     stockName: string;
     averagePrice: number;
     percentage: number;
+    differenceVsPriorPeriod: number;
   }
 
   interface portfolio {
@@ -43,11 +45,13 @@ const ViewPortfolio = () => {
     dateTime: Date;
     name: string;
     description: string;
+    totalPerformance: number;
     allocations: allocation[];
   }
 
   // portfolios data
   const [portfolios, setPortfolios] = useState([] as portfolio[]);
+  // const [stockAnalytics, setStockAnalytics] = useState([]);
   const [isHovering, setIsHovering] = useState(false);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const AppStore = useStores();
@@ -56,7 +60,8 @@ const ViewPortfolio = () => {
   useEffect(() => {
     AppStore.getPortfoliosController(AppStore.getUserId()).then(
       (response: any) => {
-        setPortfolios(response.data);
+        setPortfolios(response);
+        // setPortfolios(response.data);
       }
     );
   }, []);
@@ -182,10 +187,10 @@ const ViewPortfolio = () => {
                                   variant="h4"
                                   sx={{ fontWeight: "bold" }}
                                 >
-                                  ${portfolio.capital}
+                                  ${portfolio.capital * (1 + portfolio.totalPerformance)}
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
-                                  Month to Date
+                                  since creation date
                                 </Typography>
                               </Box>
                               <Box>
@@ -194,21 +199,31 @@ const ViewPortfolio = () => {
                                   justifyContent="center"
                                   alignItems="center"
                                 >
-                                  <ArrowUpwardIcon
+                                  {
+                                    portfolio.totalPerformance >= 0 && <ArrowUpwardIcon
                                     sx={{ height: 22, color: "#64dd17" }}
                                   ></ArrowUpwardIcon>
+                                  }
+                                  {
+                                    portfolio.totalPerformance < 0 && <ArrowDownwardIcon
+                                    sx={{
+                                      height: 22,
+                                      color: "#e31212",
+                                    }}
+                                  ></ArrowDownwardIcon>
+                                  }
                                   <Typography
                                     variant="h4"
                                     sx={{
                                       textAlign: "center",
-                                      color: "#64dd17",
+                                      color: portfolio.totalPerformance >= 0 ? "#64dd17" : "e31212",
                                     }}
                                   >
-                                    7.62%
+                                    {portfolio.totalPerformance}%
                                   </Typography>
                                 </Stack>
                                 <Typography variant="h6" color="text.secondary">
-                                  vs Prior Period
+                                  vs creation date
                                 </Typography>
                               </Box>
                               <Box>
@@ -321,26 +336,36 @@ const ViewPortfolio = () => {
                                             alignItems="center"
                                             spacing={1}
                                           >
+                                            {allocation.differenceVsPriorPeriod >= 0 && 
                                             <ArrowUpwardIcon
                                               sx={{
                                                 height: 22,
                                                 color: "#64dd17",
                                               }}
                                             ></ArrowUpwardIcon>
+                                            }
+                                            {allocation.differenceVsPriorPeriod < 0 && 
+                                            <ArrowDownwardIcon
+                                              sx={{
+                                                height: 22,
+                                                color: "#e31212",
+                                              }}
+                                            ></ArrowDownwardIcon>
+                                            }
                                             <Typography
                                               variant="h4"
                                               sx={{
                                                 textAlign: "center",
-                                                color: "#64dd17",
+                                                color: allocation.differenceVsPriorPeriod >= 0 ? "#64dd17" : "#e31212",
                                               }}
                                             >
-                                              7.62%
+                                              {allocation.differenceVsPriorPeriod}%
                                             </Typography>
                                             <Typography
                                               variant="h6"
                                               color="text.secondary"
                                             >
-                                              vs Prior Period
+                                              vs creation date
                                             </Typography>
                                           </Stack>
                                         </Box>
