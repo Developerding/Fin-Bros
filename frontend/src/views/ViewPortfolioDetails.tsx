@@ -3,15 +3,11 @@ import { Container, Grid, Typography, Card, CardContent, Stack, Avatar, Box } fr
 import AllocationChart from "../components/chart/AllocationChart";
 import { useStores } from "../stores";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { allStocks } from "../constants/stocks";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import RegionChart from "../components/chart/RegionChart";
 
-
-const handleRowClick = (allocation: any) => {
-  console.log('clicked on');
-  console.log(allocation.stockName);
-};
 
 ///////// Constants to calculate overall returns (to be used in the table but debug first) /////////
 // const capitalAllocated = (allocation) => (allocation.percentage / 100) * stockPortfolioData.capital;
@@ -28,6 +24,18 @@ const ViewPortfolioDetails = () => {
   const { state } = useLocation();
   const { userId, portfolioName } = state;
   const [stocks, setStocks] = useState([]);
+
+  const navigate = useNavigate();
+  const handleRowClick = (allocation: any) => {
+    navigate("/stock", {
+      state: {
+        stockName: allocation.stockName,
+        avgPrice: allocation.averagePrice,
+        portfolio: stockPortfolioData,
+        stocks: stocks
+      },
+    });
+  };
 
   useEffect(() => {
     // Make an API call to fetch portfolio data
