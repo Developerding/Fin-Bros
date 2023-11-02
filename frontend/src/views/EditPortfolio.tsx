@@ -204,9 +204,14 @@ export const EditPortfolio = () => {
 
     // summing of allocations
     let sum = 0;
-    for (let key in portfolio.allocations) {
-      sum += portfolio.allocations[key].percentage;
-    }
+    portfolio.allocations.map((obj) => {
+      sum += obj.percentage;
+    });
+    // for (let key in portfolio.allocations) {
+    //   console.log(typeof portfolio.allocations[key].percentage);
+    //   sum += portfolio.allocations[key].percentage;
+    // }
+    // console.log(sum);
 
     if (sum > 100) {
       setError({
