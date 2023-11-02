@@ -122,7 +122,7 @@ const ViewPortfolioDetails = () => {
 
   return (
     <>
-    
+
       <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -161,7 +161,7 @@ const ViewPortfolioDetails = () => {
                             ? ' and '
                             : ', '}
 
-                        
+
                       </span>
                     ))}
                   </Typography>
@@ -254,33 +254,31 @@ const ViewPortfolioDetails = () => {
                         </TableHead>
 
                         <TableBody>
-                          {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
-
+                          {allocationData?.map((allocation: any, index: number) => (
                             <TableRow key={index}>
-                              <TableCell align="center">{allocationData.stockName} </TableCell>
-                              {/* allocation % x capital */}
-                              <TableCell align="center">{allocation.percentage / 100 * stockPortfolioData.capital}</TableCell>
-                              {/* allocation % x capital / buying price */}
-                              <TableCell align="center">{Math.round(allocation.percentage / 100 * stockPortfolioData.capital /allocation.averagePrice) }</TableCell>
-                              {/* current price */}
-                              <TableCell align="center">{getCurrentStockPrice(allocation.stockName)}</TableCell>
-
-                              {/* (current price - buying price) * capital allocated */}
-                              <TableCell align="center">{Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice))}</TableCell>
-                              <TableCell align="center"
+                              <TableCell align="center">{allocation.stockName}</TableCell>
+                              <TableCell align="center">{allocation.capitalAllocated}</TableCell>
+                              <TableCell align="center">
+                                {Math.round(allocation.numberOfSharesBought)}
+                              </TableCell>
+                              <TableCell align="center">{allocation.currentStockPrice}</TableCell>
+                              <TableCell align="center">
+                                {Math.round(allocation.returns)}
+                              </TableCell>
+                              <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: "bold",
-                                  color: // Change color of the percentage based on whether it is positive or negative
-                                  Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)) / (allocation.percentage * stockPortfolioData.capital/100) > 0
-                                      ? "green"
-                                      : "red",
+                                  color: allocation.isPositiveReturn ? "green" : "red",
                                 }}
                               >
-                                {Math.round((getCurrentStockPrice(allocation.stockName) - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)) / (allocation.percentage * stockPortfolioData.capital/100)}
+                                {Math.round((allocation.returns / allocation.capitalAllocated) * 100) / 100}
                               </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
+
+
                       </Table>
                     </TableContainer>
 
@@ -294,36 +292,36 @@ const ViewPortfolioDetails = () => {
             </Typography>
             <Grid item xs={12}>
               <Card>
-                <CardContent>                  
+                <CardContent>
                   <TableContainer>
-                      <Table>
-                        <TableHead >
-                          <TableRow >
-                            {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>Symbol</TableCell> */}
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Name</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Country</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Sector</TableCell>
-                          </TableRow>
-                        </TableHead>
+                    <Table>
+                      <TableHead >
+                        <TableRow >
+                          {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>Symbol</TableCell> */}
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Name</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Country</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Sector</TableCell>
+                        </TableRow>
+                      </TableHead>
 
-                        <TableBody>
-                          { stocks.map((stock: any, index: number) => (
-                            <TableRow key={index}>
-                              {/* <TableCell align="center">
+                      <TableBody>
+                        {stocks.map((stock: any, index: number) => (
+                          <TableRow key={index}>
+                            {/* <TableCell align="center">
                                 <Avatar src={`/assets/stocks/${stock.name}.png`} sx={{ width: 50, height: 50 }} />
                               </TableCell> */}
-                              <TableCell align="center">
-                                <Typography variant="h5" >
-                                  {getRealStockName(stock.name)}
-                                </Typography>
-                              </TableCell>
-                              <TableCell align="center">{stock.country}</TableCell>
-                              <TableCell align="center">{stock.sector}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                            <TableCell align="center">
+                              <Typography variant="h5" >
+                                {getRealStockName(stock.name)}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">{stock.country}</TableCell>
+                            <TableCell align="center">{stock.sector}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </CardContent>
               </Card>
             </Grid>
