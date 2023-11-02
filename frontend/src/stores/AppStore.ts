@@ -264,7 +264,7 @@ class AppStore {
           }
         }));
         // add totalPerformance as a new field to every portfolio
-        portfolio.totalPerformance = (totalPerformance * 100).toFixed(2);
+        portfolio.totalPerformance = totalPerformance;
       }
 
       console.log("portfoliosArray", portfoliosArray);

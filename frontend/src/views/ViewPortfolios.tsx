@@ -187,7 +187,7 @@ const ViewPortfolio = () => {
                                   variant="h4"
                                   sx={{ fontWeight: "bold" }}
                                 >
-                                  ${portfolio.capital * (1 + portfolio.totalPerformance)}
+                                  ${(portfolio.capital * (1 + portfolio.totalPerformance)).toFixed(2)}
                                 </Typography>
                                 <Typography variant="h6" color="text.secondary">
                                   since creation date
@@ -219,14 +219,14 @@ const ViewPortfolio = () => {
                                       color: portfolio.totalPerformance >= 0 ? "#64dd17" : "e31212",
                                     }}
                                   >
-                                    {portfolio.totalPerformance}%
+                                    {(portfolio.totalPerformance * 100).toFixed(2)}%
                                   </Typography>
                                 </Stack>
                                 <Typography variant="h6" color="text.secondary">
                                   vs creation date
                                 </Typography>
                               </Box>
-                              <Box>
+                              {/* <Box>
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
@@ -240,16 +240,13 @@ const ViewPortfolio = () => {
                                 >
                                   {portfolio.description}
                                 </Typography>
-                              </Box>
+                              </Box> */}
                             </Stack>
                             <Stack
                               direction={"row"}
                               justifyContent={"end"}
                               sx={{ paddingRight: 1, paddingBottom: 1 }}
                             >
-                              {/* <Button onClick={editClick}>
-                        <Typography variant="h6">Edit Portfolio</Typography>
-                      </Button> */}
                               <OutlinedButton
                                 buttonText="Edit"
                                 onClick={(event) => editClick(portfolio, event)}
