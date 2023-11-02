@@ -13,14 +13,6 @@ const handleRowClick = (allocation: any) => {
   console.log(allocation.stockName);
 };
 
-///////// Constants to calculate overall returns (to be used in the table but debug first) /////////
-// const capitalAllocated = (allocation) => (allocation.percentage / 100) * stockPortfolioData.capital;
-// const numberOfSharesBought = (allocation) => Math.round(capitalAllocated(allocation) / allocation.averagePrice);
-// const returns = (allocation) => Math.round(numberOfSharesBought(allocation) * (200 - allocation.averagePrice) / 100);
-// const isPositiveReturn = (allocation) => returns(allocation) > 0;
-// const performance = (allocation) => Math.round(returns(allocation) / capitalAllocated(allocation) * 100) / 100;
-
-
 const ViewPortfolioDetails = () => {
   const AppStore = useStores();
   const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
@@ -245,11 +237,11 @@ const ViewPortfolioDetails = () => {
                         <TableHead>
                           <TableRow>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Ticker</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Capital Allocated</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Number of Shares Bought</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Capital Allocation</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>No. of Shares</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Current Price</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Returns ($)</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance wrt Stock Capital Allocation(%)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance of Stock(%)</TableCell>
                           </TableRow>
                         </TableHead>
 
@@ -261,9 +253,9 @@ const ViewPortfolioDetails = () => {
                               <TableCell align="center">
                                 {Math.round(allocation.numberOfSharesBought)}
                               </TableCell>
-                              <TableCell align="center">{allocation.currentStockPrice}</TableCell>
+                              <TableCell align="center">{typeof(allocation.currentStockPrice) == "number" ? allocation.currentStockPrice : "loading" }</TableCell>
                               <TableCell align="center">
-                                {Math.round(allocation.returns)}
+                                {typeof(allocation.currentStockPrice) == "number" ? Math.round(allocation.returns) : "loading"}
                               </TableCell>
                               <TableCell
                                 align="center"
@@ -272,7 +264,7 @@ const ViewPortfolioDetails = () => {
                                   color: allocation.isPositiveReturn ? "green" : "red",
                                 }}
                               >
-                                {Math.round((allocation.returns / allocation.capitalAllocated) * 100) / 100}
+                                {typeof(allocation.currentStockPrice) == "number" ? Math.round((allocation.returns / allocation.capitalAllocated) * 100) / 100 : "loading"}
                               </TableCell>
                             </TableRow>
                           ))}
