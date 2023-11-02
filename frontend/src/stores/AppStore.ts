@@ -208,6 +208,16 @@ class AppStore {
     }
   };
 
+  getAllLogsController = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/log");
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   getPortfoliosController = async (userId: String) => {
     try {
       const response = await axios.get(
