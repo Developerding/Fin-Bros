@@ -2,7 +2,6 @@ import { ArcElement, Chart, Legend, Tooltip } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
 const predefinedColors = [
-
     "hsl(210, 70%, 60%)", // Purple
     "hsl(240, 70%, 60%)", // Blue-Purple
     "hsl(270, 70%, 60%)", // Blue
@@ -20,20 +19,19 @@ Array.prototype.groupBy = function(key) {
     }, {})
 };
 
-function RegionChart(props) {
+function SectorChart(props) {
   if (props.stocks && props.stocks.length > 0) {
     Chart.register(ArcElement, Tooltip, Legend)
-    let stocksByCountry = props.stocks.groupBy("country");
+    let stocksBySector = props.stocks.groupBy("sector");
     let data = {
-        labels: Object.keys(stocksByCountry),
+        labels: Object.keys(stocksBySector),
         datasets: [
             {
-                label: 'Portfolio Allocation by Region (%)',
-                data: Object.keys(stocksByCountry).map(country => stocksByCountry[country].length / props.stocks.length * 100),
+                label: 'Portfolio Allocation by Sector (%)',
+                data: Object.keys(stocksBySector).map(sector => stocksBySector[sector].length / props.stocks.length * 100),
                 borderWidth: 1,
-                backgroundColor: Object.keys(stocksByCountry).map((_, index) => predefinedColors[index % predefinedColors.length]),
-
-                // backgroundColor: Object.keys(stocksByCountry).map(_ => randomRGB()),
+                backgroundColor: Object.keys(stocksBySector).map((_, index) => predefinedColors[index % predefinedColors.length]),
+                // backgroundColor: Object.keys(stocksBySector).map(_ => randomRGB()),
             },
         ],
     };
@@ -47,4 +45,4 @@ function RegionChart(props) {
   }
 };
 
-export default RegionChart;
+export default SectorChart;

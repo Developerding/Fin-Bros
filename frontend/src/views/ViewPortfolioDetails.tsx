@@ -6,6 +6,7 @@ import { useLocation } from "react-router";
 import { allStocks } from "../constants/stocks";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import RegionChart from "../components/chart/RegionChart";
+import SectorChart from "../components/chart/SectorChart";
 
 
 const handleRowClick = (allocation: any) => {
@@ -95,7 +96,7 @@ const ViewPortfolioDetails = () => {
     const returns = Math.round(
       (currentStockPrice - allocation.averagePrice) * (capitalAllocated / allocation.averagePrice)
     );
-    const isPositiveReturn = returns > 0;
+    const isPositiveReturn = returns >= 0;
     const performance = Math.round((returns / capitalAllocated) * 100) / 100;
 
     return {
@@ -152,8 +153,6 @@ const ViewPortfolioDetails = () => {
                           : index === stockPortfolioData.allocations.length - 2
                             ? ' and '
                             : ', '}
-
-
                       </span>
                     ))}
                   </Typography>
@@ -164,6 +163,59 @@ const ViewPortfolioDetails = () => {
 
               </CardContent>
             </Card>
+            <Grid item xs={12}>
+          <Typography variant="h3" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
+            <b>Allocation Analysis</b>
+          </Typography>
+          <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <CardContent>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gap: 1,
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                }}
+              >
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Stock</b>
+                  </Typography>
+                  <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Region</b>
+                  </Typography>
+                  <RegionChart stocks={stocks ? stocks : null}></RegionChart>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Sector</b>
+                  </Typography>
+                  <SectorChart stocks={stocks ? stocks : null}></SectorChart>
+                </Grid>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
 
             <Grid container spacing={4} sx={{ marginTop: "1%" }}>
               <Grid item xs={5}>
@@ -240,8 +292,8 @@ const ViewPortfolioDetails = () => {
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Capital Allocation</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>No. of Shares</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Current Price</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Returns ($)</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance of Stock(%)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>PnL ($)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance (%)</TableCell>
                           </TableRow>
                         </TableHead>
 
@@ -279,7 +331,7 @@ const ViewPortfolioDetails = () => {
               </Grid>
             </Grid>
 
-            <Typography variant="h4" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
+            <Typography variant="h3" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
               <b>Geographic Data </b>
             </Typography>
             <Grid item xs={12}>
@@ -293,6 +345,8 @@ const ViewPortfolioDetails = () => {
                           <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Name</TableCell>
                           <TableCell align="center" sx={{ fontWeight: "bold" }}>Country</TableCell>
                           <TableCell align="center" sx={{ fontWeight: "bold" }}>Sector</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Industry</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Asset Type</TableCell>
                         </TableRow>
                       </TableHead>
 
@@ -309,6 +363,8 @@ const ViewPortfolioDetails = () => {
                             </TableCell>
                             <TableCell align="center">{stock.country}</TableCell>
                             <TableCell align="center">{stock.sector}</TableCell>
+                            <TableCell align="center">{stock.industry}</TableCell>
+                            <TableCell align="center">{stock.assetType}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -320,48 +376,7 @@ const ViewPortfolioDetails = () => {
           </Grid>
         </Grid>
 
-        <Grid item xs={4}>
-          <Typography variant="h4" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
-            <b>Analytics</b>
-          </Typography>
-          <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {/* insert donut chart, can add piechart for regions they belong to */}
-            <CardContent>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gap: 1,
-                  gridTemplateColumns: 'repeat(2, 1fr)',
-                }}
-              >
-                <Grid item>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      textAlign: "center",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <b>Portfolio Allocation by Stock</b>
-                  </Typography>
-                  <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
-                </Grid>
-                <Grid item>
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      textAlign: "center",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <b>Portfolio Allocation by Region</b>
-                  </Typography>
-                  <RegionChart stocks={stocks ? stocks : null}></RegionChart>
-                </Grid>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+
         <Grid container spacing={4} sx={{ marginTop: "1%" }}>
         </Grid>
       </Container>
