@@ -22,7 +22,9 @@ public class BackendApplication {
 
 		ClassLoader classLoader = BackendApplication.class.getClassLoader();
 
-		File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
+		// File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
+		File file = new File("./serviceAccountKey.json");
+
 
 		FileInputStream serviceAccount = new FileInputStream(file.getAbsoluteFile());
 		
