@@ -329,7 +329,7 @@ const ViewPortfolioDetails = () => {
                                   color: allocation.isPositiveReturn ? "green" : "red",
                                 }}
                               >
-                                {typeof(allocation.currentStockPrice) == "number" ? Math.round((allocation.returns / allocation.capitalAllocated) * 100) / 100 : "loading"}
+                                {typeof(allocation.currentStockPrice) == "number" ? ((allocation.returns / allocation.capitalAllocated) * 100).toFixed(5) : "loading"}
                               </TableCell>
                             </TableRow>
                           ))}
