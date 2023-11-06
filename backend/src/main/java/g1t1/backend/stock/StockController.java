@@ -4,8 +4,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import org.bson.Document;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,6 +65,16 @@ public class StockController {
         @RequestParam String currentDate    
         ) {
         return stockService.getTotalMovingAverageResult(symbol, currentDate);
-    }   
+    }
+
+    // get stock prices between 2 dates
+    @GetMapping("/getpricesbetween2dates")
+    public List<StockInstance> getpricesbetween2dates(
+        @RequestParam String symbol,
+        @RequestParam String startDate, 
+        @RequestParam String endDate
+        ) {
+        return stockService.getpricesbetween2dates(symbol, startDate, endDate);
+    }
 
 }

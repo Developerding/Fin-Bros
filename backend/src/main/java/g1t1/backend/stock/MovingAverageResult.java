@@ -1,7 +1,5 @@
 package g1t1.backend.stock;
 
-import java.time.LocalDate;
-
 public class MovingAverageResult {
     
     private String symbol;

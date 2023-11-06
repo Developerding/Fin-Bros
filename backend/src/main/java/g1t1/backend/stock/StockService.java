@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -268,11 +269,9 @@ public class StockService {
                 return movingAverageResult;
 
             } catch (JsonMappingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 return null;
             } catch (JsonProcessingException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 return null;
             } 
@@ -361,6 +360,34 @@ public class StockService {
         // }
 
         return totalMovingAverageResult;
+
+    }
+
+    public List<StockInstance> getpricesbetween2dates(String symbol, String startDate, String endDate) {
+
+        Aggregation aggregation = Aggregation.newAggregation(
+            Aggregation.match(Criteria.where("symbol").is(symbol)),
+            Aggregation.unwind("stockData"),
+            Aggregation.match(
+                Criteria.where("stockData.dateTime")
+                    .gte(startDate)
+                    .lte(endDate)
+            ),
+            Aggregation.project()
+                .and("stockData.open").as("open")
+                .and("stockData.high").as("high")
+                .and("stockData.low").as("low")
+                .and("stockData.close").as("close")
+                .and("stockData.adjustedClose").as("adjustedClose")
+                .and("stockData.volume").as("volume")
+                .and("stockData.dividendAmount").as("dividendAmount")
+                .and("stockData.splitCoefficient").as("splitCoefficient")
+                .and("stockData.dateTime").as("dateTime")
+        );
+
+        AggregationResults<StockInstance> results = mongoTemplate.aggregate(aggregation, "stock", StockInstance.class);
+
+        return results.getMappedResults();
 
     }
 
