@@ -44,7 +44,6 @@ public class StockController {
     }
 
     // get analytics of a stock between 2 dates
-    @CrossOrigin
     @RequestMapping(
         value = "/getmovingaverage", 
         method = RequestMethod.GET, 

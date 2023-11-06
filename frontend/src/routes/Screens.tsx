@@ -16,6 +16,7 @@ import ViewProfile from "../views/authentication/ViewProfile.tsx";
 import ChangePassword from "../views/authentication/ChangePassword.tsx";
 import CreatePortfolio from "../views/CreatePortfolio.tsx";
 import IndivStock from "../views/IndivStock.tsx";
+import SearchStock from "../views/SearchStock.tsx";
 
 const Screens = () => {
   return (
@@ -42,6 +43,7 @@ const Screens = () => {
       <Route path={LINKS.CHANGE_PASSWORD} element={<ChangePassword />} />
       <Route path={LINKS.CREATE_PORTFOLIO} element={<CreatePortfolio />} />
       <Route path={LINKS.INDIV_STOCK} element={<IndivStock />} />
+      <Route path={LINKS.SEARCH_STOCK} element={<SearchStock />} />
     </Routes>
   );
 };

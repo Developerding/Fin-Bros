@@ -14,3 +14,4 @@ export const VIEWPROFILE = "/viewprofile";
 export const CHANGE_PASSWORD = "/changepassword";
 export const CREATE_PORTFOLIO_2 = "/new2";
 export const INDIV_STOCK = "/stock";
+export const SEARCH_STOCK = "/search";

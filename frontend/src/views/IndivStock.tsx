@@ -12,14 +12,6 @@ const {stockName, avgPrice, portfolio, stocks} = state;
 const [stock, setStock] = useState(null);
 const [diff, setDiff] = useState(0);
 
-function test(){
-    console.log("test")
-    console.log(stockName)
-    console.log(portfolio)
-    console.log(stocks)
-    console.log(stock)
-}
-
 useEffect(
     () => {
         for(let i = 0; i < stocks.length; i++){
