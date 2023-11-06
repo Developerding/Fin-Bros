@@ -79,6 +79,7 @@ export const EditPortfolio = () => {
     null
   );
   const [filterOptions, setFilterOptions] = useState(allStocks);
+  const [total, setTotal] = useState(0);
 
   // Search function (auto complete)
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -114,6 +115,20 @@ export const EditPortfolio = () => {
   useEffect(() => {
     console.log(portfolio);
   }, [portfolio]);
+
+  useEffect(() => {
+    if (portfolio.allocations.length == 0) {
+      setTotal(0);
+      return;
+    }
+    let total = 0;
+    portfolio.allocations.map((obj) => {
+      if (obj.percentage) {
+        total += obj.percentage;
+      }
+    });
+    setTotal(total);
+  }, [portfolio.allocations]);
 
   // Remove stocks
   const removeStock = (stockName: string) => {
@@ -204,9 +219,14 @@ export const EditPortfolio = () => {
 
     // summing of allocations
     let sum = 0;
-    for (let key in portfolio.allocations) {
-      sum += portfolio.allocations[key].percentage;
-    }
+    portfolio.allocations.map((obj) => {
+      sum += obj.percentage;
+    });
+    // for (let key in portfolio.allocations) {
+    //   console.log(typeof portfolio.allocations[key].percentage);
+    //   sum += portfolio.allocations[key].percentage;
+    // }
+    // console.log(sum);
 
     if (sum > 100) {
       setError({
@@ -377,6 +397,19 @@ export const EditPortfolio = () => {
                     error={error.status}
                     errorText="Please enter a starting capital"
                   />
+                </Grid>
+
+                <Grid item style={{ marginTop: "20px" }}>
+                  <Typography
+                    variant="body1"
+                    style={{
+                      fontSize: "24px",
+                      marginLeft: "16px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Total Allocations: {total}%
+                  </Typography>
                 </Grid>
               </Grid>
 

@@ -187,7 +187,10 @@ public class StockService {
         //         ...
         //     ]
         // }
-
+        Stock existingStock = stockRepository.getStockBySymbol(symbol);
+        if (existingStock != null) {
+            stockRepository.delete(existingStock);
+        }
         Stock stock = new Stock();
         stock.setSymbol(symbol);
         stock.setName(name);

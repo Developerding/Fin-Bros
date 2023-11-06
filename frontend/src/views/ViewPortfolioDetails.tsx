@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { Container, Grid, Typography, Card, CardContent, Stack, Avatar } from "@mui/material";
-import DoughnutChart from "../components/chart/Chart";
+import { Container, Grid, Typography, Card, CardContent, Stack, Avatar, Box } from "@mui/material";
+import AllocationChart from "../components/chart/AllocationChart";
 import { useStores } from "../stores";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { allStocks } from "../constants/stocks";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import RegionChart from "../components/chart/RegionChart";
+import SectorChart from "../components/chart/SectorChart";
 
 
 const handleRowClick = (allocation: any) => {
@@ -12,46 +15,68 @@ const handleRowClick = (allocation: any) => {
   console.log(allocation.stockName);
 };
 
-///////// Constants to calculate overall returns (to be used in the table but debug first) /////////
-// const capitalAllocated = (allocation) => (allocation.percentage / 100) * stockPortfolioData.capital;
-// const numberOfSharesBought = (allocation) => Math.round(capitalAllocated(allocation) / allocation.averagePrice);
-// const returns = (allocation) => Math.round(numberOfSharesBought(allocation) * (200 - allocation.averagePrice) / 100);
-// const isPositiveReturn = (allocation) => returns(allocation) > 0;
-// const performance = (allocation) => Math.round(returns(allocation) / capitalAllocated(allocation) * 100) / 100;
-
 const ViewPortfolioDetails = () => {
   const AppStore = useStores();
   const [stockPortfolioData, setStockPortfolioData] = useState<any>({});
   const [hoveredRow, setHoveredRow] = useState(-1); // to change the background color of the row when hovered
   const { state } = useLocation();
   const { userId, portfolioName } = state;
+  const [stocks, setStocks] = useState([]);
+
+  const navigate = useNavigate();
+  const handleRowClick = (allocation: any) => {
+    navigate("/stock", {
+      state: {
+        stockName: allocation.stockName,
+        avgPrice: allocation.averagePrice,
+        portfolio: stockPortfolioData,
+        stocks: stocks
+      },
+    });
+  };
 
   useEffect(() => {
     // Make an API call to fetch portfolio data
     AppStore.viewPortfolioController(portfolioName, userId)
-      .then((res) => {
-        // console.log("Portfolio data:", res);
+      .then(async (res) => {
         setStockPortfolioData(res);
+        for (let stock of res.allocations) {
+          await getStock(stock.stockName)
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-  },
-    []);
+  }, []);
+
 
   ///////////// Function to fetch stock data from API /////////////
-  /// uncomment this + line 239-247 + line 132-144 in AppStore.ts viewStockController once debugging is done ///  
-  // const getStock = (stockTicker: string) => {
-  //   // Fetch stock data
-  //   return AppStore.viewStockController(stockTicker)
-  //     .then((res) => {
-  //       return res; // Return the result
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //       return null; // Return null in case of an error
-  //     });
-  // };
+  const getStock = (stockTicker: string) => {
+    // Fetch stock data
+    return AppStore.viewStockController(stockTicker)
+      .then((res) => {
+        // if (stocks.includes(res)) {
+        setStocks(prevStocks => {
+          // Check if the stock already exists in the state
+          const isStockExists = prevStocks.some(stock => stock.name === res.name);
+
+          // If the stock doesn't exist, add it to the state
+          if (!isStockExists) {
+            return [...prevStocks, res];
+          }
+
+          // If the stock exists, return the previous state
+          return prevStocks;
+        });
+        // }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        return null; // Return null in case of an error
+      });
+  };
+
+
 
   // Find the stock name from allStocks object from the allocations.stockName (which is the ticker)
   const getRealStockName = (stockName: string) => {
@@ -59,6 +84,10 @@ const ViewPortfolioDetails = () => {
     return stock?.name;
   };
 
+  const getCurrentStockPrice = (stockName: string) => {
+    const stock = stocks.find((stock) => stock.name === stockName);
+    return stock?.stockData[0].close;
+  }
 
   // To format the dateTime string from Portfolio object
   function formatDateTime(dateTimeString: string) {
@@ -67,9 +96,39 @@ const ViewPortfolioDetails = () => {
     return date.toLocaleDateString('en-US', options); // Replace 'en-US' with the desired locale
   }
 
+  const capital = stockPortfolioData?.capital;
+
+  const getCurrentStockPriceForAllocations = {};
+  const allocationData = stockPortfolioData.allocations?.map((allocation) => {
+    const stockName = allocation.stockName;
+    const currentStockPrice = getCurrentStockPrice(stockName);
+    getCurrentStockPriceForAllocations[stockName] = currentStockPrice;
+
+    const capitalAllocated = (allocation.percentage / 100) * capital;
+    const numberOfSharesBought = Math.round(capitalAllocated / allocation.averagePrice);
+    const returns = Math.round(
+      (currentStockPrice - allocation.averagePrice) * (capitalAllocated / allocation.averagePrice)
+    );
+    const isPositiveReturn = returns >= 0;
+    const performance = Math.round((returns / capitalAllocated) * 100) / 100;
+
+    return {
+      stockName: allocation.stockName,
+      capitalAllocated,
+      numberOfSharesBought,
+      currentStockPrice,
+      returns,
+      isPositiveReturn,
+      performance,
+    };
+  });
+
+  // console.log(allocationData);
+
 
   return (
     <>
+
       <Container maxWidth="xl" sx={{ marginTop: "2%" }}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -97,8 +156,8 @@ const ViewPortfolioDetails = () => {
                 </Typography>
 
                 <Stack sx={{ width: 1, display: "flex", height: "100%", paddingY: 2, justifyContent: "start", paddingLeft: 1 }}>
-                  <Typography> This portfolio was created by user <b>{stockPortfolioData.userId}</b>. </Typography>
-                  <Typography sx={{ paddingY: 2 }}>
+                  {/*<Typography> This portfolio was created by user <b>{stockPortfolioData.userId}</b>. </Typography> */}
+                  <Typography sx={{ paddingY: 1 }}>
                     Portfolio consists of stocks from {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
                       <span key={index}>
                         <b>{getRealStockName(allocation.stockName)}</b>
@@ -117,6 +176,59 @@ const ViewPortfolioDetails = () => {
 
               </CardContent>
             </Card>
+            <Grid item xs={12}>
+          <Typography variant="h3" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
+            <b>Allocation Analysis</b>
+          </Typography>
+          <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <CardContent>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gap: 1,
+                  gridTemplateColumns: 'repeat(3, 1fr)',
+                }}
+              >
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Stock</b>
+                  </Typography>
+                  <AllocationChart allocations={stockPortfolioData ? stockPortfolioData.allocations : null}></AllocationChart>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Region</b>
+                  </Typography>
+                  <RegionChart stocks={stocks ? stocks : null}></RegionChart>
+                </Grid>
+                <Grid item>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <b>% Allocation by Sector</b>
+                  </Typography>
+                  <SectorChart stocks={stocks ? stocks : null}></SectorChart>
+                </Grid>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
 
             <Grid container spacing={4} sx={{ marginTop: "1%" }}>
               <Grid item xs={5}>
@@ -190,94 +302,95 @@ const ViewPortfolioDetails = () => {
                         <TableHead>
                           <TableRow>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Ticker</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Capital Allocated</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Number of Shares Bought</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Capital Allocation</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>No. of Shares</TableCell>
                             <TableCell align="center" sx={{ fontWeight: "bold" }}>Current Price</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Returns ($)</TableCell>
-                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance wrt Total Initial Capital(%)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>PnL ($)</TableCell>
+                            <TableCell align="center" sx={{ fontWeight: "bold" }}>Performance (%)</TableCell>
                           </TableRow>
                         </TableHead>
 
                         <TableBody>
-                          {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
-
+                          {allocationData?.map((allocation: any, index: number) => (
                             <TableRow key={index}>
-                              <TableCell align="center">{allocation.stockName} </TableCell>
-                              <TableCell align="center">{allocation.percentage / 100 * stockPortfolioData.capital}</TableCell>
-                              <TableCell align="center">{Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice)}</TableCell>
-                              <TableCell align="center">200</TableCell>
-                              <TableCell align="center">{Math.round((200 - allocation.averagePrice) * (allocation.percentage / 100 * stockPortfolioData.capital))}</TableCell>
-                              <TableCell align="center"
+                              <TableCell align="center">{allocation.stockName}</TableCell>
+                              <TableCell align="center">{allocation.capitalAllocated}</TableCell>
+                              <TableCell align="center">
+                                {Math.round(allocation.numberOfSharesBought)}
+                              </TableCell>
+                              <TableCell align="center">{typeof(allocation.currentStockPrice) == "number" ? allocation.currentStockPrice : "loading" }</TableCell>
+                              <TableCell align="center">
+                                {typeof(allocation.currentStockPrice) == "number" ? Math.round(allocation.returns) : "loading"}
+                              </TableCell>
+                              <TableCell
+                                align="center"
                                 sx={{
                                   fontWeight: "bold",
-                                  color: // Change color of the percentage based on whether it is positive or negative
-                                    Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice * (200 - allocation.averagePrice)) / 100 > 0
-                                      ? "green"
-                                      : "red",
+                                  color: allocation.isPositiveReturn ? "green" : "red",
                                 }}
                               >
-                                {Math.round(allocation.percentage / 100 * stockPortfolioData.capital / allocation.averagePrice * (200 - allocation.averagePrice)) / 100}
+                                {typeof(allocation.currentStockPrice) == "number" ? ((allocation.returns / allocation.capitalAllocated) * 100).toFixed(5) : "loading"}
                               </TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
+
+
                       </Table>
                     </TableContainer>
-                    <Typography variant="subtitle1" sx={{ marginTop: "2%" }}> <i>Formula: stock price now - stock price when portfolio was created </i></Typography>
 
                   </CardContent>
                 </Card>
               </Grid>
             </Grid>
 
-            <Typography variant="h4" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
+            <Typography variant="h3" sx={{ marginTop: "2%", marginBottom: "0.5%" }}>
               <b>Geographic Data </b>
             </Typography>
             <Grid item xs={12}>
               <Card>
                 <CardContent>
-                  {/* Complete viewStockController function first */}
-                  {/* {stockPortfolioData.allocations?.map((allocation: any, index: number) => (
-                    <div key={index}>
-                      <Typography variant="subtitle1">
-                        Stock: {getStock(allocation?.stockName).name}
-                        Country: {getStock(allocation?.stockName).Country}
-                        Sector: {getStock(allocation?.stockName).sector}
-                      </Typography>
-                    </div>
-                  ))} */}
-                  <Typography variant="subtitle1"> Need to show geographic data </Typography>
+                  <TableContainer>
+                    <Table>
+                      <TableHead >
+                        <TableRow >
+                          {/* <TableCell align="center" sx={{ fontWeight: "bold" }}>Symbol</TableCell> */}
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Stock Name</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Country</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Sector</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Industry</TableCell>
+                          <TableCell align="center" sx={{ fontWeight: "bold" }}>Asset Type</TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {stocks.map((stock: any, index: number) => (
+                          <TableRow key={index}>
+                            {/* <TableCell align="center">
+                                <Avatar src={`/assets/stocks/${stock.name}.png`} sx={{ width: 50, height: 50 }} />
+                              </TableCell> */}
+                            <TableCell align="center">
+                              <Typography variant="h5" >
+                                {getRealStockName(stock.name)}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">{stock.country}</TableCell>
+                            <TableCell align="center">{stock.sector}</TableCell>
+                            <TableCell align="center">{stock.industry}</TableCell>
+                            <TableCell align="center">{stock.assetType}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
         </Grid>
 
-        {/* Analytics */}
-        <Grid item xs={4}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "500",
-              textAlign: "center",
-              marginBottom: "1%",
-              marginTop: "1%"
-            }}
-          >
-            Analytics
-          </Typography>
-          <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            {/* insert donut chart, can add piechart for regions they belong to */}
-            <CardContent>
-              <DoughnutChart></DoughnutChart>
-            </CardContent>
-          </Card>
-        </Grid>
+
         <Grid container spacing={4} sx={{ marginTop: "1%" }}>
-
-
-
-
         </Grid>
       </Container>
     </>
