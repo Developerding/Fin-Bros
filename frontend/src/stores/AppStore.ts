@@ -223,8 +223,64 @@ class AppStore {
       const response = await axios.get(
         `http://localhost:8080/api/portfolio/${userId}`
       );
-      console.log(response.data);
-      return response;
+      
+      // portfolios array is response.data
+      // iterate through portfolios array
+      // for each portfolio, get allocations array using portfolio.allocations
+      // iterate through allocations array
+      // for each allocation, get the stockName using allocation.stockName
+      // run the /gettotalmovingaverage backend api, providing stockName as symbol, creation of portfolio which is portfolio.dateTime as startDate and today date as endDate
+
+      const portfoliosArray = response.data;
+      for (const portfolio of portfoliosArray) {
+        // to calculate total performance of portfolio
+        let totalPerformance = 0;
+
+        // convert the portfolio creation date and today's date into appropriate string format to call /getmovingaverage API
+        const startDateObject = new Date(portfolio.dateTime);
+        const dd = String(startDateObject.getDate()).padStart(2, '0');
+        const mm = String(startDateObject.getMonth() + 1).padStart(2, '0');
+        const yyyy = startDateObject.getFullYear();
+        const startDate = `${yyyy}-${mm}-${dd}`;
+
+        const today = new Date();
+        const dd2 = String(today.getDate()).padStart(2, '0');
+        const mm2 = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy2 = today.getFullYear();
+        const endDate = `${yyyy2}-${mm2}-${dd2}`;
+  
+        const allocationsArray = portfolio.allocations;
+        await Promise.all(allocationsArray.map(async allocation => {
+          const symbol = allocation.stockName;
+          const price = allocation.averagePrice;
+          const percentage = allocation.percentage;
+  
+          try {
+            const response2 = await axios.get(
+              `http://localhost:8080/api/stock/getmovingaverage?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
+            );
+            console.log("response2: ", response2);
+
+            // get the difference from /getmovingaverage, calculate the percentage, then add it as a new field in allocation
+            const difference = response2.data.difference;
+            const percentageDifference = (difference / price) * 100;
+            allocation.differenceVsPriorPeriod = (Math.round(percentageDifference * 100) / 100).toFixed(2);
+
+            totalPerformance += ((percentage / 100) * (percentageDifference / 100));
+
+          } catch (err2) {
+            console.log(err2);
+            // if got error, set it to default 0
+            allocation.differenceVsPriorPeriod = 0;
+          }
+        }));
+        // add totalPerformance as a new field to every portfolio
+        portfolio.totalPerformance = totalPerformance;
+      }
+
+      console.log("portfoliosArray", portfoliosArray);
+      return portfoliosArray;
+      // return response;
     } catch (err) {
       console.log(err);
       return err;
@@ -243,6 +299,18 @@ class AppStore {
     }
   };
 }
+
+// getStocksAnalyticsController = async (symbol: String, startDate: String, endDate: String => {
+//   try {
+//     const response = await axios.get(
+//       `http://localhost:8080/api/stock/getmovingaverage/?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
+//     );
+//     return response;
+//   } catch (err) {
+//     console.log(err);
+//     return err;
+//   }
+// }
 
 const hydrate = create({
   storage: localStorage, // default: localStorage

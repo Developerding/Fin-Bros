@@ -122,7 +122,11 @@ const NavBar = () => {
     } else if (menuType === "stocks") {
       return (
         <Paper style={{ width: "250px", height: "100%" }}>
-          <MenuItem sx={{ height: "75px" }}>
+          <MenuItem sx={{ height: "75px" }}
+                          onClick={() => {
+                            navigate(LINKS.SEARCH_STOCK);
+                            handleCloseNavMenu();
+                          }}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
@@ -246,7 +250,12 @@ const NavBar = () => {
                 Stocks
               </Typography>
 
-              <MenuItem sx={{ height: "75px" }}>
+              <MenuItem sx={{ height: "75px" }}
+                              onClick={() => {
+                                navigate(LINKS.SEARCH_STOCK);
+                                handleCloseNavMenu();
+                              }}
+              >
                 <ListItemIcon>
                   <SearchIcon />
                 </ListItemIcon>
