@@ -20,6 +20,7 @@
     "axios": "^1.5.1",
     "chart.js": "^4.4.0",
     "dayjs": "^1.11.10",
+    "framer-motion": "^10.16.4",
     "mobx": "^6.10.2",
     "mobx-persist": "^0.4.1",
     "mobx-react-lite": "^4.0.5",

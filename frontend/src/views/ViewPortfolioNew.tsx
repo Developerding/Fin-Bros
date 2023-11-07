@@ -2,7 +2,9 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import { useState, useEffect } from "react";
@@ -10,10 +12,11 @@ import { useNavigate } from "react-router-dom";
 import { useStores } from "../stores";
 import OutlinedButton from "../components/buttons/OutlinedButton";
 import PrimaryButton from "../components/buttons/PrimaryButton";
+import { Modal } from "@mui/base";
 import DeleteModal from "../components/DeleteModal";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
-const ViewPortfolios = () => {
+const ViewPortfolioNew = () => {
   // // components
   // const PortfolioPaper = styled(Paper)(({ theme }) => ({
   //   width: 280,
@@ -221,7 +224,7 @@ const ViewPortfolios = () => {
               >
                 <TableContainer component={Paper}
                 sx={{maxHeight:"250px"}}>
-                  <Table stickyHeader >
+                  <Table >
                     <TableHead>
                       <TableRow>
 
@@ -273,5 +276,11 @@ const ViewPortfolios = () => {
     );
   };
 
+//   return (
+//     <>
+//       <HoverableStack />
+//     </>
+//   );
+// };
 
-export default ViewPortfolios;
+export default ViewPortfolioNew;
