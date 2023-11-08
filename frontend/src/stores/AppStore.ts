@@ -275,7 +275,11 @@ class AppStore {
           }
         }));
         // add totalPerformance as a new field to every portfolio
-        portfolio.totalPerformance = totalPerformance;
+        if (isNaN(totalPerformance)) {
+          portfolio.totalPerformance = 0;
+        } else {
+          portfolio.totalPerformance = totalPerformance;
+        }
       }
 
       console.log("portfoliosArray", portfoliosArray);
