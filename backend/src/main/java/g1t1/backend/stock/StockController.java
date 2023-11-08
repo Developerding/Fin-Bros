@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@CrossOrigin(origins = "https://fin-bros.vercel.app/")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/stock")
 public class StockController {
     private final StockService stockService;

@@ -13,7 +13,7 @@ import g1t1.backend.user.UserException.CannotUpdateUserDetailsException;
 
 @RestController
 @RequestMapping(path="api/v2")
-@CrossOrigin(origins = "https://fin-bros.vercel.app/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
 
     private final UserService userService;

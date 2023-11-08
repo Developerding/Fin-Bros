@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/portfolio")
-@CrossOrigin(origins="https://fin-bros.vercel.app/")
+@CrossOrigin(origins="http://localhost:5173")
 public class PortfolioController {
     private final PortfolioService portfolioService;
 

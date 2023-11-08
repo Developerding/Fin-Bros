@@ -14,7 +14,7 @@ import g1t1.backend.stock.Stock;
 
 @RestController
 @RequestMapping("/api/log")
-@CrossOrigin(origins="https://fin-bros.vercel.app/")
+@CrossOrigin(origins="http://localhost:5173")
 public class LoggerController {
     private final LoggerService loggerService;
 
