@@ -30,6 +30,7 @@ import PortfolioDate from "../components/formComponents/controlled/PortfolioDate
 import PortfolioDescription from "../components/formComponents/controlled/PortfolioDescription";
 import PortfolioName from "../components/formComponents/controlled/PortfolioName";
 import { allStocks } from "../constants/stocks";
+import { Auth } from "../components/Auth";
 
 interface portfolio {
   portfolioName: string;
@@ -305,6 +306,7 @@ export const EditPortfolio = () => {
 
   return (
     <Container maxWidth="xl" sx={{ width: "100%" }}>
+      <Auth />
       {portfolioLoading ? (
         <Box
           display="flex"

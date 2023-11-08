@@ -23,6 +23,7 @@ import { useLocation, useNavigate } from "react-router";
 import * as LINKS from "../../routes/links";
 import { useStores } from "../../stores";
 import { useEffect, useState } from "react";
+import { Auth } from "../../components/Auth";
 
 export const ViewProfile = () => {
   const AppStore = useStores();
@@ -80,6 +81,7 @@ export const ViewProfile = () => {
 
   return (
     <>
+      <Auth />
       <Container maxWidth="xl" sx={{ marginTop: "4%" }}>
         <Grid container justifyContent="center" alignItems="center">
           <Grid

@@ -8,7 +8,7 @@ export const Auth = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (!AppStore.getIsLoggedIn()) {
-      navigate(LINKS.LOGIN);
+      navigate(LINKS.HOME_PAGE);
       return;
     }
   }, []);

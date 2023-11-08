@@ -85,9 +85,10 @@ const NavBar = () => {
     const logData = {
       message: `${AppStore.getUserId()} logout at ${formattedDate} ${formattedTime}`,
     };
-    AppStore.createLogController(logData);
-    AppStore.logout();
-    window.location.reload();
+    AppStore.createLogController(logData).then((res) => {
+      AppStore.logout();
+      window.location.reload();
+    });
   };
 
   const renderMenuType = (menuType: string) => {
@@ -122,11 +123,13 @@ const NavBar = () => {
     } else if (menuType === "stocks") {
       return (
         <Paper style={{ width: "250px", height: "100%" }}>
-          <MenuItem sx={{ height: "75px" }}
-                          onClick={() => {
-                            navigate(LINKS.SEARCH_STOCK);
-                            handleCloseNavMenu();
-                          }}>
+          <MenuItem
+            sx={{ height: "75px" }}
+            onClick={() => {
+              navigate(LINKS.SEARCH_STOCK);
+              handleCloseNavMenu();
+            }}
+          >
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
@@ -250,11 +253,12 @@ const NavBar = () => {
                 Stocks
               </Typography>
 
-              <MenuItem sx={{ height: "75px" }}
-                              onClick={() => {
-                                navigate(LINKS.SEARCH_STOCK);
-                                handleCloseNavMenu();
-                              }}
+              <MenuItem
+                sx={{ height: "75px" }}
+                onClick={() => {
+                  navigate(LINKS.SEARCH_STOCK);
+                  handleCloseNavMenu();
+                }}
               >
                 <ListItemIcon>
                   <SearchIcon />

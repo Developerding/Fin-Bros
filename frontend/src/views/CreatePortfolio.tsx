@@ -24,6 +24,7 @@ import { allStocks } from "../constants/stocks";
 import dayjs, { Dayjs } from "dayjs";
 import { useStores } from "../stores";
 import PrimaryButton from "../components/buttons/PrimaryButton";
+import { Auth } from "../components/Auth";
 
 const CreatePortfolio_V2 = () => {
   // Constants of all stocks:
@@ -245,6 +246,7 @@ const CreatePortfolio_V2 = () => {
 
   return (
     <Container maxWidth="xl" sx={{ width: "100%" }}>
+      <Auth />
       <Paper
         sx={{
           margin: "auto",

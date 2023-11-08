@@ -14,7 +14,15 @@ import OutlinedButton from "../components/buttons/OutlinedButton";
 import PrimaryButton from "../components/buttons/PrimaryButton";
 import { Modal } from "@mui/base";
 import DeleteModal from "../components/DeleteModal";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { Auth } from "../components/Auth";
 
 const ViewPortfolioNew = () => {
   // // components
@@ -107,8 +115,8 @@ const ViewPortfolioNew = () => {
   // function to render all portfolios via a loop
   return (
     <>
-      <Container maxWidth="lg" sx={{marginTop: 4, marginBottom: 4}}>
-
+      <Auth />
+      <Container maxWidth="lg" sx={{ marginTop: 4, marginBottom: 4 }}>
         {/* For the entire page */}
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -122,159 +130,153 @@ const ViewPortfolioNew = () => {
                 No portfolios found. Create a portfolio!
               </Typography>
             </Paper>
-          ): (portfolios.map((portfolio, index) => (
-            // Every single card is an item and a container
-            <>
-              <Grid item container key={index} xs={12} sm={12} md={6}>
-              
-              
-                <Paper
-                  // onMouseEnter={() => handleMouseEnter(index)}
-                  // onMouseLeave={handleMouseLeave}
-                  onClick={() => handleClick(portfolio)}
-                  elevation={3}
-                  square={false}
-                  sx={{ 
-                    padding: 2,
-                    cursor: "pointer",
-                    minHeight:"250px"
-                  }}
-                >
-                  {/* For all the items within the paper */}
-                  <Grid container alignItems="center">
-                    <Grid item xs={12} sm={12} md={12}>
-                      <Typography variant="h3" sx={{ fontWeight: 600, padding: 1 }}>
-                        {portfolio.name}
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4} md={6}>
-                      <Typography>
-                        $
-                        {(
-                          portfolio.capital *
-                          (1 + portfolio.totalPerformance)
-                        )}
-                      </Typography>
-
-                      <Typography variant="h6" color="text.secondary">
-                        since creation date
-                      </Typography>
-                    </Grid>
-
-                    <Grid item xs={12} sm={4} md={6}>
-                      <Stack direction="row">
-                        {portfolio.totalPerformance >= 0 ? (
-                          <ArrowUpwardIcon
-                            sx={{ color: "#64dd17" }} />
-                        ) : (
-                          <ArrowDownwardIcon
-                            sx={{ color: "#e31212" }} />
-                        )}
-
+          ) : (
+            portfolios.map((portfolio, index) => (
+              // Every single card is an item and a container
+              <>
+                <Grid item container key={index} xs={12} sm={12} md={6}>
+                  <Paper
+                    // onMouseEnter={() => handleMouseEnter(index)}
+                    // onMouseLeave={handleMouseLeave}
+                    onClick={() => handleClick(portfolio)}
+                    elevation={3}
+                    square={false}
+                    sx={{
+                      padding: 2,
+                      cursor: "pointer",
+                      minHeight: "250px",
+                    }}
+                  >
+                    {/* For all the items within the paper */}
+                    <Grid container alignItems="center">
+                      <Grid item xs={12} sm={12} md={12}>
                         <Typography
-                          variant="h4"
-                          sx={{
-                            color: portfolio.totalPerformance >= 0
-                              ? "#64dd17"
-                              : "#e31212"
-                          }}
+                          variant="h3"
+                          sx={{ fontWeight: 600, padding: 1 }}
                         >
-                          {(portfolio.totalPerformance * 100).toFixed(2)}
+                          {portfolio.name}
                         </Typography>
-                      </Stack>
+                      </Grid>
 
-                      <Typography variant="h6" color="text.secondary">
-                        vs creation date
-                      </Typography>
-                    </Grid>
+                      <Grid item xs={12} sm={4} md={6}>
+                        <Typography>
+                          $
+                          {portfolio.capital * (1 + portfolio.totalPerformance)}
+                        </Typography>
 
+                        <Typography variant="h6" color="text.secondary">
+                          since creation date
+                        </Typography>
+                      </Grid>
 
-                    <Grid item xs={12} sm={6} md={6}>
-                      <OutlinedButton
-                        buttonText="Edit"
-                        onClick={(event) => editClick(portfolio, event)} />
-                    </Grid>
+                      <Grid item xs={12} sm={4} md={6}>
+                        <Stack direction="row">
+                          {portfolio.totalPerformance >= 0 ? (
+                            <ArrowUpwardIcon sx={{ color: "#64dd17" }} />
+                          ) : (
+                            <ArrowDownwardIcon sx={{ color: "#e31212" }} />
+                          )}
 
-                    <Grid item xs={12} sm={6} md={3}>
-                      <PrimaryButton
-                        buttonText="Delete"
-                        onClick={(e) => {
-                          e?.stopPropagation();
-                          setDeleteModalOpen(true);
-                        } } />
-                    </Grid>
-
-                    <Grid item xs={6} sm={6} md={3}>
-
-                    </Grid>
-
-                    
-                  </Grid>
-                </Paper>
-
-                <DeleteModal
-                  portfolioName={portfolio.name}
-                  isOpen={isDeleteModalOpen}
-                  setIsOpen={setDeleteModalOpen} />
-              </Grid>
-              
-              <Grid item container xs={12} sm={12} md={6}
-              
-              >
-                <TableContainer component={Paper}
-                sx={{maxHeight:"250px"}}>
-                  <Table >
-                    <TableHead>
-                      <TableRow>
-
-                        <TableCell align="left">Ticker</TableCell>
-                        <TableCell align="left">Average Price</TableCell>
-                        <TableCell align="left">Percentage</TableCell>
-                        <TableCell align="left">Performance</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {portfolio.allocations.map((allocation, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {allocation.stockName}
-                          </TableCell>
-                          <TableCell align="left">${allocation.averagePrice}</TableCell>
-                          <TableCell align="left">{allocation.percentage}%</TableCell>
-                          <TableCell align="left">
-                            <Typography
+                          <Typography
+                            variant="h4"
                             sx={{
                               color:
-                              allocation.differenceVsPriorPeriod >= 0
-                                          ? "#64dd17"
-                                          : "e31212"
+                                portfolio.totalPerformance >= 0
+                                  ? "#64dd17"
+                                  : "#e31212",
                             }}
-                            >
-                            {allocation.differenceVsPriorPeriod}
-                            </Typography>
-                          </TableCell>
+                          >
+                            {(portfolio.totalPerformance * 100).toFixed(2)}
+                          </Typography>
+                        </Stack>
 
+                        <Typography variant="h6" color="text.secondary">
+                          vs creation date
+                        </Typography>
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={6}>
+                        <OutlinedButton
+                          buttonText="Edit"
+                          onClick={(event) => editClick(portfolio, event)}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={6} md={3}>
+                        <PrimaryButton
+                          buttonText="Delete"
+                          onClick={(e) => {
+                            e?.stopPropagation();
+                            setDeleteModalOpen(true);
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={6} sm={6} md={3}></Grid>
+                    </Grid>
+                  </Paper>
+
+                  <DeleteModal
+                    portfolioName={portfolio.name}
+                    isOpen={isDeleteModalOpen}
+                    setIsOpen={setDeleteModalOpen}
+                  />
+                </Grid>
+
+                <Grid item container xs={12} sm={12} md={6}>
+                  <TableContainer component={Paper} sx={{ maxHeight: "250px" }}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="left">Ticker</TableCell>
+                          <TableCell align="left">Average Price</TableCell>
+                          <TableCell align="left">Percentage</TableCell>
+                          <TableCell align="left">Performance</TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid></>
-            
-          )
-          )
-          )
-          }
+                      </TableHead>
+                      <TableBody>
+                        {portfolio.allocations.map((allocation, index) => (
+                          <TableRow
+                            key={index}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {allocation.stockName}
+                            </TableCell>
+                            <TableCell align="left">
+                              ${allocation.averagePrice}
+                            </TableCell>
+                            <TableCell align="left">
+                              {allocation.percentage}%
+                            </TableCell>
+                            <TableCell align="left">
+                              <Typography
+                                sx={{
+                                  color:
+                                    allocation.differenceVsPriorPeriod >= 0
+                                      ? "#64dd17"
+                                      : "e31212",
+                                }}
+                              >
+                                {allocation.differenceVsPriorPeriod}
+                              </Typography>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              </>
+            ))
+          )}
         </Grid>
       </Container>
-    
     </>
-    );
-  };
+  );
+};
 
 //   return (
 //     <>
