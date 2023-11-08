@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.Config;
@@ -15,6 +16,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
 @SpringBootApplication
+@EnableCaching
 public class BackendApplication {
 
 	public static void main(String[] args) throws IOException {

@@ -1,6 +1,8 @@
 package g1t1.backend.stock;
 
-public class StockInstance {
+import java.io.Serializable;
+
+public class StockInstance implements Serializable {
    private double open;
    private double high;
    private double low;
