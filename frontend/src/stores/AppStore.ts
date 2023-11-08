@@ -214,7 +214,7 @@ class AppStore {
 
   getPortfoliosController = async (userId: String) => {
     try {
-      const response = await axios.get(`${url}/${userId}`);
+      const response = await axios.get(`${url}/api/portfolio/${userId}`);
 
       // portfolios array is response.data
       // iterate through portfolios array
