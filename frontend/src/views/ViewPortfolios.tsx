@@ -158,7 +158,7 @@ const ViewPortfolios = () => {
                       <Grid item xs={12} sm={4} md={6}>
                         <Typography>
                           $
-                          {portfolio.capital * (1 + portfolio.totalPerformance)}
+                          {(portfolio.capital * (1 + portfolio.totalPerformance)).toFixed(2)}
                         </Typography>
 
                         <Typography variant="h6" color="text.secondary">
@@ -183,7 +183,7 @@ const ViewPortfolios = () => {
                                   : "#e31212",
                             }}
                           >
-                            {(portfolio.totalPerformance * 100).toFixed(2)}
+                            {(portfolio.totalPerformance * 100).toFixed(2)}%
                           </Typography>
                         </Stack>
 
@@ -257,7 +257,7 @@ const ViewPortfolios = () => {
                                       : "e31212",
                                 }}
                               >
-                                {allocation.differenceVsPriorPeriod}
+                                {allocation.differenceVsPriorPeriod}%
                               </Typography>
                             </TableCell>
                           </TableRow>
