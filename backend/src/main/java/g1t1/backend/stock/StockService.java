@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -39,11 +40,15 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
+    @Cacheable(value="allStocks")
     public List<Stock> findAllStocks(){
+        System.out.println("Searching mongo");
         return stockRepository.findAll();
     }
 
+    @Cacheable(value="stock", key="#symbol")
     public Stock findStockBySymbol(String symbol) {
+        System.out.println("Retrieving form database: "+ symbol);
         Stock stock = stockRepository.getStockBySymbol(symbol);
         return stock;
     }

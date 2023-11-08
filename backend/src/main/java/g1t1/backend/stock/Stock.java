@@ -1,5 +1,6 @@
 package g1t1.backend.stock;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -8,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Document("stock")
-public class Stock {
+public class Stock implements Serializable{
     @Id
     private String id;
     private String symbol;

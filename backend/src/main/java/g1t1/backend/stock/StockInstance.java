@@ -1,6 +1,11 @@
 package g1t1.backend.stock;
 
-public class StockInstance {
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+public class StockInstance implements Serializable {
    private double open;
    private double high;
    private double low;
@@ -9,6 +14,7 @@ public class StockInstance {
    private long volume;
    private double dividendAmount;
    private double splitCoefficient;
+
    private String dateTime;
 
    public StockInstance(double open, double high, double low, double close, double adjustedClose, long volume, double dividendAmount, double splitCoefficient, String dateTime) {

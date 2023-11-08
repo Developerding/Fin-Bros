@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 
 import com.crazzyghost.alphavantage.AlphaVantage;
 import com.crazzyghost.alphavantage.Config;
@@ -14,6 +15,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+@EnableCaching
 @SpringBootApplication
 public class BackendApplication {
 
@@ -22,7 +24,9 @@ public class BackendApplication {
 
 		ClassLoader classLoader = BackendApplication.class.getClassLoader();
 
-		File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
+		// File file = new File(Objects.requireNonNull(classLoader.getResource("serviceAccountKey.json")).getFile());
+		File file = new File("./serviceAccountKey.json");
+
 
 		FileInputStream serviceAccount = new FileInputStream(file.getAbsoluteFile());
 		
