@@ -2,9 +2,11 @@ import { action, makeAutoObservable } from "mobx";
 import { create, persist } from "mobx-persist";
 import axios from "axios";
 
+// uncomment line 6 if you want to run springboot locally (does not have redis)
 const url = "http://localhost:8080";
-// const url = "http://ec2-54-79-97-245.ap-southeast-2.compute.amazonaws.com";
 
+// this url is the deployed backend on ec2 (with redis)
+// const url = "http://ec2-54-79-97-245.ap-southeast-2.compute.amazonaws.com:8080";
 class AppStore {
   @persist email: string = "";
   @persist userId: string = "";
