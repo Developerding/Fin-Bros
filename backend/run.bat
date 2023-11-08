@@ -1,0 +1,1 @@
+"mvnw.cmd" spring-boot:run -f "pom.xml"
