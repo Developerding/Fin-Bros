@@ -7,7 +7,7 @@ import {
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button, Typography, Container, Grid, Box } from "@mui/material";
 import { motion } from "framer-motion";
-import bgPicture from "/assets/img/home-page-picture.jpg"
+import bgPicture from "/assets/img/home-page-picture.jpg";
 
 const first = [
   {
@@ -123,6 +123,8 @@ function Item(props: any) {
 export const Home = () => {
   return (
     <>
+      <TickerTape colorTheme="dark" symbols={all}></TickerTape>
+
       {/* <Ticker colorTheme="light" symbols={first}></Ticker>
       <Ticker colorTheme="dark" symbols={second}></Ticker>
       <Ticker colorTheme="dark" symbols={third}></Ticker> */}
@@ -138,15 +140,20 @@ export const Home = () => {
 
       <Container
         maxWidth="false"
-        sx={{ 
+        sx={{
           backgroundImage: `url(${bgPicture})`,
-          backgroundRepeat: 'no-repeat', // Prevent repeating the image
-          backgroundPosition: 'center center', // Center the image
-          height:"1000px"
+          backgroundRepeat: "no-repeat", // Prevent repeating the image
+          backgroundPosition: "center center", // Center the image
+          height: "1000px",
         }}
       >
-        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-          <Grid item sx={{marginTop: 40, marginLeft: 3}}>
+        <Grid
+          container
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+        >
+          <Grid item sx={{ marginTop: 40, marginLeft: 3 }}>
             <motion.div
               initial={{ opacity: 0, x: -100 }}
               animate={{ opacity: 1, x: 0 }}
@@ -155,7 +162,7 @@ export const Home = () => {
                 duration: 5,
               }}
             >
-              <Typography sx={{ fontWeight: "700", fontSize: 175 }}>
+              <Typography sx={{ fontWeight: "700", fontSize: 155 }}>
                 FINBROS
               </Typography>
             </motion.div>
@@ -176,8 +183,6 @@ export const Home = () => {
           </Grid>
         </Grid>
       </Container>
-
-      <TickerTape colorTheme="dark" symbols={all}></TickerTape>
     </>
   );
 };

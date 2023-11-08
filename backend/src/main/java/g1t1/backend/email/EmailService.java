@@ -24,7 +24,8 @@ public class EmailService {
 
     public EmailService(
             @Autowired SendGrid sendGrid,
-            @Value("${twilio.sendgrid.from-email}") String fromEmail
+            @Value("${env.SENDGRID_EMAIL}")
+            String fromEmail
     ) {
         this.sendGrid = sendGrid;
         this.fromEmail = fromEmail;

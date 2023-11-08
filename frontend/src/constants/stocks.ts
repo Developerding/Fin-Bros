@@ -42,7 +42,7 @@ export const allStocks = [
   { name: "Amgen Inc.", ticker: "AMGN" },
   { name: "Intuit Inc.", ticker: "INTU" },
   { name: "Wells Fargo & Company", ticker: "WFC" },
-  { name: "Shell", ticker: "SHELL" },
+  { name: "Shell", ticker: "SHEL" },
   { name: "Accenture", ticker: "ACN" },
   { name: "AstraZeneca", ticker: "AZN" },
 ];
