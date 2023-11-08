@@ -2,6 +2,9 @@ import { action, makeAutoObservable } from "mobx";
 import { create, persist } from "mobx-persist";
 import axios from "axios";
 
+const url = "http://localhost:8080";
+// const url = "http://ec2-54-79-97-245.ap-southeast-2.compute.amazonaws.com";
+
 class AppStore {
   @persist email: string = "";
   @persist userId: string = "";
@@ -64,7 +67,7 @@ class AppStore {
     // checks whether email is valid:
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/v2/userbyemail?email=" + email
+        url + "/api/v2/userbyemail?email=" + email
       );
       console.log(response.data);
       // checking if user is verified:
@@ -83,14 +86,11 @@ class AppStore {
 
     // here checks whether password is valid
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v2/user/login",
-        {
-          email: email,
-          password: password,
-          returnSecureToken: true,
-        }
-      );
+      const response = await axios.post(url + "/api/v2/user/login", {
+        email: email,
+        password: password,
+        returnSecureToken: true,
+      });
       console.log(response.data);
       return response.data;
     } catch (err) {
@@ -102,10 +102,7 @@ class AppStore {
   registerController = async (email: string, password: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v2/user/create?email=" +
-          email +
-          "&password=" +
-          password
+        url + "/api/v2/user/create?email=" + email + "&password=" + password
       );
 
       console.log("User created ", response.data);
@@ -119,7 +116,7 @@ class AppStore {
   resetPasswordController = async (email: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/v2/user/changepassword?email=" + email
+        url + "/api/v2/user/changepassword?email=" + email
       );
       console.log(response);
       return response;
@@ -133,7 +130,7 @@ class AppStore {
   viewStockController = async (stockSymbol: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/stock/findstockbysymbol?symbol=${stockSymbol}`
+        url + "/api/stock/findstockbysymbol?symbol=" + stockSymbol
       );
       // console.log(`http://localhost:8080/api/stock/findstockbysymbol?symbol=${stockSymbol}`)
       // console.log(response.data);
@@ -147,7 +144,7 @@ class AppStore {
   viewPortfolioController = async (portfolioName: string, userId: string) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+        url + "/api/portfolio/" + portfolioName + "/" + userId
       );
       console.log(response.data);
       return response.data;
@@ -159,10 +156,7 @@ class AppStore {
 
   uploadPortfolioController = async (data: Object) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/portfolio",
-        data
-      );
+      const response = await axios.post(url + "/api/portfolio", data);
       return response;
     } catch (err) {
       console.log(err);
@@ -173,7 +167,7 @@ class AppStore {
   updatePortfolioController = async (data: Object, portfolioName: String) => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/portfolio/edit/${portfolioName}`,
+        url + "/api/portfolio/edit/" + portfolioName,
         data
       );
       return response;
@@ -189,7 +183,7 @@ class AppStore {
   ) => {
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+        `${url}/api/portfolio/${portfolioName}/${userId}`
       );
       return response;
     } catch (err) {
@@ -200,7 +194,7 @@ class AppStore {
 
   createLogController = async (data: Object) => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/log`, data);
+      const response = await axios.post(url + "/api/log", data);
       return response;
     } catch (error) {
       console.log(error);
@@ -210,7 +204,7 @@ class AppStore {
 
   getAllLogsController = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/log");
+      const response = await axios.get(url + "/api/log");
       return response;
     } catch (error) {
       console.log(error);
@@ -220,10 +214,8 @@ class AppStore {
 
   getPortfoliosController = async (userId: String) => {
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/portfolio/${userId}`
-      );
-      
+      const response = await axios.get(`${url}/${userId}`);
+
       // portfolios array is response.data
       // iterate through portfolios array
       // for each portfolio, get allocations array using portfolio.allocations
@@ -238,42 +230,46 @@ class AppStore {
 
         // convert the portfolio creation date and today's date into appropriate string format to call /getmovingaverage API
         const startDateObject = new Date(portfolio.dateTime);
-        const dd = String(startDateObject.getDate()).padStart(2, '0');
-        const mm = String(startDateObject.getMonth() + 1).padStart(2, '0');
+        const dd = String(startDateObject.getDate()).padStart(2, "0");
+        const mm = String(startDateObject.getMonth() + 1).padStart(2, "0");
         const yyyy = startDateObject.getFullYear();
         const startDate = `${yyyy}-${mm}-${dd}`;
 
         const today = new Date();
-        const dd2 = String(today.getDate()).padStart(2, '0');
-        const mm2 = String(today.getMonth() + 1).padStart(2, '0');
+        const dd2 = String(today.getDate()).padStart(2, "0");
+        const mm2 = String(today.getMonth() + 1).padStart(2, "0");
         const yyyy2 = today.getFullYear();
         const endDate = `${yyyy2}-${mm2}-${dd2}`;
-  
+
         const allocationsArray = portfolio.allocations;
-        await Promise.all(allocationsArray.map(async allocation => {
-          const symbol = allocation.stockName;
-          const price = allocation.averagePrice;
-          const percentage = allocation.percentage;
-  
-          try {
-            const response2 = await axios.get(
-              `http://localhost:8080/api/stock/getmovingaverage?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
-            );
-            console.log("response2: ", response2);
+        await Promise.all(
+          allocationsArray.map(async (allocation) => {
+            const symbol = allocation.stockName;
+            const price = allocation.averagePrice;
+            const percentage = allocation.percentage;
 
-            // get the difference from /getmovingaverage, calculate the percentage, then add it as a new field in allocation
-            const difference = response2.data.difference;
-            const percentageDifference = (difference / price) * 100;
-            allocation.differenceVsPriorPeriod = (Math.round(percentageDifference * 100) / 100).toFixed(2);
+            try {
+              const response2 = await axios.get(
+                `${url}/api/stock/getmovingaverage?symbol=${symbol}&startDate=${startDate}&endDate=${endDate}`
+              );
+              console.log("response2: ", response2);
 
-            totalPerformance += ((percentage / 100) * (percentageDifference / 100));
+              // get the difference from /getmovingaverage, calculate the percentage, then add it as a new field in allocation
+              const difference = response2.data.difference;
+              const percentageDifference = (difference / price) * 100;
+              allocation.differenceVsPriorPeriod = (
+                Math.round(percentageDifference * 100) / 100
+              ).toFixed(2);
 
-          } catch (err2) {
-            console.log(err2);
-            // if got error, set it to default 0
-            allocation.differenceVsPriorPeriod = 0;
-          }
-        }));
+              totalPerformance +=
+                (percentage / 100) * (percentageDifference / 100);
+            } catch (err2) {
+              console.log(err2);
+              // if got error, set it to default 0
+              allocation.differenceVsPriorPeriod = 0;
+            }
+          })
+        );
         // add totalPerformance as a new field to every portfolio
         if (isNaN(totalPerformance)) {
           portfolio.totalPerformance = 0;
@@ -294,7 +290,7 @@ class AppStore {
   deletePortfolioController = async (portfolioName: String, userId: String) => {
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/portfolio/${portfolioName}/${userId}`
+        `${url}/api/portfolio/${portfolioName}/${userId}`
       );
       return response;
     } catch (err) {
