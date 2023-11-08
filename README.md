@@ -1,17 +1,20 @@
 # FINBROS LETS GO
 
-## Guidelines:
-
-- write all components and views in .tsx
-- write any reusable functions in .js
-- use Pascal casing HelloWorld.tsx
--
-
 ## Start frontend app:
 
 - cd frontend
 - npm i
 - npm run dev
+
+## Backend Application:
+
+Backend Application can be connected locally or to a cloud hosted ec2.
+The cloud hosted ec2 has redis installed on the stocks collection in MongoDB to ease data retrieval rate.
+
+## Connecting to springboot hosted on cloud (ec2):
+
+- In the frontend/src/stores/AppStore.tsx, comment out line 6.
+- Uncomment line 9
 
 ## Start Backend App (Running through VSCODE):
 
@@ -20,10 +23,21 @@
 
 ## Start Backend App (through terminal) with Maven installed:
 
+- mvn clean install
 - cd backend
-- mvn clean install && mvn spring-boot:run
+- create target/
+- compile.bat
+- run.bat
+<!-- - mvn clean install && mvn spring-boot:run -->
 
 ## For FinBros Developers
+
+## Guidelines:
+
+- write all components and views in .tsx
+- write any reusable functions in .js
+- use Pascal casing HelloWorld.tsx
+-
 
 ## SPA
 
