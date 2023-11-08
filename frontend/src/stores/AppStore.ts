@@ -2,8 +2,8 @@ import { action, makeAutoObservable } from "mobx";
 import { create, persist } from "mobx-persist";
 import axios from "axios";
 
-const url = "http://localhost:8080";
-// const url = "http://ec2-54-79-97-245.ap-southeast-2.compute.amazonaws.com";
+// const url = "http://localhost:8080";
+const url = "http://ec2-54-79-97-245.ap-southeast-2.compute.amazonaws.com";
 
 class AppStore {
   @persist email: string = "";
