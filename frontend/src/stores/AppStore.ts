@@ -259,22 +259,25 @@ class AppStore {
               // get the difference from /getmovingaverage, calculate the percentage, then add it as a new field in allocation
               const difference = response2.data.difference;
               const percentageDifference = (difference / price) * 100;
-              allocation.differenceVsPriorPeriod = (
-                Math.round(percentageDifference * 100) / 100
-              ).toFixed(2);
-
+              if (isNaN(percentageDifference)) {
+                allocation.differenceVsPriorPeriod = 0.00
+              } else {
+                allocation.differenceVsPriorPeriod = (
+                  Math.round(percentageDifference * 100) / 100
+                ).toFixed(2);
+              }
               totalPerformance +=
                 (percentage / 100) * (percentageDifference / 100);
             } catch (err2) {
               console.log(err2);
               // if got error, set it to default 0
-              allocation.differenceVsPriorPeriod = 0;
+              allocation.differenceVsPriorPeriod = 0.00;
             }
           })
         );
         // add totalPerformance as a new field to every portfolio
         if (isNaN(totalPerformance)) {
-          portfolio.totalPerformance = 0;
+          portfolio.totalPerformance = 0.00;
         } else {
           portfolio.totalPerformance = totalPerformance;
         }
