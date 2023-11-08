@@ -21,14 +21,21 @@ The cloud hosted ec2 has redis installed on the stocks collection in MongoDB to 
 - Install Extension Pack for Java
 - click on run code
 
-## Start Backend App (through terminal) with Maven installed:
+## Start Backend App (through terminal) with Maven installed (Windows):
 
 - mvn clean install
 - cd backend
-- create target/
+- create target/classes
 - compile.bat
 - run.bat
 <!-- - mvn clean install && mvn spring-boot:run -->
+
+## Start Backend App (through terminal) with Maven installed (Mac):
+- cd backend
+- mvn clean install
+- mkdir target/classes
+- bash "./compile.sh"
+- bash "./run.sh"
 
 ## For FinBros Developers
 
