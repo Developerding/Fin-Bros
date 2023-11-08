@@ -16,9 +16,7 @@ The cloud hosted ec2 has redis installed on the stocks collection in MongoDB to 
 
 - If error, try reloading project on pom.xml.
 - If env files are missing, go to:
-- https://drive.google.com/drive/folders/1UumJXGVFPo6TKQnVMPUbE45H6czPIuql
-- to find .env and serviceAccountKey.json.
-- Place these 2 files in backend/src/main/resources
+- contact @ryanpoy on telegram for files
 
 ## Connecting to springboot hosted on cloud (ec2):
 
