@@ -5,11 +5,20 @@
 - cd frontend
 - npm i
 - npm run dev
+- IF you encounter a styled_prop error, delete frontend/node_modules and package-lock.json, and "npm install" again
 
 ## Backend Application:
 
 Backend Application can be connected locally or to a cloud hosted ec2.
 The cloud hosted ec2 has redis installed on the stocks collection in MongoDB to ease data retrieval rate.
+
+## Common backend error:
+
+- If error, try reloading project on pom.xml.
+- If env files are missing, go to:
+- https://drive.google.com/drive/folders/1UumJXGVFPo6TKQnVMPUbE45H6czPIuql
+- to find .env and serviceAccountKey.json.
+- Place these 2 files in backend/src/main/resources
 
 ## Connecting to springboot hosted on cloud (ec2):
 
@@ -31,6 +40,7 @@ The cloud hosted ec2 has redis installed on the stocks collection in MongoDB to 
 <!-- - mvn clean install && mvn spring-boot:run -->
 
 ## Start Backend App (through terminal) with Maven installed (Mac):
+
 - cd backend
 - mvn clean install
 - mkdir target/classes
