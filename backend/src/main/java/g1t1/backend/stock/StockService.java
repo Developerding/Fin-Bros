@@ -40,24 +40,23 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-     @Cacheable(value="allStocks")
+    @Cacheable(value="allStocks")
     public List<Stock> findAllStocks(){
-                System.out.println("Mongo: get all stocks");
+        System.out.println("Mongo: get all stocks");
 
         return stockRepository.findAll();
     }
 
     @Cacheable(value="stockSymbol", key="#symbol")
     public Stock findStockBySymbol(String symbol) {
-        System.out.println("Mongo: get stock by symbol");
+        System.out.println("Mongo: get stock symbol");
         Stock stock = stockRepository.getStockBySymbol(symbol);
         return stock;
     }
 
     @Cacheable(value="stockName", key="#name")
     public Stock findStockByName(String name) {
-                System.out.println("Mongo: get stock by name");
-
+        System.out.println("Mongo: get stockname");
         Stock stock = stockRepository.getStockByName(name);
         return stock;
     }
