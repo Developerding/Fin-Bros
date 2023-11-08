@@ -1,38 +1,50 @@
 # FINBROS LETS GO
 
 ## Guidelines:
+
 - write all components and views in .tsx
 - write any reusable functions in .js
 - use Pascal casing HelloWorld.tsx
-- 
+-
 
-## Start app:
+## Start frontend app:
+
+- cd frontend
 - npm i
 - npm run dev
 
+## Start Backend App (Running through VSCODE):
+
+- Install Extension Pack for Java
+- click on run code
+
+## Start Backend App (through terminal) with Maven installed:
+
+- cd backend
+- mvn clean install && mvn spring-boot:run
+
+## For FinBros Developers
+
 ## SPA
+
 - App.tsx is main app file
 - main.tsx is the single page HTML file
 
-
 ## Where to find stuff:
-- ASSets:
-   - css
-   -  img (any image/svg files)
+
+- Assets:
+  - css
+  - img (any image/svg files)
 - components (any reusable components, make sure it's placed in a generic folder):
-   - buttons
-   - cards
-   - forms
+  - buttons
+  - cards
+  - forms
 - constants (any reusable Constants)
-- functions (any reusable functions)
 - routes (all routing stuff)
 - views (actual screen, also ensure it's placed in generic folder):
-   - Login
-      - Login.tsx
+  - Login
+    - Login.tsx
 - stores (state management stuff)
-
-
-
 
 # React + TypeScript + Vite
 
